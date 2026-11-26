@@ -141,6 +141,80 @@ export default function AlertPortal({ locale = 'en' }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Lightweight 1-2-3 Alert Setup Guide + Sample Notification Preview */}
+      <div className="max-w-3xl mx-auto grid gap-4 md:grid-cols-12 items-stretch">
+        <ol
+          aria-label={lang === 'zh' ? '自动预警配置三步流程' : 'How automated FDA alerts work'}
+          className="md:col-span-7 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 space-y-3 shadow-2xs"
+        >
+          <li className="flex items-start gap-2.5 text-xs">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">1</span>
+            <div>
+              <span className="font-bold text-slate-900">
+                {lang === 'zh' ? '下单自动发放专属卡密' : 'Receive Instant License Key After Checkout'}
+              </span>
+              <p className="text-slate-600 mt-0.5">
+                {lang === 'zh'
+                  ? '付款后系统秒级发出 RP-PRO-XXXX-XXXX 格式卡密，无需等人工开通。'
+                  : 'Our fulfillment webhook emails your RP-PRO-XXXX-XXXX key immediately—zero onboarding calls.'}
+              </p>
+            </div>
+          </li>
+          <li className="flex items-start gap-2.5 text-xs">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">2</span>
+            <div>
+              <span className="font-bold text-slate-900">
+                {lang === 'zh' ? '填入代工厂名、成分与群机器人 Webhook' : 'Add OEMs, Ingredients & Delivery Webhook'}
+              </span>
+              <p className="text-slate-600 mt-0.5">
+                {lang === 'zh'
+                  ? '输入您的代工厂全称、高危活性成分、竞品或 510(k) 代码，并绑定邮箱或企微/飞书机器人。'
+                  : 'Enter your contract manufacturers, active ingredients, competitor brands, or 510(k) codes plus Email/Slack.'}
+              </p>
+            </div>
+          </li>
+          <li className="flex items-start gap-2.5 text-xs">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">3</span>
+            <div>
+              <span className="font-bold text-slate-900">
+                {lang === 'zh' ? '每 12 小时双库巡检，命中即推（0 重复）' : '12-Hour Automated FDA Sync & Deduplicated Alerts'}
+              </span>
+              <p className="text-slate-600 mt-0.5">
+                {lang === 'zh'
+                  ? '每次同步 FDA 官方警告信与 openFDA 召回后自动比对并推送，幂等去重绝不刷屏。'
+                  : 'Every 12h sync scans new FDA Warning Letters and openFDA Recalls and fires deduplicated alerts automatically.'}
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div className="md:col-span-5 rounded-2xl border border-slate-800 bg-slate-950 text-slate-200 p-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-teal-400 mb-2">
+              <span>{lang === 'zh' ? '告警推送格式示例' : 'Illustrative Alert Format'}</span>
+              <span>{lang === 'zh' ? '企微 / 飞书 / 邮件' : 'Slack / Email / JSON'}</span>
+            </div>
+            <pre className="text-[11px] font-mono leading-relaxed text-slate-200 whitespace-pre-wrap break-words bg-slate-900/90 border border-slate-800 rounded-xl p-3">
+{lang === 'zh'
+  ? `[RegPulse 实时预警] 命中关键词：Lidocaine
+类型：FDA 官方警告信（CDER / OTC）
+主体：[代工厂或品牌示例]
+摘要：OTC 麻膏专论违规 / CGMP 缺陷
+官方原文：https://www.fda.gov/...`
+  : `[RegPulse Alert] Keyword: Lidocaine
+Source: Official FDA Warning Letter (CDER)
+Subject: CGMP / Unapproved OTC Violation
+Official URL: https://www.fda.gov/...`}
+            </pre>
+          </div>
+          <p className="mt-2 text-[10px] text-slate-400">
+            {lang === 'zh'
+              ? '注：上方为推送排版格式示例，真实告警直连 FDA.gov 官方原文。'
+              : 'Illustrative format example. Live alerts link directly to official FDA.gov & openFDA records.'}
+          </p>
+        </div>
+      </div>
+
       {!verified ? (
         <form onSubmit={handleLogin} className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm max-w-xl mx-auto space-y-4">
           <div className="flex items-center gap-3">

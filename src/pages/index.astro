@@ -98,7 +98,32 @@ const jsonLd = {
   </section>
 
   <!-- Main Interactive Scanner -->
-  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-5">
+    <!-- Lightweight, Zero-Popup 1-2-3 Quick-Start Guide -->
+    <ol aria-label="How to use RegPulse in 3 steps" class="grid gap-3 md:grid-cols-3 no-print">
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 flex items-start gap-3 shadow-2xs">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-extrabold text-white shrink-0 mt-0.5">1</span>
+        <div class="text-xs leading-relaxed">
+          <div class="font-bold text-slate-900">Select Your Product Category</div>
+          <p class="text-slate-600 mt-0.5">Choose Cosmetics, Supplements, Devices, or Pets so the scanner loads the exact FDA &amp; CVM rulebook for your SKU.</p>
+        </div>
+      </li>
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 flex items-start gap-3 shadow-2xs">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-extrabold text-white shrink-0 mt-0.5">2</span>
+        <div class="text-xs leading-relaxed">
+          <div class="font-bold text-slate-900">Paste Draft Copy (or Click a Sample)</div>
+          <p class="text-slate-600 mt-0.5">Drop in your Title, Bullet Points, and Ingredients—runs 100% locally in your browser with zero server upload.</p>
+        </div>
+      </li>
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 flex items-start gap-3 shadow-2xs">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-extrabold text-white shrink-0 mt-0.5">3</span>
+        <div class="text-xs leading-relaxed">
+          <div class="font-bold text-slate-900">Copy Safe Rewrites or Audit 200 SKUs</div>
+          <p class="text-slate-600 mt-0.5">Fix flagged triggers using the 21 CFR rewrite templates, export a PDF trail, or upload a catalog CSV on <a href={withBase('/bulk/')} class="font-semibold text-teal-700 underline">Bulk CSV</a>.</p>
+        </div>
+      </li>
+    </ol>
+
     <ListingScanner client:load recalls={recalls} warningLetters={warningLetters} basePath={base} locale="en" />
   </section>
 

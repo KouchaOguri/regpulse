@@ -53,7 +53,32 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
     </div>
   </section>
 
-  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-5">
+    <!-- 轻量三步上手引导（无强制弹窗） -->
+    <ol aria-label="三步快速上手指南" class="grid gap-3 md:grid-cols-3 no-print">
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 flex items-start gap-3 shadow-2xs">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-extrabold text-white shrink-0 mt-0.5">1</span>
+        <div class="text-xs leading-relaxed">
+          <div class="font-bold text-slate-900">选择产品所属美国站类目</div>
+          <p class="text-slate-600 mt-0.5">勾选美妆、保健品、美容仪或宠物类目，系统自动匹配对应的 FDA 21 CFR、MoCRA 与 CVM 法规集。</p>
+        </div>
+      </li>
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 flex items-start gap-3 shadow-2xs">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-extrabold text-white shrink-0 mt-0.5">2</span>
+        <div class="text-xs leading-relaxed">
+          <div class="font-bold text-slate-900">粘贴英文标题/五点/成分（或点演示样本）</div>
+          <p class="text-slate-600 mt-0.5">100% 浏览器本地瞬时运算，不上传选品草稿与配方机密，1 秒定位高危扫号词。</p>
+        </div>
+      </li>
+      <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 flex items-start gap-3 shadow-2xs">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-extrabold text-white shrink-0 mt-0.5">3</span>
+        <div class="text-xs leading-relaxed">
+          <div class="font-bold text-slate-900">复制安全改写，或一键批量体检 200 SKU</div>
+          <p class="text-slate-600 mt-0.5">直接照抄合规改写话术并导出 PDF 留档；多 SKU 店铺可直接前往 <a href={withBase('/cn/bulk/')} class="font-semibold text-teal-700 underline">200-SKU 批量体检</a> 上传 CSV。</p>
+        </div>
+      </li>
+    </ol>
+
     <ListingScanner client:load recalls={recalls} warningLetters={warningLetters} basePath={base} locale="zh" />
   </section>
 

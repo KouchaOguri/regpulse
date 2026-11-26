@@ -426,6 +426,80 @@ export default function BulkCatalogScanner({ recalls, warningLetters = [], local
 
   return (
     <div className="space-y-6">
+      {/* Lightweight 1-2-3 Workflow + Expected CSV Format Guide (Zero Popups) */}
+      <div className="rounded-2xl border border-teal-200/80 bg-teal-50/40 p-4 sm:p-5 space-y-4">
+        <ol
+          aria-label={lang === 'zh' ? '批量体检三步指引' : 'How bulk CSV auditing works'}
+          className="grid gap-3 md:grid-cols-3"
+        >
+          <li className="rounded-xl border border-white bg-white/90 px-3.5 py-2.5 flex items-start gap-2.5">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">1</span>
+            <div className="text-xs">
+              <div className="font-bold text-slate-900">
+                {lang === 'zh' ? '准备或下载标准 CSV 模板' : 'Prepare Your Catalog CSV'}
+              </div>
+              <p className="text-slate-600 mt-0.5 leading-snug">
+                {lang === 'zh'
+                  ? '直接用 Amazon 批量表 / Shopify 导出表，或点击下方下载 10-SKU 标准模板。'
+                  : 'Use any Amazon Flat File, Shopify product export, or click Download Sample CSV below.'}
+              </p>
+            </div>
+          </li>
+          <li className="rounded-xl border border-white bg-white/90 px-3.5 py-2.5 flex items-start gap-2.5">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">2</span>
+            <div className="text-xs">
+              <div className="font-bold text-slate-900">
+                {lang === 'zh' ? '浏览器本地 1 秒预扫（前 3 行免费看）' : 'Instant Local Scan (First 3 SKUs Free)'}
+              </div>
+              <p className="text-slate-600 mt-0.5 leading-snug">
+                {lang === 'zh'
+                  ? '无需上传服务器，立即看到全店极危 SKU 总数与前 3 个 SKU 的完整法规报告。'
+                  : 'Runs locally in <1s. Inspect total CRITICAL count across your store plus full details for SKUs 1–3 free.'}
+              </p>
+            </div>
+          </li>
+          <li className="rounded-xl border border-white bg-white/90 px-3.5 py-2.5 flex items-start gap-2.5">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">3</span>
+            <div className="text-xs">
+              <div className="font-bold text-slate-900">
+                {lang === 'zh' ? '输卡密解锁全量 200 行并导出整改表' : 'Unlock All 200 SKUs & Export CSV'}
+              </div>
+              <p className="text-slate-600 mt-0.5 leading-snug">
+                {lang === 'zh'
+                  ? '输入激活卡密立即解开剩余高危行，一键导出 Excel/CSV 整改清单发给运营。'
+                  : 'Paste your emailed License Key to unlock every row and export a ready-to-assign remediation CSV.'}
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-[11px] text-slate-700 flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          <span className="font-bold text-slate-900">
+            {lang === 'zh' ? '自动识别表头列名（UTF-8 CSV）：' : 'Auto-Detected CSV Column Headers (UTF-8):'}
+          </span>
+          <span>
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-teal-900">sku</code>{' '}
+            {lang === 'zh' ? '(或 asin / handle)' : '(or asin / item_sku / handle)'}
+          </span>
+          <span>
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-teal-900">title</code>{' '}
+            {lang === 'zh' ? '(必填，或 item_name)' : '(required, or item_name)'}
+          </span>
+          <span>
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-teal-900">bullets</code>{' '}
+            {lang === 'zh' ? '(五点/description)' : '(or description / body)'}
+          </span>
+          <span>
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-teal-900">ingredients</code>{' '}
+            {lang === 'zh' ? '(成分/material)' : '(optional, or active / material)'}
+          </span>
+          <span>
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-teal-900">vertical</code>{' '}
+            {lang === 'zh' ? '(可选：cosmetics/supplements/devices/pets)' : '(optional: cosmetics / supplements / devices / pets)'}
+          </span>
+        </div>
+      </div>
+
       {/* Top Upload & Controls Bar */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
         <div className="grid gap-5 lg:grid-cols-12 items-center">

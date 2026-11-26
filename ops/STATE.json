@@ -1,17 +1,17 @@
 {
   "schemaVersion": "2.0",
   "project": "RegPulse",
-  "updatedAtUtc": "2026-11-26T22:05:00Z",
+  "updatedAtUtc": "2026-11-26T22:40:00Z",
   "milestone": {
-    "current": "Phase 2 - v2.0 Commercial Hardening Complete (All 5 Investor Demands Shipped & Verified; Ready for Step 1 Domain Approval)",
-    "status": "v2_0_ready_for_domain_unlock"
+    "current": "Phase 2 - v2.1.0 Shipped (1-2-3 Zero-Popup UX Guides + Main-Domain Cold Email Permanently Banned + Ready for Cloudflare Step 1 Checkout)",
+    "status": "step1_approved_awaiting_cloudflare_checkout"
   },
   "repository": {
     "localPath": "d:/hachimi/regpulse",
     "remoteUrl": "https://github.com/KouchaOguri/regpulse",
     "branch": "main",
-    "previousVerifiedSha": "7cf3bee",
-    "releaseVersion": "v2.0.1"
+    "previousVerifiedSha": "8d64ab3",
+    "releaseVersion": "v2.1.0"
   },
   "deployment": {
     "liveUrl": "https://kouchaoguri.github.io/regpulse/",
