@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0F172A"/>
+  <rect x="48" y="48" width="1104" height="534" rx="20" fill="#111C31" stroke="#1E293B" stroke-width="2"/>
+  <rect x="96" y="102" width="236" height="40" rx="20" fill="#0F766E" fill-opacity="0.22" stroke="#14B8A6" stroke-opacity="0.5"/>
+  <text x="120" y="128" fill="#5EEAD4" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600">FDA &amp; MoCRA COMPLIANCE RADAR</text>
+  <text x="96" y="236" fill="#F8FAFC" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="800">RegPulse</text>
+  <text x="96" y="308" fill="#CBD5E1" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="500">Catch FDA Drug Claims &amp; Amazon ASIN</text>
+  <text x="96" y="352" fill="#CBD5E1" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="500">Suppression Triggers in 10 Seconds.</text>
+  <rect x="96" y="410" width="310" height="110" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="120" y="452" fill="#5EEAD4" font-family="system-ui, sans-serif" font-size="22" font-weight="700">21 CFR &amp; MoCRA Cited</text>
+  <text x="120" y="486" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="18">Zero hallucination statutory rules</text>
+  <rect x="430" y="410" width="310" height="110" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="454" y="452" fill="#FBBF24" font-family="system-ui, sans-serif" font-size="22" font-weight="700">Live openFDA Sync</text>
+  <text x="454" y="486" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="18">Recalls, 510(k) &amp; Cosmetic Events</text>
+  <rect x="764" y="410" width="340" height="110" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="788" y="452" fill="#F87171" font-family="system-ui, sans-serif" font-size="22" font-weight="700">Safe Rewrite + PDF</text>
+  <text x="788" y="486" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="18">Built for Amazon, TikTok &amp; DTC</text>
+</svg>

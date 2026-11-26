@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WatchlistModal from '../../components/WatchlistModal';
+---
+
+<BaseLayout
+  title="Pricing — Automated FDA Watchlist Alerts & Catalog Compliance | RegPulse"
+  description="Self-serve FDA compliance monitoring starting at $29/month (or ¥199/quarter for Chinese cross-border sellers). Zero sales calls, cancel anytime."
+  canonicalPath="/pricing/"
+>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 text-center">
+      <p class="text-xs font-bold uppercase tracking-wider text-teal-700">Transparent Self-Serve Pricing</p>
+      <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+        <span data-i18n-en>Stop Finding Out About FDA Enforcement After Your ASIN Is Suspended.</span>
+        <span data-i18n-zh class="hidden">别等主力 ASIN 变狗或货柜被海关扣留，才想起查 FDA 预警。</span>
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
+        <span data-i18n-en>No $15,000 annual enterprise contracts. Keep the single-listing scanner free forever, or automate 24/7 supplier, ingredient, and competitor enforcement alerts.</span>
+        <span data-i18n-zh class="hidden">无天价企业年费、无需预约销售 Demo。单条扫描永久免费；升级自动监控即可 7×24 盯防代工厂、高危成分与竞品 FDA 召回/510(k) 动态。</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid gap-6 lg:grid-cols-3 items-stretch">
+      <!-- Free Tier -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Free Scanner</h2>
+          <p class="mt-1 text-xs text-slate-500">For solo sellers checking drafts before launch</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-slate-950">$0</span>
+            <span class="text-xs text-slate-500">/ forever</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+            <li>✓ Unlimited browser-local listing claim scans</li>
+            <li>✓ All 21 CFR, MoCRA, DSHEA &amp; EPA FIFRA rules</li>
+            <li>✓ Safe compliant rewrite suggestions</li>
+            <li>✓ Printable PDF audit report</li>
+            <li>✓ Public live openFDA recall radar lookup</li>
+          </ul>
+        </div>
+        <a
+          href={import.meta.env.BASE_URL}
+          class="mt-8 block w-full text-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-900 hover:bg-slate-50"
+        >
+          Use Free Scanner Now
+        </a>
+      </div>
+
+      <!-- Starter Tier (Most Popular) -->
+      <div class="rounded-2xl border-2 border-teal-600 bg-white p-6 shadow-md relative flex flex-col justify-between">
+        <span class="absolute -top-3 left-6 rounded-full bg-teal-700 px-3 py-0.5 text-[11px] font-bold text-white">
+          Most Popular for Sellers
+        </span>
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Starter Watchlist</h2>
+          <p class="mt-1 text-xs text-slate-500">Automated FDA recall &amp; enforcement radar</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-slate-950">$29</span>
+            <span class="text-xs text-slate-500">/ month (or ¥199 / 季度中文版)</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+            <li>✓ Everything in Free Scanner</li>
+            <li>✓ <strong>10 Watchlist Trackers</strong> (OEMs, ingredients, brands, product codes)</li>
+            <li>✓ Instant Email / Slack / 企业微信 Webhook alerts</li>
+            <li>✓ Weekly FDA Cosmetics &amp; Supplements enforcement digest</li>
+            <li>✓ 7-day free pilot run before billing starts</li>
+          </ul>
+        </div>
+        <button
+          type="button"
+          data-plan="Starter Watchlist ($29/mo)"
+          class="plan-cta-btn mt-8 w-full rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white hover:bg-teal-800 cursor-pointer"
+        >
+          Start 7-Day Free Pilot ($29/mo)
+        </button>
+      </div>
+
+      <!-- Pro / Agency Tier -->
+      <div class="rounded-2xl border border-slate-200 bg-slate-950 text-white p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <h2 class="text-lg font-bold">Pro &amp; Agency</h2>
+          <p class="mt-1 text-xs text-slate-400">For multi-SKU brands, aggregators &amp; RA consultants</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">$79</span>
+            <span class="text-xs text-slate-400">/ month</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-200">
+            <li>✓ <strong>Unlimited Watchlist Trackers</strong> across Drugs, Cosmetics, Foods &amp; Devices</li>
+            <li>✓ 510(k) predicate clearance &amp; competitor pipeline alerts</li>
+            <li>✓ Bulk CSV / catalog compliance pre-audit (up to 250 SKUs/mo)</li>
+            <li>✓ Monthly branded executive compliance PDF for internal audits</li>
+            <li>✓ Priority JSON / Webhook API feed</li>
+          </ul>
+        </div>
+        <button
+          type="button"
+          data-plan="Pro & Agency Watchlist ($79/mo)"
+          class="plan-cta-btn mt-8 w-full rounded-xl bg-teal-500 px-4 py-3 text-xs font-bold text-slate-950 hover:bg-teal-400 cursor-pointer"
+        >
+          Start 7-Day Free Pilot ($79/mo)
+        </button>
+      </div>
+    </div>
+
+    <!-- Chinese Cross-Border Quick Banner -->
+    <div class="mt-10 rounded-2xl border border-teal-200 bg-teal-50/70 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-base font-bold text-teal-950">中国美国站跨境卖家专属通道（人民币结算 / 企业微信实时推送）</h2>
+        <p class="mt-1 text-xs text-teal-900">
+          面向深圳/杭州/广州 Amazon &amp; TikTok Shop 美妆、保健品、美容仪卖家：<strong>¥199 / 季度</strong>（含 10 个核心成分/代工厂/竞品监控 + 中文违规要点拆解 + 企微/飞书推送）。
+        </p>
+      </div>
+      <button
+        type="button"
+        data-plan="中文跨境监控季卡 (¥199/季)"
+        class="plan-cta-btn rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800 shrink-0 cursor-pointer"
+      >
+        申请中文版 7 天免费试跑
+      </button>
+    </div>
+  </section>
+
+  <WatchlistModal client:idle />
+
+  <script is:inline>
+    document.querySelectorAll('.plan-cta-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var plan = btn.getAttribute('data-plan') || 'Starter Watchlist ($29/mo)';
+        window.dispatchEvent(new CustomEvent('regpulse:open-watchlist', { detail: { plan: plan } }));
+      });
+    });
+  </script>
+</BaseLayout>

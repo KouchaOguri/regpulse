@@ -1,0 +1,353 @@
+{
+  "totalEventsInOpenFDA": 85511,
+  "topCategories": [
+    {
+      "term": "Other Serious or Important Medical Event",
+      "count": 65580
+    },
+    {
+      "term": "Death",
+      "count": 26542
+    },
+    {
+      "term": "Hospitalization",
+      "count": 16388
+    },
+    {
+      "term": "Disability",
+      "count": 492
+    },
+    {
+      "term": "Required Intervention",
+      "count": 394
+    },
+    {
+      "term": "Life Threatening",
+      "count": 372
+    },
+    {
+      "term": "Congenital Anomaly",
+      "count": 56
+    }
+  ],
+  "topReactions": [
+    {
+      "term": "Ovarian Cancer",
+      "count": 29563
+    },
+    {
+      "term": "Death",
+      "count": 15015
+    },
+    {
+      "term": "Injury",
+      "count": 10822
+    },
+    {
+      "term": "Ovarian Cancer Stage Iii",
+      "count": 7572
+    },
+    {
+      "term": "Ovarian Cancer Stage I",
+      "count": 7041
+    },
+    {
+      "term": "Alopecia",
+      "count": 4171
+    },
+    {
+      "term": "Exposure To Chemical Pollution",
+      "count": 3242
+    },
+    {
+      "term": "Ovarian Cancer Stage Iv",
+      "count": 2788
+    },
+    {
+      "term": "Pruritus",
+      "count": 2552
+    },
+    {
+      "term": "Ovarian Cancer Stage Ii",
+      "count": 2532
+    },
+    {
+      "term": "Mesothelioma",
+      "count": 2195
+    },
+    {
+      "term": "Fallopian Tube Cancer",
+      "count": 2033
+    },
+    {
+      "term": "Rash",
+      "count": 1933
+    },
+    {
+      "term": "Erythema",
+      "count": 1493
+    },
+    {
+      "term": "Burning Sensation",
+      "count": 1484
+    }
+  ],
+  "recentEvents": [
+    {
+      "reportNumber": "25739643",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Cervix Carcinoma Stage Iv",
+        "Fallopian Tube Cancer Stage Iv",
+        "Ovarian Cancer Stage Iv",
+        "Uterine Cancer"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738190",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage I"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738287",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage I"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738347",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Fallopian Tube Cancer Stage Iv"
+      ],
+      "outcomes": [
+        "Death",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738509",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25739414",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Iv"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25739767",
+      "receivedDate": "2025-08-29",
+      "productName": "Shower To Shower Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738513",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Fallopian Tube Cancer Stage Ii",
+        "Ovarian Cancer"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738580",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Iii"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25739323",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738111",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Iii"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738587",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Ii"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738731",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage I"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738164",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage I"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738925",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Ii"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738340",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Malignant Peritoneal Neoplasm",
+        "Ovarian Cancer"
+      ],
+      "outcomes": [
+        "Death",
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25739115",
+      "receivedDate": "2025-08-29",
+      "productName": "Shower To Shower Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage I"
+      ],
+      "outcomes": [
+        "Hospitalization",
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25738555",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Iii"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25739249",
+      "receivedDate": "2025-08-29",
+      "productName": "J And J Baby Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Iv"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    },
+    {
+      "reportNumber": "25739150",
+      "receivedDate": "2025-08-29",
+      "productName": "Shower To Shower Powder",
+      "industryName": "Cosmetics",
+      "reactions": [
+        "Ovarian Cancer Stage Iv"
+      ],
+      "outcomes": [
+        "Other Serious or Important Medical Event"
+      ]
+    }
+  ]
+}

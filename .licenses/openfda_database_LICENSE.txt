@@ -1,0 +1,13 @@
+openFDA API License and Terms Notification
+Recorded: 2026-11-26T17:30:00+08:00
+Workspace: d:\hachimi\regpulse
+
+Notice: This project uses public regulatory data from the U.S. Food and Drug Administration's openFDA API.
+Please review the official openFDA API terms and license at:
+- https://open.fda.gov/apis/
+- https://open.fda.gov/license
+
+Per openFDA license terms:
+- Do not rely on openFDA to make decisions regarding medical care.
+- While FDA makes every effort to ensure data accuracy, openFDA data is provided "as is" and should not be construed as legal or medical advice.
+- RegPulse is an independent regulatory intelligence tool and is not affiliated with, endorsed by, or sponsored by the U.S. Food and Drug Administration (FDA).

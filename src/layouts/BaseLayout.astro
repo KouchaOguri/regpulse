@@ -1,0 +1,251 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, canonicalPath = '/', jsonLd } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => {
+  if (path === '/') return `${base}/`;
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+};
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (path: string) => {
+  const target = withBase(path).replace(/\/$/, '') || '/';
+  return currentPath === target;
+};
+const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://kouchaoguri.github.io';
+const canonicalUrl = `${siteOrigin}${withBase(canonicalPath)}`;
+const ogImageUrl = `${siteOrigin}${withBase('/og-card.svg')}`;
+
+const navItems = [
+  { href: '/', labelEn: 'Listing Scanner', labelZh: '违禁词体检' },
+  { href: '/recalls/', labelEn: 'FDA Recall Radar', labelZh: 'FDA 召回雷达' },
+  { href: '/rules/', labelEn: '21 CFR Rules', labelZh: '法规词库' },
+  { href: '/mocra/', labelEn: 'MoCRA Checklist', labelZh: 'MoCRA 自查' },
+  { href: '/pricing/', labelEn: 'Pricing & Alerts', labelZh: '监控订阅' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
+    <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
+
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm no-print">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between gap-4">
+          <a href={withBase('/')} class="flex items-center gap-2.5 text-slate-900 font-bold tracking-tight shrink-0">
+            <img src={withBase('/favicon.svg')} alt="" width="30" height="30" class="rounded-lg" />
+            <span class="text-lg">RegPulse</span>
+            <span class="hidden sm:inline-flex items-center rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-semibold text-teal-800 border border-teal-200">
+              FDA &amp; MoCRA Intel
+            </span>
+          </a>
+
+          <nav aria-label="Primary" class="hidden md:flex items-center gap-1">
+            <ul class="flex items-center gap-1">
+              {navItems.map((item) => {
+                const active = isCurrent(item.href);
+                return (
+                  <li>
+                    <a
+                      href={withBase(item.href)}
+                      aria-current={active ? 'page' : undefined}
+                      class:list={[
+                        'inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border-b-2',
+                        active
+                          ? 'text-teal-900 bg-teal-50/80 border-teal-700 font-semibold'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-transparent',
+                      ]}
+                    >
+                      <span data-i18n-en>{item.labelEn}</span>
+                      <span data-i18n-zh class="hidden">{item.labelZh}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              id="lang-toggle-btn"
+              type="button"
+              aria-pressed="false"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 min-h-[36px] cursor-pointer"
+            >
+              <span aria-hidden="true">🌐</span>
+              <span id="lang-toggle-label">中文跨境版</span>
+            </button>
+
+            <a
+              href={withBase('/pricing/')}
+              class="hidden sm:inline-flex items-center rounded-lg bg-teal-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition-colors min-h-[36px]"
+            >
+              <span data-i18n-en>Monitor Alerts</span>
+              <span data-i18n-zh class="hidden">开启预警监控</span>
+            </a>
+
+            <button
+              id="mobile-menu-btn"
+              type="button"
+              aria-expanded="false"
+              aria-controls="mobile-nav-panel"
+              class="md:hidden inline-flex items-center justify-center rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[40px] min-w-[44px]"
+            >
+              Menu
+            </button>
+          </div>
+        </div>
+
+        <nav id="mobile-nav-panel" aria-label="Mobile" hidden class="md:hidden pb-4 pt-2 border-t border-slate-100">
+          <ul class="flex flex-col gap-1">
+            {navItems.map((item) => {
+              const active = isCurrent(item.href);
+              return (
+                <li>
+                  <a
+                    href={withBase(item.href)}
+                    aria-current={active ? 'page' : undefined}
+                    class:list={[
+                      'block rounded-lg px-3 py-2.5 text-sm font-medium',
+                      active
+                        ? 'bg-teal-50 text-teal-900 font-semibold border-l-4 border-teal-700'
+                        : 'text-slate-700 hover:bg-slate-100',
+                    ]}
+                  >
+                    <span data-i18n-en>{item.labelEn}</span>
+                    <span data-i18n-zh class="hidden">{item.labelZh}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-slate-200 bg-slate-900 text-slate-300 mt-16 no-print">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid gap-8 md:grid-cols-3">
+          <div>
+            <div class="flex items-center gap-2 text-white font-bold text-base mb-3">
+              <img src={withBase('/favicon.svg')} alt="" width="24" height="24" class="rounded" />
+              <span>RegPulse</span>
+            </div>
+            <p class="text-xs leading-relaxed text-slate-400">
+              <span data-i18n-en>
+                Automated FDA drug-claim screening, MoCRA cosmetic compliance checks, and live openFDA enforcement monitoring built for Amazon, TikTok Shop, Shopify, and MedTech teams.
+              </span>
+              <span data-i18n-zh class="hidden">
+                专为 Amazon、TikTok Shop、Shopify 独立站美妆/保健品/轻医疗卖家打造的自动化 FDA 违禁词预审、MoCRA 合规自查与 openFDA 实时召回预警系统。
+              </span>
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">Product &amp; Data</h2>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li><a href={withBase('/')} class="hover:text-white">Free FDA Listing Claim Scanner</a></li>
+              <li><a href={withBase('/recalls/')} class="hover:text-white">Live openFDA Recalls &amp; 510(k) Radar</a></li>
+              <li><a href={withBase('/rules/')} class="hover:text-white">21 CFR &amp; EPA FIFRA Rule Library</a></li>
+              <li><a href={withBase('/mocra/')} class="hover:text-white">2026 MoCRA Cosmetic Checklist</a></li>
+              <li><a href={withBase('/pricing/')} class="hover:text-white">Plans &amp; Watchlist Alerts</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">Regulatory Notice &amp; Data Source</h2>
+            <p class="text-xs leading-relaxed text-slate-400">
+              RegPulse is an independent regulatory intelligence software tool and is <strong>not affiliated with, endorsed by, or sponsored by the U.S. Food and Drug Administration (FDA)</strong>.
+              Outputs are informational screening aids based on public FDA statutes and <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA public datasets</a>, and do not constitute legal advice. Always consult qualified regulatory counsel for formal legal opinions.
+            </p>
+          </div>
+        </div>
+        <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-500">
+          <span>© 2026 RegPulse Regulatory Intelligence. Public data via openFDA API &amp; FDA.gov.</span>
+          <a href="mailto:hachileviathan@gmail.com" class="hover:text-slate-300">Support &amp; Enterprise Watchlists: hachileviathan@gmail.com</a>
+        </div>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        function applyLang(lang) {
+          document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+          document.querySelectorAll('[data-i18n-en]').forEach(function (el) {
+            el.classList.toggle('hidden', lang === 'zh');
+          });
+          document.querySelectorAll('[data-i18n-zh]').forEach(function (el) {
+            el.classList.toggle('hidden', lang !== 'zh');
+          });
+          var lbl = document.getElementById('lang-toggle-label');
+          var btn = document.getElementById('lang-toggle-btn');
+          if (lbl) lbl.textContent = lang === 'zh' ? 'English' : '中文跨境版';
+          if (btn) btn.setAttribute('aria-pressed', lang === 'zh' ? 'true' : 'false');
+        }
+
+        var initial = 'en';
+        try {
+          var saved = localStorage.getItem('regpulse_lang');
+          if (saved === 'zh' || saved === 'en') initial = saved;
+        } catch (e) {}
+        applyLang(initial);
+
+        var langBtn = document.getElementById('lang-toggle-btn');
+        if (langBtn) {
+          langBtn.addEventListener('click', function () {
+            var next = document.documentElement.lang === 'zh-CN' ? 'en' : 'zh';
+            try { localStorage.setItem('regpulse_lang', next); } catch (e) {}
+            applyLang(next);
+            window.dispatchEvent(new CustomEvent('regpulse:lang', { detail: next }));
+          });
+        }
+
+        window.addEventListener('regpulse:lang', function (ev) {
+          if (ev && ev.detail) applyLang(ev.detail);
+        });
+
+        var menuBtn = document.getElementById('mobile-menu-btn');
+        var mobileNav = document.getElementById('mobile-nav-panel');
+        if (menuBtn && mobileNav) {
+          menuBtn.addEventListener('click', function () {
+            var expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+            menuBtn.setAttribute('aria-expanded', String(!expanded));
+            mobileNav.hidden = expanded;
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

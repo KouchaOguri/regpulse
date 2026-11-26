@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MocraChecklist from '../../components/MocraChecklist';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${path}`}`;
+---
+
+<BaseLayout
+  title="2026 MoCRA Cosmetics Compliance & Amazon Ungating Checklist | RegPulse"
+  description="Interactive 2026 MoCRA compliance checklist for Amazon and Shopify cosmetic brands: Facility FEI, Product Listing, U.S. Adverse Event label contact, and solving the Amazon FDA Certificate paradox."
+  canonicalPath="/mocra/"
+>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+      <p class="text-xs font-bold uppercase tracking-wider text-teal-700">Modernization of Cosmetics Regulation Act</p>
+      <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+        <span data-i18n-en>2026 MoCRA Cosmetics &amp; Amazon Compliance Checklist</span>
+        <span data-i18n-zh class="hidden">2026 美国 MoCRA 化妆品新规 &amp; Amazon 审核自查清单</span>
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+        <span data-i18n-en>
+          Under MoCRA, responsibility is split between your contract manufacturer (Facility Registration) and you as the Brand Owner / Responsible Person (Product Listing, Safety Substantiation, U.S. Adverse-Event Contact). Audit your readiness below and print your dossier checklist.
+        </span>
+        <span data-i18n-zh class="hidden">
+          在 MoCRA 新规下，代工厂与品牌方（Responsible Person）的法定责任被彻底拆开：工厂管设施注册（FEI），品牌方必须独立负责单品列名、安全性证明留档与包装美国不良事件联系方式。勾选下方清单生成合规自查报告。
+        </span>
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <MocraChecklist client:load />
+
+    <div class="rounded-2xl border border-slate-200 bg-slate-900 text-white p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
+      <div>
+        <h2 class="text-base font-bold">
+          <span data-i18n-en>Next Step: Scan Your Cosmetic Copy for Hidden Drug Claims</span>
+          <span data-i18n-zh class="hidden">下一步：把化妆品五点描述和成分表放进免费违禁词扫描器</span>
+        </h2>
+        <p class="mt-1 text-xs text-slate-300">
+          Catch acne, eczema, anti-inflammatory, collagen-synthesis, hydroquinone, and EPA antibacterial traps before Amazon bots do.
+        </p>
+      </div>
+      <a
+        href={withBase('/')}
+        class="rounded-xl bg-teal-500 px-5 py-2.5 text-xs font-bold text-slate-950 hover:bg-teal-400 shrink-0"
+      >
+        Launch Listing Scanner →
+      </a>
+    </div>
+  </section>
+</BaseLayout>

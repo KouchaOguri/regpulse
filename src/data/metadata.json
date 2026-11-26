@@ -1,0 +1,28 @@
+{
+  "lastSyncedUtc": "2026-11-26T09:41:18Z",
+  "totalRecallsIndexed": 260,
+  "total510kIndexed": 40,
+  "totalRssAlerts": 20,
+  "cosmeticEventsInOpenFDA": 85511,
+  "countsByVertical": {
+    "Food & Consumables": 85,
+    "Dietary Supplements": 24,
+    "OTC & Unapproved Drugs": 88,
+    "Medical & Beauty Devices": 52,
+    "Cosmetics & Skincare": 11
+  },
+  "countsByClassification": {
+    "Class II": 194,
+    "Not Yet Classified": 2,
+    "Class I": 35,
+    "Class III": 29
+  },
+  "sources": [
+    "https://api.fda.gov/food/enforcement.json",
+    "https://api.fda.gov/drug/enforcement.json",
+    "https://api.fda.gov/device/enforcement.json",
+    "https://api.fda.gov/device/510k.json",
+    "https://api.fda.gov/cosmetic/event.json",
+    "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls/rss.xml"
+  ]
+}
