@@ -26,5 +26,7 @@
     "https://api.fda.gov/device/510k.json",
     "https://api.fda.gov/cosmetic/event.json",
     "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls/rss.xml"
-  ]
+  ],
+  "totalWarningLettersIndexed": 198,
+  "warningLettersLastSyncedUtc": "2026-11-26T21:44:05Z"
 }

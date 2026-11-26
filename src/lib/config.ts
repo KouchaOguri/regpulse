@@ -1,33 +1,21 @@
 export type Lang = 'en' | 'zh';
 
 export const BILLING_CONFIG = {
-  // Populated immediately upon investor Creem.io / Mianbaoduo KYC approval
-  creemStarterUrl: '',
-  creemProUrl: '',
-  mianbaoduoQuarterlyUrl: '',
-  // Optional async lead-capture webhook (Web3Forms / Formspree / Cloudflare Worker)
-  leadWebhookUrl: '',
+  // Cloudflare Worker API endpoint (activated upon regpulsehq.com deployment, e.g. 'https://api.regpulsehq.com')
+  apiBaseUrl: '',
+  // Global USD Checkout URLs (Creem.io — populated upon investor Creem KYC approval)
+  creemBulkPassUrl: '', // $19 one-time 200-SKU Bulk Catalog Pre-Flight Pass
+  creemStarterUrl: '', // $29/mo Watchlist Radar Pro
+  creemProUrl: '', // $79/mo Agency & Aggregator
+  // China Domestic RMB Checkout URLs (Mianbaoduo — strictly scoped to /cn/ routes only)
+  mianbaoduoBulkUrl: '', // ¥99 single 200-SKU pass
+  mianbaoduoQuarterlyUrl: '', // ¥199/quarter cross-border alerts
+  mianbaoduoProUrl: '', // ¥599/quarter multi-store agency
+  // Real active inbox (will forward from support@regpulsehq.com once custom domain DNS is live)
   contactEmail: 'hachileviathan@gmail.com',
   earlyAccessActive: true,
 };
 
-export function getInitialLang(): Lang {
-  if (typeof window === 'undefined') return 'en';
-  try {
-    const saved = window.localStorage.getItem('regpulse_lang');
-    if (saved === 'en' || saved === 'zh') return saved;
-  } catch {
-    // ignore storage errors
-  }
-  return 'en';
-}
-
-export function setGlobalLang(lang: Lang): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem('regpulse_lang', lang);
-  } catch {
-    // ignore
-  }
-  window.dispatchEvent(new CustomEvent('regpulse:lang', { detail: lang }));
+export function resolveLang(forcedLocale?: Lang): Lang {
+  return forcedLocale === 'zh' ? 'zh' : 'en';
 }

@@ -1,14 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BellRing, Check, CheckCircle2, Copy, Mail, X } from 'lucide-react';
-import { BILLING_CONFIG, getInitialLang, type Lang } from '../lib/config';
+import { BILLING_CONFIG, resolveLang, type Lang } from '../lib/config';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export default function WatchlistModal() {
+interface Props {
+  locale?: Lang;
+}
+
+export default function WatchlistModal({ locale = 'en' }: Props) {
+  const lang = resolveLang(locale);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const emailInputRef = useRef<HTMLInputElement | null>(null);
-  const [lang, setLang] = useState<Lang>('en');
-  const [selectedPlan, setSelectedPlan] = useState('Starter Watchlist ($29/mo)');
+  const [selectedPlan, setSelectedPlan] = useState(
+    lang === 'zh' ? 'FDA 实时预警季卡 (¥199/季)' : 'Watchlist Radar Pro ($29/mo)'
+  );
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [channel, setChannel] = useState('Email');
@@ -19,11 +25,6 @@ export default function WatchlistModal() {
   const [copiedBrief, setCopiedBrief] = useState(false);
 
   useEffect(() => {
-    setLang(getInitialLang());
-    const onLang = (ev: Event) => {
-      const next = (ev as CustomEvent<Lang>).detail;
-      if (next === 'en' || next === 'zh') setLang(next);
-    };
     const onOpen = (ev: Event) => {
       const detail = (ev as CustomEvent<{ plan?: string; prefillKeywords?: string }>).detail;
       if (detail?.plan) setSelectedPlan(detail.plan);
@@ -34,12 +35,8 @@ export default function WatchlistModal() {
       setCopiedBrief(false);
       dialogRef.current?.showModal();
     };
-    window.addEventListener('regpulse:lang', onLang);
     window.addEventListener('regpulse:open-watchlist', onOpen);
-    return () => {
-      window.removeEventListener('regpulse:lang', onLang);
-      window.removeEventListener('regpulse:open-watchlist', onOpen);
-    };
+    return () => window.removeEventListener('regpulse:open-watchlist', onOpen);
   }, []);
 
   const close = () => dialogRef.current?.close();
@@ -64,31 +61,52 @@ export default function WatchlistModal() {
       return;
     }
 
-    // Direct self-serve checkout if Creem / Mianbaoduo URL is active
-    if (selectedPlan.includes('$29') && BILLING_CONFIG.creemStarterUrl) {
-      window.open(BILLING_CONFIG.creemStarterUrl, '_blank', 'noopener,noreferrer');
-      setServerCaptured(true);
-      setSubmitted(true);
-      return;
-    }
-    if (selectedPlan.includes('$79') && BILLING_CONFIG.creemProUrl) {
-      window.open(BILLING_CONFIG.creemProUrl, '_blank', 'noopener,noreferrer');
-      setServerCaptured(true);
-      setSubmitted(true);
-      return;
-    }
-    if (selectedPlan.includes('199') && BILLING_CONFIG.mianbaoduoQuarterlyUrl) {
-      window.open(BILLING_CONFIG.mianbaoduoQuarterlyUrl, '_blank', 'noopener,noreferrer');
-      setServerCaptured(true);
-      setSubmitted(true);
-      return;
+    // Strict locale-isolated checkout routing
+    if (lang === 'en') {
+      if (selectedPlan.includes('$19') && BILLING_CONFIG.creemBulkPassUrl) {
+        window.open(BILLING_CONFIG.creemBulkPassUrl, '_blank', 'noopener,noreferrer');
+        setServerCaptured(true);
+        setSubmitted(true);
+        return;
+      }
+      if (selectedPlan.includes('$29') && BILLING_CONFIG.creemStarterUrl) {
+        window.open(BILLING_CONFIG.creemStarterUrl, '_blank', 'noopener,noreferrer');
+        setServerCaptured(true);
+        setSubmitted(true);
+        return;
+      }
+      if (selectedPlan.includes('$79') && BILLING_CONFIG.creemProUrl) {
+        window.open(BILLING_CONFIG.creemProUrl, '_blank', 'noopener,noreferrer');
+        setServerCaptured(true);
+        setSubmitted(true);
+        return;
+      }
+    } else {
+      if (selectedPlan.includes('99') && !selectedPlan.includes('199') && !selectedPlan.includes('599') && BILLING_CONFIG.mianbaoduoBulkUrl) {
+        window.open(BILLING_CONFIG.mianbaoduoBulkUrl, '_blank', 'noopener,noreferrer');
+        setServerCaptured(true);
+        setSubmitted(true);
+        return;
+      }
+      if (selectedPlan.includes('199') && BILLING_CONFIG.mianbaoduoQuarterlyUrl) {
+        window.open(BILLING_CONFIG.mianbaoduoQuarterlyUrl, '_blank', 'noopener,noreferrer');
+        setServerCaptured(true);
+        setSubmitted(true);
+        return;
+      }
+      if (selectedPlan.includes('599') && BILLING_CONFIG.mianbaoduoProUrl) {
+        window.open(BILLING_CONFIG.mianbaoduoProUrl, '_blank', 'noopener,noreferrer');
+        setServerCaptured(true);
+        setSubmitted(true);
+        return;
+      }
     }
 
-    // Async server capture if webhook endpoint is configured
-    if (BILLING_CONFIG.leadWebhookUrl) {
+    // Self-owned Cloudflare Worker lead capture API (zero third-party form dependency)
+    if (BILLING_CONFIG.apiBaseUrl) {
       setSubmitting(true);
       try {
-        const resp = await fetch(BILLING_CONFIG.leadWebhookUrl, {
+        const resp = await fetch(`${BILLING_CONFIG.apiBaseUrl.replace(/\/$/, '')}/api/leads`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
@@ -113,14 +131,21 @@ export default function WatchlistModal() {
     setSubmitted(true);
   };
 
-  const briefPlainText = `RegPulse 7-Day Watchlist Pilot Request
+  const briefPlainText =
+    lang === 'zh'
+      ? `RegPulse 跨境合规监控 / 批量体检开通申请
+选择方案：${selectedPlan}
+工作邮箱：${email.trim()}
+推送渠道：${channel}
+重点监控词（代工厂 / 竞品 / 成分 / 510(k)）：${keywords.trim() || '（待补充）'}`
+      : `RegPulse Regulatory Monitoring / Bulk Pass Request
 Plan: ${selectedPlan}
 Work Email: ${email.trim()}
 Alert Channel: ${channel}
 Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provided)'}`;
 
   const mailtoHref = `mailto:${BILLING_CONFIG.contactEmail}?subject=${encodeURIComponent(
-    `[RegPulse Watchlist Pilot] ${selectedPlan}`
+    `[RegPulse Request] ${selectedPlan}`
   )}&body=${encodeURIComponent(briefPlainText)}`;
 
   const copyBrief = async () => {
@@ -150,7 +175,7 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
             </span>
             <div>
               <h2 id="watchlist-dialog-title" className="text-base font-bold text-slate-900">
-                {lang === 'zh' ? '开通 FDA 监管预警监控' : 'Activate Automated FDA Watchlist Alerts'}
+                {lang === 'zh' ? '开通 FDA 预警监控 / 批量体检卡' : 'Activate Automated FDA Monitoring or Bulk Pass'}
               </h2>
               <p className="text-xs text-slate-500">{selectedPlan}</p>
             </div>
@@ -173,20 +198,20 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
                 <p className="font-bold text-slate-950 text-sm">
                   {serverCaptured
                     ? lang === 'zh'
-                      ? '监控试跑申请已实时提交！'
-                      : 'Pilot Request Received!'
+                      ? '开通请求已实时登记！'
+                      : 'Request Logged Instantly!'
                     : lang === 'zh'
-                      ? '最后一步：发送您的监控配置单（早鸟内测人工免密开通）'
-                      : 'Final Step: Send Your Watchlist Brief (Early-Access Pilot)'}
+                      ? '最后一步：发送您的配置单（免费激活 7 天试跑）'
+                      : 'Final Step: Send Your Brief to Start Your 7-Day Free Pilot'}
                 </p>
                 <p className="mt-1">
                   {serverCaptured
                     ? lang === 'zh'
-                      ? '我们将在 24 小时内启动您的 7 天免费试跑预警并发送自助付款链接。'
-                      : 'Your 7-day free watchlist pilot will be activated within 24 hours along with your self-serve billing link.'
+                      ? '系统已记录您的邮箱与监控词，将在 24 小时内发出专属卡密（License Key）与自助管理入口。'
+                      : 'Your license key and automated watchlist portal credentials will be dispatched within 24 hours.'
                     : lang === 'zh'
-                      ? '自助结账通道正在完成合规核验。请点击下方按钮发送预填邮件，或直接复制配置单发至支持邮箱，24 小时内为您免费开启 7 天试跑。'
-                      : 'Self-serve checkout is finalizing merchant onboarding. Send the pre-filled email below (or copy the brief if you use webmail) to activate your 7-day free pilot within 24h.'}
+                      ? '自助结账网关正在完成商户最终审核。请点击下方发送预填邮件或复制配置单，24 小时内为您发出激活卡密与 7 天免费试跑权限。'
+                      : 'Self-serve card checkout is completing merchant onboarding. Send the pre-filled email below (or copy the brief for webmail) and we will issue your License Key for a free 7-day pilot.'}
                 </p>
               </div>
             </div>
@@ -220,7 +245,7 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
                     ) : (
                       <>
                         <Copy className="w-3.5 h-3.5" aria-hidden="true" />
-                        {lang === 'zh' ? '复制配置单 (网页邮箱用)' : 'Copy Brief (For Webmail)'}
+                        {lang === 'zh' ? '复制配置单（网页邮箱用）' : 'Copy Brief (For Webmail)'}
                       </>
                     )}
                   </button>
@@ -239,12 +264,12 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
           <form onSubmit={handleSubmit} className="mt-4 space-y-4" noValidate>
             <div>
               <label htmlFor="wl-email" className="block text-xs font-semibold text-slate-800">
-                {lang === 'zh' ? '接收预警的工作邮箱 *' : 'Work Email for Alerts *'}
+                {lang === 'zh' ? '接收卡密与预警的工作邮箱 *' : 'Work Email for License Key & Alerts *'}
               </label>
               <span id="wl-email-hint" className="block text-[11px] text-slate-500 mt-0.5 mb-1">
                 {lang === 'zh'
-                  ? '格式：name@company.com（仅用于推送合规告警，绝无垃圾邮件）'
-                  : 'Format: you@company.com (Used strictly for FDA alerts & checkout activation)'}
+                  ? '格式：name@company.com（仅用于发放卡密与合规告警，绝无垃圾邮件）'
+                  : 'Format: you@company.com (Used strictly for License Key delivery & FDA alerts)'}
               </span>
               <input
                 ref={emailInputRef}
@@ -282,7 +307,7 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
 
             <div>
               <label htmlFor="wl-channel" className="block text-xs font-semibold text-slate-800 mb-1">
-                {lang === 'zh' ? '首选实时推送渠道' : 'Preferred Alert Delivery Channel'}
+                {lang === 'zh' ? '首选实时告警推送渠道' : 'Preferred Alert Delivery Channel'}
               </label>
               <select
                 id="wl-channel"
@@ -291,15 +316,19 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
                 onChange={(e) => setChannel(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm min-h-[44px]"
               >
-                <option value="Email">
-                  {lang === 'zh' ? '邮件周报 + 实时高危告警' : 'Email Digest & Instant Alerts'}
-                </option>
-                <option value="Slack Webhook">
-                  {lang === 'zh' ? 'Slack 团队群机器人 Webhook' : 'Slack Webhook'}
-                </option>
-                <option value="WeCom / Feishu Webhook">
-                  {lang === 'zh' ? '企业微信 / 飞书群机器人 Webhook' : 'WeCom / Feishu Team Webhook'}
-                </option>
+                {lang === 'zh' ? (
+                  <>
+                    <option value="Email">邮件周报 + 实时高危告警</option>
+                    <option value="WeCom Webhook">企业微信群机器人 Webhook</option>
+                    <option value="Feishu Webhook">飞书群机器人 Webhook</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="Email">Email Digest &amp; Instant Alerts</option>
+                    <option value="Slack Webhook">Slack Channel Webhook</option>
+                    <option value="Custom JSON Webhook">Custom JSON Webhook (Teams / Zapier / Make)</option>
+                  </>
+                )}
               </select>
             </div>
 
@@ -307,12 +336,12 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
               <label htmlFor="wl-keywords" className="block text-xs font-semibold text-slate-800">
                 {lang === 'zh'
                   ? '需要监控的代工厂 / 竞品品牌 / 核心成分 / 510(k) 代码'
-                  : 'Suppliers, Competitor Brands, Ingredients, or 510(k) Codes to Track'}
+                  : 'Suppliers, OEMs, Competitor Brands, Ingredients, or 510(k) Codes'}
               </label>
               <span id="wl-kw-hint" className="block text-[11px] text-slate-500 mt-0.5 mb-1">
                 {lang === 'zh'
-                  ? '逗号分隔，最多先填 10 个核心词（支持中英文）'
-                  : 'Comma-separated (e.g., Berberine, Retinol, Manufacturer Name, Product Code GEX)'}
+                  ? '逗号分隔，最多先填 10 个核心监控词（涵盖 Warning Letters 与 Recalls）'
+                  : 'Comma-separated (tracks both live FDA Warning Letters & openFDA Recalls)'}
               </span>
               <textarea
                 id="wl-keywords"
@@ -335,8 +364,8 @@ Tracked OEMs / Ingredients / Product Codes: ${keywords.trim() || '(To be provide
                   ? '提交中...'
                   : 'Submitting...'
                 : lang === 'zh'
-                  ? '申请开通监控（含 7 天免费试跑）'
-                  : 'Start 7-Day Free Watchlist Pilot'}
+                  ? '申请开通（含 7 天免费试跑）'
+                  : 'Continue to Activation (7-Day Free Pilot)'}
             </button>
           </form>
         )}

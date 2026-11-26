@@ -78,6 +78,14 @@
       "httpStatus": 200,
       "recordsReturned": 20,
       "fetchedAtUtc": "2026-11-26T10:22:13Z"
+    },
+    {
+      "url": "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/compliance-actions-and-activities/warning-letters",
+      "httpStatus": 200,
+      "recordsReturned": 198,
+      "tableInfo": "Showing 101 to 200 of 3,823 entries",
+      "fetchedAtUtc": "2026-11-26T21:44:05Z",
+      "fetcher": "playwright-chromium"
     }
   ],
   "artifacts": {
@@ -102,9 +110,15 @@
       "recordCount": 20
     },
     "metadata.json": {
-      "sha256": "2d41bfa5208045d8078c67f4044acc214e1a9a986e1723c7d3f8462578d6af03",
-      "bytes": 939,
+      "sha256": "903bce7567905750a82c5df111a9418867346bf1208f9ce6b9f3cd4fd0b062d1",
+      "bytes": 1035,
       "recordCount": 1
+    },
+    "warning_letters.json": {
+      "sha256": "a53de47290746cccebe662eb9b2b8b62f02f1a6c016f280e80ad7de846586316",
+      "bytes": 128347,
+      "recordCount": 198
     }
-  }
+  },
+  "warningLettersSyncedAtUtc": "2026-11-26T21:44:05Z"
 }

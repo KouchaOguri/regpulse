@@ -1,0 +1,180 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+}
+
+const { title, description, canonicalPath = '/cn/' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => {
+  if (path === '/') return `${base}/`;
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+};
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (path: string) => {
+  const target = withBase(path).replace(/\/$/, '') || '/';
+  return currentPath === target;
+};
+
+const cnNavItems = [
+  { href: '/cn/', label: '单品违禁词体检' },
+  { href: '/cn/bulk/', label: '200-SKU 批量体检' },
+  { href: '/cn/warning-letters/', label: 'FDA 实时警告信' },
+  { href: '/cn/pricing/', label: '人民币订阅与企微预警' },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- Strictly isolate CN cross-border pages from US English search index -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="alternate icon" href={withBase('/favicon.ico')} />
+  </head>
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased overflow-x-clip">
+    <a href="#main-content" class="skip-link visually-hidden">跳至正文内容</a>
+
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm no-print">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between gap-3">
+          <a href={withBase('/cn/')} class="flex items-center gap-2.5 text-slate-900 font-bold tracking-tight shrink-0">
+            <img src={withBase('/favicon.svg')} alt="" width="30" height="30" class="rounded-lg" />
+            <span class="text-lg">RegPulse 跨境版</span>
+            <span class="hidden sm:inline-flex items-center rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-semibold text-teal-800 border border-teal-200">
+              美国站 FDA &amp; MoCRA 合规雷达
+            </span>
+          </a>
+
+          <nav aria-label="主导航" class="hidden md:flex items-center gap-1">
+            <ul class="flex items-center gap-1">
+              {cnNavItems.map((item) => {
+                const active = isCurrent(item.href);
+                return (
+                  <li>
+                    <a
+                      href={withBase(item.href)}
+                      aria-current={active ? 'page' : undefined}
+                      class:list={[
+                        'inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border-b-2 whitespace-nowrap',
+                        active
+                          ? 'text-teal-900 bg-teal-50/80 border-teal-700 font-semibold'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-transparent',
+                      ]}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <a
+              href={withBase('/cn/pricing/')}
+              class="hidden sm:inline-flex items-center rounded-lg bg-teal-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition-colors min-h-[36px]"
+            >
+              开通企微/飞书预警
+            </a>
+            <button
+              id="cn-mobile-menu-btn"
+              type="button"
+              aria-expanded="false"
+              aria-controls="cn-mobile-nav-panel"
+              class="md:hidden inline-flex items-center justify-center rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[40px] min-w-[44px]"
+            >
+              菜单
+            </button>
+          </div>
+        </div>
+
+        <nav id="cn-mobile-nav-panel" aria-label="移动端导航" hidden class="md:hidden pb-4 pt-2 border-t border-slate-100">
+          <ul class="flex flex-col gap-1">
+            {cnNavItems.map((item) => {
+              const active = isCurrent(item.href);
+              return (
+                <li>
+                  <a
+                    href={withBase(item.href)}
+                    aria-current={active ? 'page' : undefined}
+                    class:list={[
+                      'block rounded-lg px-3 py-2.5 text-sm font-medium',
+                      active
+                        ? 'bg-teal-50 text-teal-900 font-semibold border-l-4 border-teal-700'
+                        : 'text-slate-700 hover:bg-slate-100',
+                    ]}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-slate-200 bg-slate-900 text-slate-300 mt-16 no-print">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 md:grid-cols-3">
+          <div>
+            <div class="flex items-center gap-2 text-white font-bold text-base mb-3">
+              <img src={withBase('/favicon.svg')} alt="" width="24" height="24" class="rounded" />
+              <span>RegPulse 中国跨境卖家专版</span>
+            </div>
+            <p class="text-xs leading-relaxed text-slate-400">
+              专为深圳、杭州、广州出海美国站（Amazon / TikTok Shop / 独立站）的美妆护肤、膳食补充剂、宠物与家用美容仪团队打造。100% 浏览器本地扫描，支持企业微信/飞书群实时推送 FDA 警告信与召回预警。
+            </p>
+          </div>
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">跨境合规工具箱</h2>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li><a href={withBase('/cn/')} class="hover:text-white">免费单品 FDA 违禁词预审（40 项法条）</a></li>
+              <li><a href={withBase('/cn/bulk/')} class="hover:text-white">200-SKU 表格批量体检与整改导出</a></li>
+              <li><a href={withBase('/cn/warning-letters/')} class="hover:text-white">FDA 实时警告信（含中国代工厂筛选）</a></li>
+              <li><a href={withBase('/cn/pricing/')} class="hover:text-white">人民币按次卡 / 企微预警季卡</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">合规声明与官方数据许可</h2>
+            <p class="text-xs leading-relaxed text-slate-400">
+              RegPulse 为独立第三方合规情报工具，<strong>与美国食品药品监督管理局（FDA）无隶属或背书关系</strong>。数据直连美国联邦法典 eCFR、FDA.gov 警告信及 <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400">openFDA 公开数据库</a>，仅作上架前风险排查参考，不构成正式法律意见。
+            </p>
+          </div>
+        </div>
+        <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-500">
+          <span>© 2026 RegPulse 跨境合规情报引擎 · 独立中文专版</span>
+          <a href="mailto:hachileviathan@gmail.com?subject=%5BRegPulse%20CN%20Support%5D" class="hover:text-slate-300 underline">
+            联系跨境合规支持邮箱
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        var menuBtn = document.getElementById('cn-mobile-menu-btn');
+        var mobileNav = document.getElementById('cn-mobile-nav-panel');
+        if (menuBtn && mobileNav) {
+          menuBtn.addEventListener('click', function () {
+            var expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+            menuBtn.setAttribute('aria-expanded', String(!expanded));
+            mobileNav.hidden = expanded;
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

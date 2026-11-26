@@ -1,6 +1,6 @@
 {
-  "generatedAtUtc": "2026-11-26T10:11:00Z",
-  "totalUrlsVerified": 20,
+  "generatedAtUtc": "2026-11-26T21:58:42Z",
+  "totalUrlsVerified": 33,
   "allPassed": true,
   "rulesMapping": [
     {
@@ -200,6 +200,168 @@
       "verifiedTitle": "15 U.S. Code § 52 - Dissemination of false advertisements | U.S. Code | US Law | LII / Legal Information Institute",
       "finalUrl": "https://www.law.cornell.edu/uscode/text/15/52",
       "ok": true
+    },
+    {
+      "ruleId": "COS-OTC-NUMB",
+      "statute": "21 CFR Part 348 (External Analgesic OTC Monograph) & FDA Topical Anesthetic Enforcement",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 348 -- External Analgesic Drug Products for Over-the-Counter Human Use",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-OTC-EYE",
+      "statute": "21 CFR Part 349 (Ophthalmic OTC Monograph) & FDA Unapproved Eye Drops Enforcement",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 349 -- Ophthalmic Drug Products for Over-the-Counter Human Use",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-OTC-ORAL",
+      "statute": "21 CFR Part 355 (Anticaries OTC Monograph) & FD&C Act §201(g)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 355 -- Anticaries Drug Products for Over-the-Counter Human Use",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-OTC-ANTIPERSP",
+      "statute": "21 CFR Part 350 & 21 CFR 310.545 (OTC Antiperspirant vs. Cosmetic Deodorant)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 310.545 -- Drug products containing certain active ingredients offered over-the-counter (OTC) for certain uses.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-LABEL-WARN",
+      "statute": "21 CFR Part 740 (Cosmetic Product Warning Statements) & FDA AHA Sunburn Alert Guidance",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 740 -- Cosmetic Product Warning Statements",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740",
+      "ok": true
+    },
+    {
+      "ruleId": "ING-COLOR-001",
+      "statute": "21 CFR Part 73 & FD&C Act §721 (FDA Color Additive Approval & Batch Certification)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 73 -- Listing of Color Additives Exempt from Certification",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-BIO-STEM",
+      "statute": "PHS Act §351 & FD&C Act §201(g) (FDA Regenerative Medicine & Biologics Enforcement)",
+      "officialRefUrl": "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies",
+      "httpStatus": 200,
+      "verifiedTitle": "Important Patient and Consumer Information About Regenerative Medicine Therapies | FDA",
+      "finalUrl": "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-ESS-OIL",
+      "statute": "FD&C Act §201(g)(1)(B) — Intended Use & Aromatherapy Drug Boundary",
+      "officialRefUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+      "httpStatus": 200,
+      "verifiedTitle": "Is It a Cosmetic, a Drug, or Both? (Or Is It Soap?) | FDA",
+      "finalUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-OTC-COLD",
+      "statute": "21 CFR Part 341 (Cold, Cough, Allergy, Bronchodilator & Antiasthmatic OTC Products)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 341 -- Cold, Cough, Allergy, Bronchodilator, and Antiasthmatic Drug Products for Over-the-Counter Human Use",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-OTC-ANTACID",
+      "statute": "21 CFR Part 331 (Antacid OTC Monograph) & 21 CFR 101.93(g)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 331 -- Antacid Products for Over-the-Counter (OTC) Human Use",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-ING-CBD",
+      "statute": "FD&C Act §201(ff)(3)(B) & Amazon Prohibited Hemp/CBD Policy",
+      "officialRefUrl": "https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd",
+      "httpStatus": 200,
+      "verifiedTitle": "FDA Regulation of Cannabis and Cannabis-Derived Products, Including Cannabidiol (CBD) | FDA",
+      "finalUrl": "https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-ING-NDI",
+      "statute": "21 CFR 310.548 (Colloidal Silver) & 21 CFR 310.545 / FD&C Act §201(ff)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 310.545 -- Drug products containing certain active ingredients offered over-the-counter (OTC) for certain uses.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-INTIMATE",
+      "statute": "21 CFR 101.93(g)(2) — Urogenital, Reproductive & Pediatric Disease Claims",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 101.93 -- Certain types of statements for dietary supplements.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-EYE-NEURO",
+      "statute": "21 CFR 101.93(g) — Explicit Disease & Addiction Treatment Claims",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 101.93 -- Certain types of statements for dietary supplements.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-CGMP-001",
+      "statute": "21 CFR 101.93(g)(2)(ix) & 21 CFR Part 111 (Implied Drug Equivalence)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 111 -- Current Good Manufacturing Practice in Manufacturing, Packaging, Labeling, or Holding Operations for Dietary Supplements",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111",
+      "ok": true
+    },
+    {
+      "ruleId": "PET-DRUG-001",
+      "statute": "21 CFR Part 510 (New Animal Drugs) & FDA CVM Enforcement Policy",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 510 -- New Animal Drugs",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510",
+      "ok": true
+    },
+    {
+      "ruleId": "DEV-QSR-002",
+      "statute": "21 CFR Part 820 (QSR/QMSR) & FDA Safety Communications on Unapproved Aesthetic/Monitoring Devices",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 820 -- Quality Management System Regulation",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820",
+      "ok": true
+    },
+    {
+      "ruleId": "FTC-SUB-002",
+      "statute": "FTC Act §§5 & 12 (15 U.S.C. §§45, 52) & FTC Endorsement Guides",
+      "officialRefUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+      "httpStatus": 200,
+      "verifiedTitle": "15 U.S. Code § 52 - Dissemination of false advertisements | U.S. Code | US Law | LII / Legal Information Institute",
+      "finalUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+      "ok": true
     }
   ],
   "urls": {
@@ -211,7 +373,7 @@
       "verifiedH1": "Is It Really 'FDA Approved'?",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:12Z",
+      "verifiedAtUtc": "2026-11-26T21:57:29Z",
       "verifier": "playwright-chromium"
     },
     "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products": {
@@ -222,7 +384,7 @@
       "verifiedH1": "Registration & Listing of Cosmetic Product Facilities and Products",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:16Z",
+      "verifiedAtUtc": "2026-11-26T21:57:31Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352": {
@@ -233,7 +395,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:20Z",
+      "verifiedAtUtc": "2026-11-26T21:57:36Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H": {
@@ -244,7 +406,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:22Z",
+      "verifiedAtUtc": "2026-11-26T21:57:37Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D": {
@@ -255,7 +417,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:24Z",
+      "verifiedAtUtc": "2026-11-26T21:57:39Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701": {
@@ -266,7 +428,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:26Z",
+      "verifiedAtUtc": "2026-11-26T21:57:41Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527": {
@@ -277,7 +439,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:28Z",
+      "verifiedAtUtc": "2026-11-26T21:57:43Z",
       "verifier": "playwright-chromium"
     },
     "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap": {
@@ -288,7 +450,7 @@
       "verifiedH1": "Is It a Cosmetic, a Drug, or Both? (Or Is It Soap?)",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:30Z",
+      "verifiedAtUtc": "2026-11-26T21:57:45Z",
       "verifier": "playwright-chromium"
     },
     "https://www.law.cornell.edu/uscode/text/21/355h": {
@@ -299,7 +461,7 @@
       "verifiedH1": "21 U.S. Code § 355h - Regulation of certain nonprescription drugs that are marketed without an approved drug application",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:34Z",
+      "verifiedAtUtc": "2026-11-26T21:57:49Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93": {
@@ -310,7 +472,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:36Z",
+      "verifiedAtUtc": "2026-11-26T21:57:51Z",
       "verifier": "playwright-chromium"
     },
     "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments": {
@@ -321,7 +483,7 @@
       "verifiedH1": "Illegally Sold Cancer Treatments",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:38Z",
+      "verifiedAtUtc": "2026-11-26T21:57:53Z",
       "verifier": "playwright-chromium"
     },
     "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims": {
@@ -332,7 +494,7 @@
       "verifiedH1": "Structure/Function Claims",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:40Z",
+      "verifiedAtUtc": "2026-11-26T21:57:55Z",
       "verifier": "playwright-chromium"
     },
     "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database": {
@@ -343,7 +505,7 @@
       "verifiedH1": "Health Fraud Product Database",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:43Z",
+      "verifiedAtUtc": "2026-11-26T21:57:58Z",
       "verifier": "playwright-chromium"
     },
     "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications": {
@@ -354,7 +516,7 @@
       "verifiedH1": "Weight Loss Product Notifications",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:45Z",
+      "verifiedAtUtc": "2026-11-26T21:58:00Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700": {
@@ -365,7 +527,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:47Z",
+      "verifiedAtUtc": "2026-11-26T21:58:02Z",
       "verifier": "playwright-chromium"
     },
     "https://www.epa.gov/pesticide-registration/pesticide-registration-manual": {
@@ -376,7 +538,7 @@
       "verifiedH1": "Pesticide Registration Manual",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:51Z",
+      "verifiedAtUtc": "2026-11-26T21:58:06Z",
       "verifier": "playwright-chromium"
     },
     "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E": {
@@ -387,7 +549,7 @@
       "verifiedH1": "Website Feedback",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:53Z",
+      "verifiedAtUtc": "2026-11-26T21:58:07Z",
       "verifier": "playwright-chromium"
     },
     "https://www.law.cornell.edu/uscode/text/15/52": {
@@ -398,7 +560,150 @@
       "verifiedH1": "15 U.S. Code § 52 - Dissemination of false advertisements",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:55Z",
+      "verifiedAtUtc": "2026-11-26T21:58:09Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 348 -- External Analgesic Drug Products for Over-the-Counter Human Use",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:11Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 349 -- Ophthalmic Drug Products for Over-the-Counter Human Use",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:13Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 355 -- Anticaries Drug Products for Over-the-Counter Human Use",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:15Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 310.545 -- Drug products containing certain active ingredients offered over-the-counter (OTC) for certain uses.",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:17Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 740 -- Cosmetic Product Warning Statements",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:19Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 73 -- Listing of Color Additives Exempt from Certification",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:22Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies": {
+      "url": "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies",
+      "finalUrl": "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies",
+      "httpStatus": 200,
+      "verifiedTitle": "Important Patient and Consumer Information About Regenerative Medicine Therapies | FDA",
+      "verifiedH1": "Important Patient and Consumer Information About Regenerative Medicine Therapies",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:25Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 341 -- Cold, Cough, Allergy, Bronchodilator, and Antiasthmatic Drug Products for Over-the-Counter Human Use",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:27Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 331 -- Antacid Products for Over-the-Counter (OTC) Human Use",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:29Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd": {
+      "url": "https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd",
+      "finalUrl": "https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd",
+      "httpStatus": 200,
+      "verifiedTitle": "FDA Regulation of Cannabis and Cannabis-Derived Products, Including Cannabidiol (CBD) | FDA",
+      "verifiedH1": "FDA Regulation of Cannabis and Cannabis-Derived Products, Including Cannabidiol (CBD)",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:31Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 111 -- Current Good Manufacturing Practice in Manufacturing, Packaging, Labeling, or Holding Operations for Dietary Supplements",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:33Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 510 -- New Animal Drugs",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:35Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 820 -- Quality Management System Regulation",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T21:58:37Z",
       "verifier": "playwright-chromium"
     },
     "https://open.fda.gov/license": {
@@ -409,7 +714,7 @@
       "verifiedH1": "",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:58Z",
+      "verifiedAtUtc": "2026-11-26T21:58:40Z",
       "verifier": "playwright-chromium"
     },
     "https://open.fda.gov/apis/": {
@@ -420,7 +725,7 @@
       "verifiedH1": "",
       "ok": true,
       "error": "",
-      "verifiedAtUtc": "2026-11-26T10:10:59Z",
+      "verifiedAtUtc": "2026-11-26T21:58:42Z",
       "verifier": "playwright-chromium"
     }
   }

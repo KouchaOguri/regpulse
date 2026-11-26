@@ -7,23 +7,18 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
 ---
 
 <BaseLayout
-  title="21 CFR, MoCRA & Amazon Prohibited Claims Rule Library | RegPulse"
-  description="Browse all 18 statutory FDA drug-claim rules, OTC sunscreen & dandruff monographs, prohibited cosmetic ingredients, DSHEA triggers, and EPA FIFRA pesticide bot traps."
+  title={`21 CFR, MoCRA, CVM & Amazon Prohibited Claims Rule Library (${COMPLIANCE_RULES.length} Rules) | RegPulse`}
+  description={`Browse all ${COMPLIANCE_RULES.length} verified statutory FDA drug-claim rules, OTC monographs (SPF, lidocaine, eye drops, oral care), prohibited ingredients, pet drug rules, and EPA FIFRA bot traps.`}
   canonicalPath="/rules/"
 >
   <section class="border-b border-slate-200 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-      <p class="text-xs font-bold uppercase tracking-wider text-teal-700">
-        <span data-i18n-en>Statutory Compliance Playbook</span>
-        <span data-i18n-zh class="hidden">联邦法典合规排查指南</span>
-      </p>
+      <p class="text-xs font-bold uppercase tracking-wider text-teal-700">Statutory Compliance Playbook</p>
       <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
-        <span data-i18n-en>FDA 21 CFR, MoCRA &amp; Amazon Bot Trigger Library ({COMPLIANCE_RULES.length} Rules)</span>
-        <span data-i18n-zh class="hidden">FDA 21 CFR、MoCRA 与 Amazon 违禁词法规百科（{COMPLIANCE_RULES.length} 项）</span>
+        FDA 21 CFR, MoCRA, CVM &amp; Amazon Bot Trigger Library ({COMPLIANCE_RULES.length} Rules)
       </h1>
       <p class="mt-3 text-sm sm:text-base text-slate-600 max-w-3xl">
-        <span data-i18n-en>Every rule inside the RegPulse scanner is tied directly to federal statutes (eCFR 21 CFR, FD&amp;C Act, EPA FIFRA, 15 U.S.C. §52) verified via automated HTTP 200 browser checks, with ready-to-paste safe rewrites.</span>
-        <span data-i18n-zh class="hidden">RegPulse 内置的每一条规则均直接溯源美国联邦法典（eCFR 21 CFR / FD&amp;C Act / EPA FIFRA / 15 U.S.C. §52），外链均经真浏览器锁定 HTTP 200，并附安全合规改写模板。</span>
+        Every rule inside the RegPulse scanner is tied directly to official federal statutes (eCFR 21 CFR, FD&amp;C Act, PHS Act, EPA FIFRA, 15 U.S.C. §52) verified via automated Chromium HTTP 200 checks, with ready-to-paste safe rewrites.
       </p>
     </div>
   </section>
@@ -41,20 +36,17 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
             </div>
             <h2 class="mt-3 text-base sm:text-lg font-bold text-slate-950 break-words">
               <a href={withBase(`/rules/${rule.slug}/`)} class="hover:text-teal-800">
-                <span data-i18n-en>{rule.titleEn}</span>
-                <span data-i18n-zh class="hidden">{rule.titleZh}</span>
+                {rule.titleEn}
               </a>
             </h2>
             <p class="mt-2 text-xs text-slate-600 leading-relaxed break-words">
-              <span data-i18n-en>{rule.whyFlaggedEn}</span>
-              <span data-i18n-zh class="hidden">{rule.whyFlaggedZh}</span>
+              {rule.whyFlaggedEn}
             </p>
           </div>
           <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
             <span class="font-mono text-slate-500 break-words min-w-0 max-w-full">{rule.statute}</span>
             <a href={withBase(`/rules/${rule.slug}/`)} class="font-semibold text-teal-700 hover:underline shrink-0">
-              <span data-i18n-en>Read Guide &amp; Rewrites →</span>
-              <span data-i18n-zh class="hidden">查看法条与改写 →</span>
+              Read Guide &amp; Rewrites →
             </a>
           </div>
         </article>

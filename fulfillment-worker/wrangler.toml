@@ -1,0 +1,21 @@
+name = "regpulse-fulfillment"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+[vars]
+APP_BASE_URL = "https://regpulsehq.com"
+FROM_EMAIL = "alerts@regpulsehq.com"
+ALLOWED_ORIGINS = "https://regpulsehq.com,https://kouchaoguri.github.io"
+
+# Bind Cloudflare D1 after running: wrangler d1 create regpulse-prod
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "regpulse-prod"
+# database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# Configure secrets via `wrangler secret put <NAME>`:
+# - CREEM_WEBHOOK_SECRET
+# - MIANBAODUO_WEBHOOK_SECRET
+# - RESEND_API_KEY
+# - INTERNAL_CRON_SECRET
+# - OWNER_ALERT_WEBHOOK

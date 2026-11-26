@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ExternalLink, Search } from 'lucide-react';
 import type { RecallRecord } from '../engine/scanner';
-import { getInitialLang, type Lang } from '../lib/config';
+import { resolveLang, type Lang } from '../lib/config';
 
 interface Props {
   recalls: RecallRecord[];
   basePath: string;
+  locale?: Lang;
 }
 
 const VERTICAL_OPTIONS = [
@@ -43,22 +44,12 @@ const TAG_ZH_MAP: Record<string, string> = {
   'Regulatory Enforcement': '常规监管执法',
 };
 
-export default function RecallsExplorer({ recalls, basePath }: Props) {
-  const [lang, setLang] = useState<Lang>('en');
+export default function RecallsExplorer({ recalls, basePath, locale = 'en' }: Props) {
+  const lang = resolveLang(locale);
   const [query, setQuery] = useState('');
   const [vertical, setVertical] = useState('All');
   const [classification, setClassification] = useState('All');
   const [visibleCount, setVisibleCount] = useState(40);
-
-  useEffect(() => {
-    setLang(getInitialLang());
-    const handler = (ev: Event) => {
-      const next = (ev as CustomEvent<Lang>).detail;
-      if (next === 'en' || next === 'zh') setLang(next);
-    };
-    window.addEventListener('regpulse:lang', handler);
-    return () => window.removeEventListener('regpulse:lang', handler);
-  }, []);
 
   const withBase = (path: string) => {
     const clean = basePath.replace(/\/$/, '');

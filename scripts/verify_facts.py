@@ -42,15 +42,22 @@ def http_json(url: str, timeout: int = 20) -> tuple[int, dict]:
         return resp.status, json.loads(resp.read().decode("utf-8"))
 
 
-def check_manifest_and_schema(errors: list[str]) -> tuple[list[dict], list[dict]]:
+def check_manifest_and_schema(errors: list[str]) -> tuple[list[dict], list[dict], list[dict]]:
     print("[1/4] Verifying sync_manifest.json SHA-256 hashes & required fields...")
     if not MANIFEST_FILE.exists():
         errors.append("Missing src/data/sync_manifest.json — run scripts/sync_fda_data.py first.")
-        return [], []
+        return [], [], []
 
     manifest = json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))
     artifacts = manifest.get("artifacts", {})
-    required_files = ["recalls.json", "cosmetic_trends.json", "clearances_510k.json", "rss_alerts.json", "metadata.json"]
+    required_files = [
+        "recalls.json",
+        "cosmetic_trends.json",
+        "clearances_510k.json",
+        "rss_alerts.json",
+        "warning_letters.json",
+        "metadata.json",
+    ]
     for fname in required_files:
         p = DATA_DIR / fname
         if not p.exists():
@@ -67,11 +74,18 @@ def check_manifest_and_schema(errors: list[str]) -> tuple[list[dict], list[dict]
 
     recalls = json.loads((DATA_DIR / "recalls.json").read_text(encoding="utf-8"))
     clearances = json.loads((DATA_DIR / "clearances_510k.json").read_text(encoding="utf-8"))
+    warning_letters = (
+        json.loads((DATA_DIR / "warning_letters.json").read_text(encoding="utf-8"))
+        if (DATA_DIR / "warning_letters.json").exists()
+        else []
+    )
 
     if len(recalls) < 100:
         errors.append(f"Too few recalls indexed ({len(recalls)} < 100)")
     if len(clearances) < 20:
         errors.append(f"Too few 510(k) clearances indexed ({len(clearances)} < 20)")
+    if len(warning_letters) < 100:
+        errors.append(f"Too few FDA Warning Letters indexed ({len(warning_letters)} < 100)")
 
     req_recall_fields = ["id", "recallNumber", "sourceCategory", "recallingFirm", "classification", "reasonForRecall", "reportDate", "officialSourceUrl"]
     missing_recall_fields = 0
@@ -95,7 +109,24 @@ def check_manifest_and_schema(errors: list[str]) -> tuple[list[dict], list[dict]
     if missing_510k_fields == 0:
         print(f"      PASS: {len(clearances)} 510(k) records verified (0 missing required fields).")
 
-    return recalls, clearances
+    req_wl_fields = ["id", "postedDate", "letterIssueDate", "companyName", "issuingOffice", "subject", "vertical", "letterUrl"]
+    missing_wl_fields = 0
+    bad_wl_urls = 0
+    for idx, wl in enumerate(warning_letters):
+        for f in req_wl_fields:
+            if not str(wl.get(f, "")).strip():
+                missing_wl_fields += 1
+                if missing_wl_fields <= 5:
+                    errors.append(f"warning_letters.json[{idx}] missing required field '{f}'")
+        url = str(wl.get("letterUrl", ""))
+        if not url.startswith("https://www.fda.gov/"):
+            bad_wl_urls += 1
+            if bad_wl_urls <= 5:
+                errors.append(f"warning_letters.json[{idx}] non-official letterUrl: {url}")
+    if missing_wl_fields == 0 and bad_wl_urls == 0:
+        print(f"      PASS: {len(warning_letters)} live FDA Warning Letters verified (0 missing fields, 100% official fda.gov URLs).")
+
+    return recalls, clearances, warning_letters
 
 
 def check_live_openfda_spotcheck(recalls: list[dict], clearances: list[dict], errors: list[str], seed: int) -> None:
@@ -174,13 +205,13 @@ def check_citations_lock(errors: list[str]) -> None:
         print(f"      PASS: All {len(found_urls)} statutory citation URLs locked at HTTP 200 with verified titles.")
 
 
-def check_placeholders_and_fabrications(errors: list[str], check_dist: bool) -> None:
+def check_placeholders_and_fabrications(errors: list[str], check_dist: bool, warning_letters: list[dict]) -> None:
     print("[4/4] Static anti-placeholder & anti-fabrication scan...")
+    verified_cms_ids = {str(w.get("cmsId", "")).strip() for w in warning_letters if str(w.get("cmsId", "")).strip()}
     forbidden_patterns = [
         (r"\blorem\s+ipsum\b", "Placeholder Lorem Ipsum text"),
         (r"\b(jane\s+doe|john\s+doe|acme\s+corp)\b", "Fake persona/company placeholder"),
         (r"\bTODO\b|\bFIXME\b|\bTBD\b", "Unresolved TODO/TBD placeholder"),
-        (r"\bCMS\s*#\s*\d{6}\b", "Hardcoded unverified FDA Warning Letter CMS number"),
         (r"trusted\s+by\s+\d[\d,]*\+?\s+(brands|sellers|companies)", "Fabricated customer count social proof"),
     ]
 
@@ -204,13 +235,53 @@ def check_placeholders_and_fabrications(errors: list[str], check_dist: bool) -> 
                 m = re.search(pat, text, re.IGNORECASE)
                 if m:
                     errors.append(f"Anti-fabrication violation ({desc}) in {p.relative_to(ROOT)}: matched '{m.group(0)}'")
+            # Verify EVERY CMS # or CMS ID reference belongs strictly to synced warning_letters.json
+            for cms_m in re.finditer(r"\bCMS\s*(?:#|ID:?)\s*(\d{5,7})\b", text, re.IGNORECASE):
+                cid = cms_m.group(1)
+                if cid not in verified_cms_ids:
+                    errors.append(
+                        f"Anti-fabrication violation (Unverified CMS Warning Letter ID '{cid}' not in warning_letters.json) in {p.relative_to(ROOT)}"
+                    )
 
     # Confirm SAMPLE_LISTINGS UI explicitly marks demo examples as illustrative
     scanner_tsx = (SRC_DIR / "components" / "ListingScanner.tsx").read_text(encoding="utf-8")
     if "Illustrative" not in scanner_tsx or "演示样本" not in scanner_tsx:
         errors.append("ListingScanner.tsx must explicitly label SAMPLE_LISTINGS as 'Illustrative Risk Example' / '高危演示样本'.")
 
-    print(f"      Scanned {files_scanned} source/output files for placeholders & fabrications.")
+    # Strict Dual-Market Isolation Gate on built English HTML (dist/ excluding dist/cn/)
+    if check_dist and DIST_DIR.exists():
+        cjk_re = re.compile(r"[\u4e00-\u9fff]+")
+        cn_leak_re = re.compile(r"(¥\s*\d+|\bRMB\b|\bCNY\b|\bWeCom\b|\bFeishu\b|\bMianbaoduo\b|China\s+Cross-Border\s+Seller\s+Edition)", re.IGNORECASE)
+        # Collect exact verbatim CJK substrings (if any) appearing inside official upstream FDA.gov RSS/recalls data
+        upstream_cjk_whitelist: set[str] = set()
+        for data_fname in ("rss_alerts.json", "recalls.json", "warning_letters.json"):
+            dp = DATA_DIR / data_fname
+            if dp.exists():
+                for m in cjk_re.finditer(dp.read_text(encoding="utf-8", errors="ignore")):
+                    upstream_cjk_whitelist.add(m.group(0))
+        en_html_checked = 0
+        for p in DIST_DIR.rglob("*.html"):
+            rel = p.relative_to(DIST_DIR)
+            # /cn/ is the dedicated isolated Chinese Cross-Border edition
+            if len(rel.parts) > 0 and rel.parts[0] == "cn":
+                continue
+            html_text = p.read_text(encoding="utf-8", errors="ignore")
+            en_html_checked += 1
+            for m_cjk in cjk_re.finditer(html_text):
+                token = m_cjk.group(0)
+                if token not in upstream_cjk_whitelist:
+                    errors.append(
+                        f"Dual-market isolation breach (CJK token '{token}' leaked into English HTML) in dist/{rel}"
+                    )
+                    break
+            m_leak = cn_leak_re.search(html_text)
+            if m_leak:
+                errors.append(
+                    f"Dual-market isolation breach (CN/RMB token '{m_leak.group(0)}' leaked into English HTML) in dist/{rel}"
+                )
+        print(f"      Dual-market isolation gate checked {en_html_checked} English HTML pages in dist/ (0 UI CJK, 0 RMB/WeCom leaks allowed).")
+
+    print(f"      Scanned {files_scanned} source/output files for placeholders, fabrications & unverified CMS IDs.")
 
 
 def main() -> None:
@@ -220,10 +291,10 @@ def main() -> None:
     args = parser.parse_args()
 
     errors: list[str] = []
-    recalls, clearances = check_manifest_and_schema(errors)
+    recalls, clearances, warning_letters = check_manifest_and_schema(errors)
     check_live_openfda_spotcheck(recalls, clearances, errors, seed=args.seed)
     check_citations_lock(errors)
-    check_placeholders_and_fabrications(errors, check_dist=args.check_dist)
+    check_placeholders_and_fabrications(errors, check_dist=args.check_dist, warning_letters=warning_letters)
 
     if errors:
         print("\n================ VERIFY_FACTS FAILED ================")

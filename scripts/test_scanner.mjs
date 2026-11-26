@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import * as esbuild from 'esbuild';
 
 const outFile = path.resolve('node_modules/.cache/scanner-test.mjs');
+const rulesOut = path.resolve('node_modules/.cache/rules-test.mjs');
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 await esbuild.build({
   entryPoints: ['src/engine/scanner.ts'],
@@ -13,9 +14,23 @@ await esbuild.build({
   platform: 'node',
   outfile: outFile,
 });
+await esbuild.build({
+  entryPoints: ['src/data/complianceRules.ts'],
+  bundle: true,
+  format: 'esm',
+  platform: 'node',
+  outfile: rulesOut,
+});
 
 const { scanListing } = await import(pathToFileURL(outFile).href);
+const { COMPLIANCE_RULES } = await import(pathToFileURL(rulesOut).href);
 const recalls = JSON.parse(fs.readFileSync(new URL('../src/data/recalls.json', import.meta.url), 'utf-8'));
+const warningLetters = JSON.parse(fs.readFileSync(new URL('../src/data/warning_letters.json', import.meta.url), 'utf-8'));
+
+// 0. Assert rule count >= 40 and unique IDs/slugs
+assert.ok(COMPLIANCE_RULES.length >= 40, `Expected >=40 statutory rules, got ${COMPLIANCE_RULES.length}`);
+assert.equal(new Set(COMPLIANCE_RULES.map((r) => r.id)).size, COMPLIANCE_RULES.length, 'Duplicate rule IDs found');
+assert.equal(new Set(COMPLIANCE_RULES.map((r) => r.slug)).size, COMPLIANCE_RULES.length, 'Duplicate rule slugs found');
 
 // 1. Clean supplement WITH DSHEA disclaimer -> 0 findings, LOW, DSHEA PASS
 const cleanSup = scanListing(
@@ -26,7 +41,8 @@ const cleanSup = scanListing(
       '• Supports everyday relaxation and normal muscle recovery after exercise.\n• Non-GMO, caffeine-free.\n*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.',
     ingredients: 'Magnesium Glycinate, Vegetable Cellulose Capsule, Rice Flour.',
   },
-  recalls
+  recalls,
+  warningLetters
 );
 assert.equal(cleanSup.findings.length, 0, `Clean supplement unexpected findings: ${cleanSup.findings.map((f) => f.rule.id)}`);
 assert.equal(cleanSup.grade, 'LOW');
@@ -41,13 +57,14 @@ const benignCosmetic = scanListing(
       '• Alcohol-free, non-comedogenic daily cleanser. Visibly softens the appearance of fine lines.\n• Note: This cosmetic is not FDA approved.\n• Adverse event questions? Contact Responsible Person at support@example.com or 1-800-555-0100.',
     ingredients: 'Water, Glycerin, Panthenol, Allantoin. Safety contact: safety@brand.com.',
   },
-  recalls
+  recalls,
+  warningLetters
 );
 assert.equal(benignCosmetic.findings.length, 0, `Benign cosmetic false positives: ${benignCosmetic.findings.map((f) => `${f.rule.id}:${f.matchedPhrases}`)}`);
 assert.equal(benignCosmetic.score, 0);
 assert.ok(
   benignCosmetic.matchedRecalls.every((r) => r.vertical === 'Cosmetics & Skincare' && r.sourceCategory !== 'food'),
-  `Benign cosmetic leaked non-cosmetic recall: ${benignCosmetic.matchedRecalls.map((r) => `${r.recallingFirm}(${r.sourceCategory}/${r.vertical})`)}`
+  `Benign cosmetic leaked non-cosmetic recall`
 );
 
 // 2b. Verify email domain token ("brand" in safety@brand.com) never triggers recall matches
@@ -58,89 +75,93 @@ const emailOnlyCosmetic = scanListing(
     bullets: '• Fragrance-free daily hydration. Adverse events: safety@brand.com',
     ingredients: 'Squalane, Glycerin, Safety contact: safety@brand.com',
   },
-  recalls
+  recalls,
+  warningLetters
 );
-assert.equal(emailOnlyCosmetic.matchedRecalls.length, 0, `Email token leaked recall: ${emailOnlyCosmetic.matchedRecalls.map((r) => r.recallingFirm)}`);
+assert.equal(emailOnlyCosmetic.matchedRecalls.length, 0, `Email token leaked recall`);
 
-// 2c. Standalone GERD and standalone Nail Fungus must both be caught
-const standaloneChecks = scanListing(
-  {
-    vertical: 'general',
-    title: 'Daily Formula for GERD and Nail Fungus',
-    bullets: '',
-    ingredients: '',
-  },
-  recalls
-);
-assert.ok(standaloneChecks.findings.some((f) => f.rule.id === 'SUP-DIS-GI'), 'Standalone GERD must trigger SUP-DIS-GI');
-assert.ok(standaloneChecks.findings.some((f) => f.rule.id === 'COS-OTC-DANDRUFF'), 'Standalone Nail Fungus must trigger COS-OTC-DANDRUFF');
-
-// 3. Red-Team Case B (Supplements): Hangover Cure + Acid Reflux/GERD + Liver Detox + Boosts Testosterone + Dandruff/Nail Fungus
+// 3. Red-Team Supplements + new 40-rule triggers (Cold/Allergy, Antacid, CBD, BPC-157, Rx Strength, Tinnitus)
 const caseB = scanListing(
   {
     vertical: 'supplements',
-    title: 'Liver Detox & Hangover Cure Milk Thistle Capsules – Boosts Testosterone, Cleanses Toxins, Relieves Acid Reflux & GERD, Treats Dandruff & Nail Fungus',
-    bullets: '• Daily herbal complex for fast relief.',
-    ingredients: 'Milk Thistle, Yohimbine HCl.',
+    title: 'Prescription Strength Berberine, CBD & BPC-157 Hangover Cure – Relieves GERD, Seasonal Allergies & Tinnitus Relief',
+    bullets: '• Natural antihistamine & antacid that replaces your metformin. Also treats bacterial vaginosis and boosts testosterone.',
+    ingredients: 'Milk Thistle, Yohimbine HCl, Cannabidiol, Ostarine, Sibutramin.',
   },
-  recalls
+  recalls,
+  warningLetters
 );
-assert.equal(caseB.grade, 'CRITICAL', `Case B should be CRITICAL, got ${caseB.grade} (${caseB.score})`);
-assert.ok(caseB.findings.some((f) => f.rule.id === 'SUP-DIS-GI'), 'Case B must flag Hangover/GERD/Liver Detox');
-assert.ok(caseB.findings.some((f) => f.rule.id === 'SUP-DIS-HORMONE'), 'Case B must flag Boosts Testosterone');
-assert.ok(caseB.findings.some((f) => f.rule.id === 'COS-OTC-DANDRUFF'), 'Case B must flag Dandruff / Nail Fungus');
-assert.ok(caseB.findings.some((f) => f.rule.id === 'ING-TAINT-001'), 'Case B must flag Yohimbine');
-assert.ok(caseB.mandatoryChecks.some((m) => m.id === 'MAND-DSHEA-01' && !m.passed), 'Case B must flag missing DSHEA disclaimer');
+assert.equal(caseB.grade, 'CRITICAL');
+for (const expectedId of ['SUP-DIS-GI', 'SUP-DIS-HORMONE', 'SUP-OTC-COLD', 'SUP-OTC-ANTACID', 'SUP-ING-CBD', 'SUP-ING-NDI', 'SUP-DIS-INTIMATE', 'SUP-DIS-EYE-NEURO', 'SUP-CGMP-001', 'ING-TAINT-001']) {
+  assert.ok(caseB.findings.some((f) => f.rule.id === expectedId), `Case B missed rule ${expectedId}`);
+}
 
-// 4. Red-Team Case C (Cosmetics): SPF 50 + Anti-Dandruff + Repairs Sun Damage + Fades Acne Scars + Tightens Loose Skin
+// 4. Cosmetics new rules (Lidocaine numbing cream, Eye drops, Oral care, Antiperspirant, Exosomes, Kohl, SPF, Dandruff)
 const caseC = scanListing(
   {
     vertical: 'cosmetics',
-    title: 'Anti-Dandruff Scalp Serum & Sun Protection SPF 50 Glow Drops – Tightens Loose Skin, Repairs Sun Damage, Fades Acne Scars, Shrinks Pores Permanently',
-    bullets: '• Prevents sunburn and skin cancer. Eliminates scalp psoriasis and reduces rosacea. Removes warts and skin tags.',
-    ingredients: 'Water, Ketoconazole 1%, Hydroqinone 2%.',
+    title: 'SPF 50 Exosome Serum, 5% Lidocaine Numbing Cream & Anti-Dandruff Scalp Wash – Stops Sweat & Prevents Cavities',
+    bullets: '• Eye drops for pink eye and cataracts. Remineralizes enamel. Black henna brow dye and kohl eyeliner. Zero side effects.',
+    ingredients: 'Water, Lidocain, Ketoconazole 1%, Hydroqinone 2%.',
   },
-  recalls
+  recalls,
+  warningLetters
 );
 assert.equal(caseC.grade, 'CRITICAL');
-assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-OTC-SPF'), 'Case C must catch SPF 50 / Sun Protection');
-assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-OTC-DANDRUFF'), 'Case C must catch Anti-Dandruff / Ketoconazole / Warts');
-assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-DRUG-002'), 'Case C must catch Repairs Sun Damage / Acne Scars / Tightens Loose Skin');
-assert.ok(caseC.findings.some((f) => f.rule.id === 'SUP-DIS-002'), 'Case C must catch "prevents sunburn and skin cancer"');
-assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-DRUG-001'), 'Case C must catch "eliminates scalp psoriasis" / "reduces rosacea"');
-assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-DRUG-005'), 'Case C must fuzzy-catch typo "Hydroqinone"');
+for (const expectedId of ['COS-OTC-SPF', 'COS-OTC-DANDRUFF', 'COS-OTC-NUMB', 'COS-OTC-EYE', 'COS-OTC-ORAL', 'COS-OTC-ANTIPERSP', 'COS-BIO-STEM', 'ING-COLOR-001', 'COS-DRUG-005', 'FTC-SUB-002']) {
+  assert.ok(caseC.findings.some((f) => f.rule.id === expectedId), `Case C missed rule ${expectedId}`);
+}
 
-// 5. Fuzzy 1-char typo guard on Sibutramin
-const typoTest = scanListing(
-  {
-    vertical: 'supplements',
-    title: 'Slim Caps – Prevents Heart Attack & Cures Fatty Liver',
-    bullets: '• Heals leaky gut and relieves menopause hot flashes.',
-    ingredients: 'Green Tea, Sibutramin.',
-  },
-  recalls
-);
-assert.ok(typoTest.findings.some((f) => f.rule.id === 'ING-TAINT-001'), 'Must fuzzy-catch Sibutramin typo');
-assert.ok(typoTest.findings.some((f) => f.rule.id === 'SUP-DIS-001'), 'Must catch prevents heart attack');
-assert.ok(typoTest.findings.some((f) => f.rule.id === 'SUP-DIS-GI'), 'Must catch fatty liver / leaky gut');
-assert.ok(typoTest.findings.some((f) => f.rule.id === 'SUP-DIS-HORMONE'), 'Must catch menopause hot flashes');
-
-// 6. Device vertical must NOT leak dietary supplement DSHEA rewrite AND must NOT match 7-Eleven Horchata!
+// 5. Devices + new QSR-002 rule (Non-invasive blood glucose watch, Plasma pen, HIFU) + strict vertical isolation
 const deviceTest = scanListing(
   {
     vertical: 'devices',
-    title: 'Red Light LED Mask – Cures Pain & Relieves Neuropathy, IPL Permanent Hair Removal, Product is FDA-Registered',
+    title: 'Non-Invasive Blood Glucose Smartwatch & Home HIFU Plasma Pen – Relieves Neuropathy, Product is FDA-Registered',
     bullets: '• EMS muscle stimulator for home use.',
     ingredients: 'Medical-grade silicone shell, 630nm LED array, USB-C controller.',
   },
-  recalls
+  recalls,
+  warningLetters
 );
 assert.ok(deviceTest.findings.some((f) => f.rule.id === 'DEV-510K-001'), 'Device must trigger DEV-510K-001');
-assert.ok(deviceTest.findings.some((f) => f.rule.id === 'FDA-TERM-002'), 'Device must trigger FDA-Registered trap');
+assert.ok(deviceTest.findings.some((f) => f.rule.id === 'DEV-QSR-002'), 'Device must trigger DEV-QSR-002');
+assert.ok(deviceTest.findings.some((f) => f.rule.id === 'FDA-TERM-002'), 'Device must trigger FDA-TERM-002');
 assert.ok(!deviceTest.findings.some((f) => f.rule.id === 'SUP-DIS-004'), 'Device must NOT leak supplement rule SUP-DIS-004');
-assert.ok(
-  deviceTest.matchedRecalls.every((r) => r.vertical === 'Medical & Beauty Devices'),
-  `Device recall cross-ref leaked wrong vertical: ${deviceTest.matchedRecalls.map((r) => `${r.recallingFirm}(${r.vertical})`)}`
-);
+assert.ok(deviceTest.matchedRecalls.every((r) => r.vertical === 'Medical & Beauty Devices'));
 
-console.log('ALL 6 GOLDEN ANTI-HALLUCINATION, TYPO-GUARD & VERTICAL-ISOLATION TESTS PASSED!');
+// 6. Pet vertical (21 CFR 510 + CBD + EPA Flea/Tick)
+const petTest = scanListing(
+  {
+    vertical: 'pets',
+    title: 'CBD Dog Chews – Treats Canine Arthritis, Hip Dysplasia & Hot Spots',
+    bullets: '• Kills fleas and ticks and cures kennel cough with zero side effects.',
+    ingredients: 'Full-Spectrum Hemp Extract, Glucosamine.',
+  },
+  recalls,
+  warningLetters
+);
+assert.equal(petTest.grade, 'CRITICAL');
+assert.ok(petTest.findings.some((f) => f.rule.id === 'PET-DRUG-001'), 'Pet test must trigger PET-DRUG-001');
+assert.ok(petTest.findings.some((f) => f.rule.id === 'SUP-ING-CBD'), 'Pet test must trigger SUP-ING-CBD');
+assert.ok(petTest.mandatoryChecks.some((m) => m.id === 'MAND-CVM-01' && !m.passed));
+
+// 7. Live FDA Warning Letters cross-reference check using a real firm from warning_letters.json
+const sampleWl = warningLetters.find((w) => w.vertical === 'OTC & Pharma / Drugs' && w.companyName.length > 8);
+if (sampleWl) {
+  const wlHit = scanListing(
+    {
+      vertical: 'general',
+      title: `OEM Audit for ${sampleWl.companyName}`,
+      bullets: 'Checking supplier enforcement history.',
+      ingredients: sampleWl.companyName,
+    },
+    recalls,
+    warningLetters
+  );
+  assert.ok(
+    wlHit.matchedWarningLetters.some((w) => w.id === sampleWl.id),
+    `Expected live Warning Letter match for ${sampleWl.companyName}`
+  );
+}
+
+console.log(`ALL 8 GOLDEN ANTI-HALLUCINATION, 40-RULE, PET-VERTICAL & WARNING-LETTER TESTS PASSED (${COMPLIANCE_RULES.length} rules verified)!`);

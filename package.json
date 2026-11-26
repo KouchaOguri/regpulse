@@ -1,14 +1,15 @@
 {
   "name": "regpulse",
   "type": "module",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "verify": "python scripts/verify_facts.py && node scripts/test_scanner.mjs",
+    "verify": "python scripts/verify_facts.py && node scripts/test_scanner.mjs && node scripts/test_fulfillment_loop.mjs",
     "build": "python scripts/verify_facts.py && node scripts/test_scanner.mjs && astro build && python scripts/verify_facts.py --check-dist",
     "preview": "astro preview",
-    "sync:fda": "python scripts/sync_fda_data.py",
+    "sync:fda": "python scripts/sync_fda_data.py && python scripts/sync_warning_letters.py",
+    "test:fulfillment": "node scripts/test_fulfillment_loop.mjs",
     "verify:citations": "python scripts/verify_citations_browser.py"
   },
   "dependencies": {

@@ -24,11 +24,13 @@ const canonicalUrl = `${siteOrigin}${withBase(canonicalPath)}`;
 const ogImageUrl = `${siteOrigin}${withBase('/og-card.png')}`;
 
 const navItems = [
-  { href: '/', labelEn: 'Listing Scanner', labelZh: '违禁词体检' },
-  { href: '/recalls/', labelEn: 'FDA Recall Radar', labelZh: 'FDA 召回雷达' },
-  { href: '/rules/', labelEn: '21 CFR Rules', labelZh: '法规词库' },
-  { href: '/mocra/', labelEn: 'MoCRA Checklist', labelZh: 'MoCRA 自查' },
-  { href: '/pricing/', labelEn: 'Pricing & Alerts', labelZh: '监控订阅' },
+  { href: '/', label: 'Scanner' },
+  { href: '/bulk/', label: 'Bulk CSV' },
+  { href: '/warning-letters/', label: 'Warning Letters' },
+  { href: '/recalls/', label: 'Recalls' },
+  { href: '/rules/', label: '40 Rules' },
+  { href: '/mocra/', label: 'MoCRA' },
+  { href: '/pricing/', label: 'Pricing' },
 ];
 ---
 
@@ -66,13 +68,13 @@ const navItems = [
           <a href={withBase('/')} class="flex items-center gap-2.5 text-slate-900 font-bold tracking-tight shrink-0">
             <img src={withBase('/favicon.svg')} alt="" width="30" height="30" class="rounded-lg" />
             <span class="text-lg">RegPulse</span>
-            <span class="hidden sm:inline-flex items-center rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-semibold text-teal-800 border border-teal-200">
+            <span class="hidden lg:inline-flex items-center rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-semibold text-teal-800 border border-teal-200">
               FDA &amp; MoCRA Intel
             </span>
           </a>
 
-          <nav aria-label="Primary" class="hidden md:flex items-center gap-1">
-            <ul class="flex items-center gap-1">
+          <nav aria-label="Primary" class="hidden md:flex items-center gap-0.5">
+            <ul class="flex items-center gap-0.5">
               {navItems.map((item) => {
                 const active = isCurrent(item.href);
                 return (
@@ -81,14 +83,13 @@ const navItems = [
                       href={withBase(item.href)}
                       aria-current={active ? 'page' : undefined}
                       class:list={[
-                        'inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border-b-2',
+                        'inline-flex items-center px-2.5 py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors border-b-2 whitespace-nowrap',
                         active
                           ? 'text-teal-900 bg-teal-50/80 border-teal-700 font-semibold'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border-transparent',
                       ]}
                     >
-                      <span data-i18n-en>{item.labelEn}</span>
-                      <span data-i18n-zh class="hidden">{item.labelZh}</span>
+                      {item.label}
                     </a>
                   </li>
                 );
@@ -97,22 +98,18 @@ const navItems = [
           </nav>
 
           <div class="flex items-center gap-2 shrink-0">
-            <button
-              id="lang-toggle-btn"
-              type="button"
-              aria-pressed="false"
-              class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 min-h-[36px] cursor-pointer"
+            <a
+              href={withBase('/alerts/')}
+              class="hidden lg:inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 min-h-[36px]"
             >
-              <span aria-hidden="true">🌐</span>
-              <span id="lang-toggle-label">中文跨境版</span>
-            </button>
+              Portal
+            </a>
 
             <a
               href={withBase('/pricing/')}
-              class="hidden sm:inline-flex items-center rounded-lg bg-teal-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition-colors min-h-[36px]"
+              class="hidden sm:inline-flex items-center rounded-lg bg-teal-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition-colors min-h-[36px] whitespace-nowrap"
             >
-              <span data-i18n-en>Monitor Alerts</span>
-              <span data-i18n-zh class="hidden">开启预警监控</span>
+              Start Monitoring
             </a>
 
             <button
@@ -122,8 +119,7 @@ const navItems = [
               aria-controls="mobile-nav-panel"
               class="md:hidden inline-flex items-center justify-center rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[40px] min-w-[44px]"
             >
-              <span data-i18n-en>Menu</span>
-              <span data-i18n-zh class="hidden">菜单</span>
+              Menu
             </button>
           </div>
         </div>
@@ -144,19 +140,25 @@ const navItems = [
                         : 'text-slate-700 hover:bg-slate-100',
                     ]}
                   >
-                    <span data-i18n-en>{item.labelEn}</span>
-                    <span data-i18n-zh class="hidden">{item.labelZh}</span>
+                    {item.label}
                   </a>
                 </li>
               );
             })}
+            <li>
+              <a
+                href={withBase('/alerts/')}
+                class="block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+              >
+                Subscriber Alert Portal
+              </a>
+            </li>
             <li class="pt-2">
               <a
                 href={withBase('/pricing/')}
                 class="block text-center rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
               >
-                <span data-i18n-en>Monitor FDA Alerts ($29/mo)</span>
-                <span data-i18n-zh class="hidden">开启 FDA 实时预警监控（¥199/季）</span>
+                Bulk Pass ($19) or Radar Pro ($29/mo)
               </a>
             </li>
           </ul>
@@ -170,85 +172,58 @@ const navItems = [
 
     <footer class="border-t border-slate-200 bg-slate-900 text-slate-300 mt-16 no-print">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid gap-8 md:grid-cols-3">
+        <div class="grid gap-8 md:grid-cols-4">
           <div>
             <div class="flex items-center gap-2 text-white font-bold text-base mb-3">
               <img src={withBase('/favicon.svg')} alt="" width="24" height="24" class="rounded" />
               <span>RegPulse</span>
             </div>
             <p class="text-xs leading-relaxed text-slate-400">
-              <span data-i18n-en>
-                Automated FDA drug-claim screening, MoCRA cosmetic compliance checks, and live openFDA enforcement monitoring built for Amazon, TikTok Shop, Shopify, and MedTech teams.
-              </span>
-              <span data-i18n-zh class="hidden">
-                专为 Amazon、TikTok Shop、Shopify 独立站美妆、膳食补充剂与美容仪卖家打造的自动化 FDA 违禁词预审、MoCRA 合规自查与 openFDA 实时召回预警系统。
-              </span>
+              Automated FDA drug-claim screening, 200-SKU CSV pre-flight audits, MoCRA compliance checks, and live FDA Warning Letters &amp; openFDA recall monitoring built for U.S. e-commerce brands.
             </p>
           </div>
 
           <div>
             <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">
-              <span data-i18n-en>Product &amp; Data</span>
-              <span data-i18n-zh class="hidden">产品功能与官方数据源</span>
+              Product &amp; Feeds
             </h2>
             <ul class="space-y-2 text-xs text-slate-400">
-              <li>
-                <a href={withBase('/')} class="hover:text-white">
-                  <span data-i18n-en>Free FDA Listing Claim Scanner</span>
-                  <span data-i18n-zh class="hidden">免费 FDA 违禁词预审扫描器</span>
-                </a>
-              </li>
-              <li>
-                <a href={withBase('/recalls/')} class="hover:text-white">
-                  <span data-i18n-en>Live openFDA Recalls &amp; 510(k) Radar</span>
-                  <span data-i18n-zh class="hidden">openFDA 实时召回与 510(k) 雷达</span>
-                </a>
-              </li>
-              <li>
-                <a href={withBase('/rules/')} class="hover:text-white">
-                  <span data-i18n-en>21 CFR &amp; EPA FIFRA Rule Library</span>
-                  <span data-i18n-zh class="hidden">21 CFR 与 EPA 农药法规词库</span>
-                </a>
-              </li>
-              <li>
-                <a href={withBase('/mocra/')} class="hover:text-white">
-                  <span data-i18n-en>2026 MoCRA Cosmetic Checklist</span>
-                  <span data-i18n-zh class="hidden">2026 MoCRA 化妆品合规自查清单</span>
-                </a>
-              </li>
-              <li>
-                <a href={withBase('/pricing/')} class="hover:text-white">
-                  <span data-i18n-en>Plans &amp; Watchlist Alerts</span>
-                  <span data-i18n-zh class="hidden">套餐价格与 7×24 预警订阅</span>
-                </a>
-              </li>
+              <li><a href={withBase('/')} class="hover:text-white">Free Listing Claim Scanner</a></li>
+              <li><a href={withBase('/bulk/')} class="hover:text-white">Bulk CSV Catalog Pre-Flight (200 SKUs)</a></li>
+              <li><a href={withBase('/warning-letters/')} class="hover:text-white">Live FDA Warning Letters Radar</a></li>
+              <li><a href={withBase('/recalls/')} class="hover:text-white">Live openFDA Recalls &amp; 510(k)</a></li>
+              <li><a href={withBase('/rules/')} class="hover:text-white">40 Statutory 21 CFR &amp; FIFRA Rules</a></li>
+              <li><a href={withBase('/mocra/')} class="hover:text-white">2026 MoCRA Cosmetics Checklist</a></li>
             </ul>
           </div>
 
           <div>
             <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">
-              <span data-i18n-en>Regulatory Notice &amp; Data Source</span>
-              <span data-i18n-zh class="hidden">免责声明与官方数据许可</span>
+              Account &amp; Policies
+            </h2>
+            <ul class="space-y-2 text-xs text-slate-400">
+              <li><a href={withBase('/pricing/')} class="hover:text-white">Self-Serve Pricing</a></li>
+              <li><a href={withBase('/alerts/')} class="hover:text-white">Subscriber Watchlist &amp; License Portal</a></li>
+              <li><a href={withBase('/terms/')} class="hover:text-white">Terms of Service</a></li>
+              <li><a href={withBase('/privacy/')} class="hover:text-white">Privacy Policy</a></li>
+              <li><a href={withBase('/refund/')} class="hover:text-white">Refund &amp; Cancellation Policy</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">
+              Regulatory Notice &amp; Attribution
             </h2>
             <p class="text-xs leading-relaxed text-slate-400">
-              <span data-i18n-en>
-                RegPulse is an independent regulatory intelligence software tool and is <strong>not affiliated with, endorsed by, or sponsored by the U.S. Food and Drug Administration (FDA)</strong>.
-                Outputs are informational screening aids based on public federal statutes (eCFR) and <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA public datasets</a>, and do not constitute legal advice.
-              </span>
-              <span data-i18n-zh class="hidden">
-                RegPulse 为独立第三方合规情报软件，<strong>与美国食品药品监督管理局（FDA）无任何隶属、授权或背书关系</strong>。扫描结果基于美国公开联邦法典（eCFR）及 <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA 官方公开数据集</a>，仅作上架前风险排查参考，不构成正式法律意见。
-              </span>
+              RegPulse is an independent software tool and is <strong>not affiliated with, endorsed by, or sponsored by the U.S. Food and Drug Administration (FDA)</strong>.
+              Outputs are informational screening aids citing public federal statutes (eCFR), official FDA.gov Warning Letters, and <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA public datasets</a>, and do not constitute legal advice.
             </p>
           </div>
         </div>
         <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-500">
-          <span>
-            <span data-i18n-en>© 2026 RegPulse Regulatory Intelligence. Verified public data via openFDA API &amp; eCFR.</span>
-            <span data-i18n-zh class="hidden">© 2026 RegPulse 合规情报引擎。数据源自 openFDA API 与美国 eCFR 联邦法典。</span>
-          </span>
+          <span>© 2026 RegPulse Regulatory Intelligence. Verified public data via FDA.gov, openFDA API &amp; eCFR.</span>
           <a href="mailto:hachileviathan@gmail.com?subject=%5BRegPulse%20Support%5D" class="hover:text-slate-300 underline underline-offset-2">
-            <span data-i18n-en>Contact Compliance Support Desk</span>
-            <span data-i18n-zh class="hidden">联系合规支持与企业监控开通</span>
+            Compliance Support Desk
           </a>
         </div>
       </div>
@@ -256,41 +231,6 @@ const navItems = [
 
     <script is:inline>
       (function () {
-        function applyLang(lang) {
-          document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-          document.querySelectorAll('[data-i18n-en]').forEach(function (el) {
-            el.classList.toggle('hidden', lang === 'zh');
-          });
-          document.querySelectorAll('[data-i18n-zh]').forEach(function (el) {
-            el.classList.toggle('hidden', lang !== 'zh');
-          });
-          var lbl = document.getElementById('lang-toggle-label');
-          var btn = document.getElementById('lang-toggle-btn');
-          if (lbl) lbl.textContent = lang === 'zh' ? 'English' : '中文跨境版';
-          if (btn) btn.setAttribute('aria-pressed', lang === 'zh' ? 'true' : 'false');
-        }
-
-        var initial = 'en';
-        try {
-          var saved = localStorage.getItem('regpulse_lang');
-          if (saved === 'zh' || saved === 'en') initial = saved;
-        } catch (e) {}
-        applyLang(initial);
-
-        var langBtn = document.getElementById('lang-toggle-btn');
-        if (langBtn) {
-          langBtn.addEventListener('click', function () {
-            var next = document.documentElement.lang === 'zh-CN' ? 'en' : 'zh';
-            try { localStorage.setItem('regpulse_lang', next); } catch (e) {}
-            applyLang(next);
-            window.dispatchEvent(new CustomEvent('regpulse:lang', { detail: next }));
-          });
-        }
-
-        window.addEventListener('regpulse:lang', function (ev) {
-          if (ev && ev.detail) applyLang(ev.detail);
-        });
-
         var menuBtn = document.getElementById('mobile-menu-btn');
         var mobileNav = document.getElementById('mobile-nav-panel');
         if (menuBtn && mobileNav) {

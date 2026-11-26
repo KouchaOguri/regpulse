@@ -2,6 +2,7 @@ export type ProductVertical =
   | 'cosmetics'
   | 'supplements'
   | 'devices'
+  | 'pets'
   | 'general';
 
 export type RuleSeverity = 'critical' | 'high' | 'medium';
@@ -17,7 +18,10 @@ export interface ComplianceRule {
     | 'FDA Terminology Misuse'
     | 'Prohibited / Tainted Ingredient'
     | 'EPA Pesticide Trap'
-    | 'FTC Substantiation';
+    | 'FTC Substantiation'
+    | 'Cosmetic Labeling & Colorants'
+    | 'Animal / Pet Drug Claim'
+    | 'Medical Device / Biologics';
   severity: RuleSeverity;
   weight: number;
   titleEn: string;
@@ -758,6 +762,570 @@ export const COMPLIANCE_RULES: ComplianceRule[] = [
     seoQuestionEn: 'When can you legally say "clinically proven" on an Amazon supplement or skincare product?',
     seoQuestionZh: '保健品或护肤品在什么条件下才可以合法写“clinically proven”？',
   },
+  {
+    id: 'COS-OTC-NUMB',
+    slug: 'lidocaine-benzocaine-numbing-cream-otc-drug',
+    verticals: ['cosmetics', 'general'],
+    category: 'OTC Monograph Drug',
+    severity: 'critical',
+    weight: 30,
+    titleEn: 'OTC External Analgesic / Numbing Cream Violation (Lidocaine / Benzocaine / Tetracaine)',
+    titleZh: '外用麻膏/局部止痛膏 OTC 药品违规（利多卡因/苯佐卡因/丁卡因）',
+    statute: '21 CFR Part 348 (External Analgesic OTC Monograph) & FDA Topical Anesthetic Enforcement',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348',
+    officialRefLabel: 'eCFR — 21 CFR Part 348 External Analgesic OTC Drug Products',
+    whyFlaggedEn:
+      'Topical numbing creams containing lidocaine (>4% or unapproved combinations with prilocaine/tetracaine/epinephrine) or marketed for tattooing, laser hair removal, waxing, or microneedling violate 21 CFR Part 348 and are a major 2024–2026 FDA Warning Letter target.',
+    whyFlaggedZh:
+      '含利多卡因（超 4% 或复配丙胺卡因/丁卡因）或宣称用于纹身、激光脱毛、微针麻木的外用麻膏违反 21 CFR Part 348，是 2024–2026 年 FDA 警告信集中重罚品类。',
+    safeRewriteEn:
+      'Never sell unapproved tattoo/microneedling numbing creams or >4% lidocaine OTC. If selling a compliant <=4% OTC external analgesic, follow exact 21 CFR 348 Drug Facts labeling and NDC listing; for cosmetics, remove all numbing/anesthetic claims.',
+    safeRewriteZh:
+      '严禁销售未获批纹身/微针麻膏或超 4% 利多卡因产品；若按化妆品上架，必须彻底删除所有麻醉、麻木（numbing/anesthetic）及成分。',
+    precedentEn:
+      'FDA issued high-profile Warning Letters to multiple e-commerce brands selling over-strength lidocaine numbing creams for cosmetic procedures.',
+    precedentZh:
+      'FDA 已向多家线上销售高浓度利多卡因美容麻膏的跨境与本土品牌发出正式警告信。',
+    patterns: [
+      '\\b(lidocaine|benzocaine|prilocaine|tetracaine|dibucaine)\\b',
+      '\\b(numbing\\s+(cream|gel|spray|ointment|balm)|topical\\s+anesthetic|skin\\s+numbing|pain[-\\s]?free\\s+(tattoo|waxing|microneedling))\\b',
+    ],
+    seoQuestionEn: 'Can you sell lidocaine numbing creams for tattoos, waxing, or microneedling on Amazon?',
+    seoQuestionZh: '可以在 Amazon 美国站销售含利多卡因的纹身/微针麻膏吗？',
+  },
+  {
+    id: 'COS-OTC-EYE',
+    slug: 'unapproved-ophthalmic-eye-drops-otc-drug',
+    verticals: ['cosmetics', 'supplements', 'general'],
+    category: 'OTC Monograph Drug',
+    severity: 'critical',
+    weight: 30,
+    titleEn: 'Unapproved Ophthalmic / Eye-Drop Drug Claim (Dry Eye / Pink Eye / Cataracts / Redness)',
+    titleZh: '滴眼液/眼部护理未获批眼科药品高危违规（干眼/结膜炎/白内障）',
+    statute: '21 CFR Part 349 (Ophthalmic OTC Monograph) & FDA Unapproved Eye Drops Enforcement',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349',
+    officialRefLabel: 'eCFR — 21 CFR Part 349 Ophthalmic Drug Products for OTC Human Use',
+    whyFlaggedEn:
+      'Eye drops claiming to relieve dry eye, pink eye (conjunctivitis), styes, eye redness, cataracts, or glaucoma—or containing unapproved ophthalmic actives like MSM, silver sulfate, or homeopathic belladonna—trigger aggressive FDA Warning Letters and Class I sterility recalls.',
+    whyFlaggedZh:
+      '滴眼液宣称缓解干眼、红眼病/结膜炎、麦粒肿、白内障，或含有 MSM、银离子等未获批眼科成分，极易触发 FDA 警告信与无菌安全召回。',
+    safeRewriteEn:
+      'Only market eye drops formulated strictly under 21 CFR Part 349 in cGMP sterile facilities with valid NDC registration. Never market cosmetic serums or unapproved homeopathic drops for instillation into the eye.',
+    safeRewriteZh:
+      '仅限严格符合 21 CFR Part 349 且在无菌 cGMP 工厂生产并完成 NDC 列名的滴眼液销售；严禁将普通护理液或顺势疗法滴剂宣称为滴眼治疗品。',
+    precedentEn:
+      'FDA issued major public safety alerts and Warning Letters targeting dozens of unapproved online eye drops due to infection and vision-loss risks.',
+    precedentZh:
+      'FDA 曾连续发布重磅安全通告与警告信，下架数十款电商渠道未获批滴眼液。',
+    patterns: [
+      '\\b(eye\\s+drops?|ophthalmic\\s+(solution|drops?))\\b',
+      '\\b(treats?|cures?|relieves?|clears?|soothes?)\\s+(\\w+\\s+){0,2}(pink\\s+eye|conjunctivitis|dry\\s+eyes?|eye\\s+infections?|styes?|cataracts?|glaucoma|red\\s+eyes?)\\b',
+    ],
+    seoQuestionEn: 'Why is FDA issuing Warning Letters and recalls against OTC and homeopathic eye drops?',
+    seoQuestionZh: '为什么电商滴眼液与顺势疗法眼药水频繁遭遇 FDA 警告信和召回？',
+  },
+  {
+    id: 'COS-OTC-ORAL',
+    slug: 'oral-care-gingivitis-cavity-plaque-otc-drug',
+    verticals: ['cosmetics', 'general'],
+    category: 'OTC Monograph Drug',
+    severity: 'high',
+    weight: 24,
+    titleEn: 'OTC Oral Care / Anticaries Drug Claim (Prevents Cavities / Gingivitis / Gum Disease / Remineralizes)',
+    titleZh: '口腔护理触发 OTC 药品宣称（防蛀/治牙龈炎/牙周病/牙釉质再矿化）',
+    statute: '21 CFR Part 355 (Anticaries OTC Monograph) & FD&C Act §201(g)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355',
+    officialRefLabel: 'eCFR — 21 CFR Part 355 Anticaries Drug Products for OTC Human Use',
+    whyFlaggedEn:
+      'Toothpastes, mouthwashes, nano-hydroxyapatite pastes, or whitening strips claiming to prevent cavities, treat gingivitis/periodontitis, heal bleeding gums, or biologically remineralize enamel without an approved OTC fluoride active and Drug Facts panel are unapproved drugs.',
+    whyFlaggedZh:
+      '牙膏、漱口水、羟基磷灰石牙膏或美白牙贴若未按 OTC 含氟药专论注册却宣称“防蛀（prevents cavities）”、“治疗牙龈炎/出血”或“牙釉质再矿化”，将直接构成未获批药品。',
+    safeRewriteEn:
+      'For cosmetic oral-care listings without OTC Drug Facts registration, limit claims to: "freshens breath", "brightens surface stains for a whiter-looking smile", and "leaves teeth feeling clean and smooth".',
+    safeRewriteZh:
+      '非 OTC 注册口腔产品仅限使用纯外观清洁表达：“清新口气（freshens breath）”、“淡化牙齿表面色渍（brightens surface stains）”。',
+    precedentEn:
+      'Nano-hydroxyapatite toothpastes and herbal mouthwashes routinely face Amazon suppression when claiming cavity prevention or gingivitis reversal.',
+    precedentZh:
+      '无氟羟基磷灰石牙膏与草本漱口水因写“防蛀/治牙龈炎”在 Amazon 极易被扫号下架。',
+    patterns: [
+      '\\b(prevents?|stops?|reverses?|heals?|treats?|cures?|fights?)\\s+(\\w+\\s+){0,2}(cavities|tooth\\s+decay|gingivitis|periodontitis|gum\\s+disease|bleeding\\s+gums|receding\\s+gums|canker\\s+sores)\\b',
+      '\\b(remineralizes?|rebuilds?|repairs?)\\s+(tooth\\s+)?enamel\\b',
+      '\\banti[-\\s]?(cavity|gingivitis|plaque)\\b',
+    ],
+    seoQuestionEn: 'Can fluoride-free or nano-hydroxyapatite toothpaste claim to prevent cavities or remineralize enamel?',
+    seoQuestionZh: '无氟或羟基磷灰石牙膏可以在美国站宣称“防蛀”或“修复牙釉质”吗？',
+  },
+  {
+    id: 'COS-OTC-ANTIPERSP',
+    slug: 'deodorant-antiperspirant-stops-sweat-otc-drug',
+    verticals: ['cosmetics'],
+    category: 'OTC Monograph Drug',
+    severity: 'high',
+    weight: 22,
+    titleEn: 'OTC Antiperspirant / Sweat-Blocking Drug Claim on Cosmetic Deodorants',
+    titleZh: '普通除臭剂越界宣称“止汗/阻断汗腺/治疗多汗症”触发 OTC 药品',
+    statute: '21 CFR Part 350 & 21 CFR 310.545 (OTC Antiperspirant vs. Cosmetic Deodorant)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545',
+    officialRefLabel: 'eCFR — 21 CFR 310.545 Unapproved OTC Active Ingredients',
+    whyFlaggedEn:
+      'Deodorants that merely mask or neutralize odor are cosmetics; products that claim to "stop sweat", "reduce perspiration", "block sweat glands", or treat "hyperhidrosis" are regulated as OTC Antiperspirant Drugs requiring approved aluminum actives and Drug Facts labeling.',
+    whyFlaggedZh:
+      '仅掩盖异味的体香剂属于化妆品，但一旦宣称“止汗（stops sweat）”、“减少出汗”或“治疗多汗症（hyperhidrosis）”，即升格为 OTC 止汗药，需要合规铝盐活性成分与 Drug Facts 药盒。',
+    safeRewriteEn:
+      'For aluminum-free cosmetic deodorants, replace sweat-blocking claims with: "helps neutralize odor all day", "absorbs surface wetness for a dry feel", and "keeps underarms feeling fresh".',
+    safeRewriteZh:
+      '无铝天然除臭剂应改为：“长效中和异味（neutralizes odor）”、“吸附表面湿气保持干爽体感（absorbs surface wetness）”，切勿写止汗或抑汗。',
+    precedentEn:
+      'Natural aluminum-free deodorants frequently trigger compliance removals when listing copy includes "antiperspirant" or "stops sweating" in bullets or backend search terms.',
+    precedentZh:
+      '天然无铝除臭棒常因标题或后台关键词带入“antiperspirant / stops sweat”被平台误杀。',
+    patterns: [
+      '\\b(stops?|blocks?|prevents?|reduces?|eliminates?|controls?)\\s+(\\w+\\s+){0,2}(sweat|sweating|perspiration|underarm\\s+sweat|excessive\\s+sweating|hyperhidrosis)\\b',
+      '\\bantiperspirant\\b',
+      '\\bhyperhidrosis\\b',
+    ],
+    seoQuestionEn: 'Can an aluminum-free natural deodorant claim "stops sweat" or "antiperspirant" on Amazon?',
+    seoQuestionZh: '无铝天然除臭剂能在 Amazon 上写“止汗 / Antiperspirant”吗？',
+  },
+  {
+    id: 'COS-LABEL-WARN',
+    slug: 'cosmetic-mandatory-warning-statements-aha-aerosol',
+    verticals: ['cosmetics'],
+    category: 'Cosmetic Labeling & Colorants',
+    severity: 'medium',
+    weight: 16,
+    titleEn: 'Mandatory Cosmetic Warning Statement Trigger (AHA Exfoliants / Aerosols / Tanning Oils)',
+    titleZh: '化妆品强制警示语触发（果酸 AHA 晒伤提示 / 喷雾易燃 / 无防晒助晒油）',
+    statute: '21 CFR Part 740 (Cosmetic Product Warning Statements) & FDA AHA Sunburn Alert Guidance',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740',
+    officialRefLabel: 'eCFR — 21 CFR Part 740 Cosmetic Product Warning Statements',
+    whyFlaggedEn:
+      'Under 21 CFR Part 740 and FDA AHA guidance, pressurized aerosol sprays, suntan oils without sunscreen (21 CFR 740.19), bubble baths (21 CFR 740.17), and high-strength AHA/glycolic/lactic/TCA chemical peels require specific verbatim safety warnings on packaging.',
+    whyFlaggedZh:
+      '依据 21 CFR Part 740 与 FDA 果酸指引，压力气雾罐、无防晒值的助晒油（740.19）、泡泡浴及高浓度果酸/甘醇酸/TCA 刷酸产品必须印制法定逐字安全警示语（如 Sunburn Alert）。',
+    safeRewriteEn:
+      'Include the required 21 CFR 740 verbatim warning on outer packaging (e.g., FDA Sunburn Alert for AHA peels, or 21 CFR 740.19 "does not contain a sunscreen" warning on tanning oils) and avoid medical "chemical peel destroys damaged layers" wording.',
+    safeRewriteZh:
+      '按 21 CFR 740 要求在外包装完整印制法定警示语（如 AHA 果酸防晒提示或助晒油无防晒声明），并避免使用医学剥脱宣称。',
+    precedentEn:
+      'FDA has warned online sellers of high-concentration TCA, phenol, and glycolic acid peels marketed directly to consumers without safety warnings.',
+    precedentZh:
+      'FDA 多次针对线上向普通消费者直售的高浓度 TCA/果酸化学换肤液发出警示。',
+    patterns: [
+      '\\b(tca\\s+peel|trichloroacetic\\s+acid|phenol\\s+peel|jessner\\s+peel|30%\\s+glycolic|50%\\s+glycolic|70%\\s+glycolic)\\b',
+      '\\b(tanning\\s+oil|suntan\\s+oil|tan\\s+accelerator)\\b',
+      '\\bchemical\\s+peel\\s+(kit|solution|acid)\\b',
+    ],
+    seoQuestionEn: 'What mandatory FDA warnings apply to AHA chemical peels, tanning oils, and cosmetic aerosols?',
+    seoQuestionZh: '果酸换肤液、助晒油与气雾喷雾化妆品需要遵守哪些 21 CFR 740 强制警示语？',
+  },
+  {
+    id: 'ING-COLOR-001',
+    slug: 'unapproved-cosmetic-color-additives-kohl-henna-neon',
+    verticals: ['cosmetics'],
+    category: 'Cosmetic Labeling & Colorants',
+    severity: 'critical',
+    weight: 28,
+    titleEn: 'Unapproved or Restricted Color Additive Trap (Kohl / Kajal / Black Henna / Neon Eye Pigments)',
+    titleZh: '化妆品未获批色素红线（Kohl/Kajal 含铅眼线、黑海娜染眉/纹身、眼部荧光色素）',
+    statute: '21 CFR Part 73 & FD&C Act §721 (FDA Color Additive Approval & Batch Certification)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73',
+    officialRefLabel: 'eCFR — 21 CFR Part 73 Listing of Color Additives Exempt from Certification',
+    whyFlaggedEn:
+      'Unlike most cosmetic ingredients, EVERY color additive used in U.S. cosmetics requires explicit FDA pre-market approval for its exact use area. Kohl/kajal/surma (lead risk), henna for skin/eyelash/eyebrow dyeing (only approved for hair), and non-eye-safe neon/fluorescent pigments trigger immediate detention and recalls.',
+    whyFlaggedZh:
+      '美国 FDA 对化妆品色素实行严格事前许可制且严格分区（眼部/唇部/外用）。Kohl/Kajal/Surma 传统眼线粉（含铅风险）、用于皮肤/染眉染睫的海娜（Henna 仅批准用于头发）及未获眼部批准的荧光霓虹色素均属非法掺假。',
+    safeRewriteEn:
+      'Verify every pigment (FD&C / D&C / CI number) against FDA’s approved Color Additives list for the exact application area (eye-area vs. lip vs. general external) and remove kohl, kajal, black henna, and unapproved neon eye glitters.',
+    safeRewriteZh:
+      '逐一核查配方中每个 CI/FD&C 色号是否获批用于对应部位（尤其眼部与唇部），彻底剔除 kohl、kajal、黑海娜及未获眼部许可的霓虹荧光色粉。',
+    precedentEn:
+      'FDA maintains standing Import Alerts detaining kohl/kajal eye cosmetics and unapproved neon eyeshadow palettes at U.S. ports.',
+    precedentZh:
+      'FDA 长期维持海关自动扣留令（Import Alert），高频拦截含铅 kohl/kajal 与未获眼部许可的荧光眼影盘。',
+    patterns: [
+      '\\b(kohl|kajal|surma|al[-\\s]?kahl)\\b',
+      '\\b(black\\s+henna|ppd\\s+henna|henna\\s+(eyebrow|brow|lash|eyelash|skin|tattoo))\\b',
+      '\\b(neon\\s+eyeshadow|fluorescent\\s+eye\\s+pigment|glow[-\\s]in[-\\s]the[-\\s]dark\\s+eyeshadow)\\b',
+    ],
+    seoQuestionEn: 'Why are kohl, kajal, henna brow dyes, and certain neon eyeshadow pigments illegal under FDA rules?',
+    seoQuestionZh: '为什么 kohl、海娜染眉膏和部分霓虹荧光眼影会违反美国 FDA 色素法规？',
+  },
+  {
+    id: 'COS-BIO-STEM',
+    slug: 'exosomes-stem-cells-growth-factors-pdrn-biologic-claim',
+    verticals: ['cosmetics', 'devices'],
+    category: 'Medical Device / Biologics',
+    severity: 'critical',
+    weight: 28,
+    titleEn: 'Unapproved Biologic / Regenerative Claim (Exosomes / Human Stem Cells / Growth Factors / PDRN)',
+    titleZh: '生物制品/再生医学越界红线（外泌体 Exosomes / 干细胞 / 生长因子 / 基因修复）',
+    statute: 'PHS Act §351 & FD&C Act §201(g) (FDA Regenerative Medicine & Biologics Enforcement)',
+    officialRefUrl: 'https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies',
+    officialRefLabel: 'FDA.gov — Regenerative Medicine, Stem Cells & Exosomes Enforcement',
+    whyFlaggedEn:
+      'FDA treats human-derived exosomes, human stem-cell conditioned media, and regenerative claims ("repairs damaged tissue", "activates stem cells", "regenerates DNA/dermis") as unapproved drugs or biological products. Exosome serums and injectable-style ampoules are a rapidly growing 2025–2026 FDA Warning Letter target.',
+    whyFlaggedZh:
+      'FDA 将人源外泌体（Exosomes）、干细胞再生疗法及“激活干细胞 / 修复 DNA / 再生真皮组织”等表述视作未获批药物或生物制品，是 2025–2026 年医美护肤与韩妆安瓶类目的重点打击对象。',
+    safeRewriteEn:
+      'Remove all human stem-cell, exosome regenerative, injectable/mesotherapy, and DNA/tissue repair claims. Keep topical cosmetics strictly within hydration and temporary appearance-smoothing language.',
+    safeRewriteZh:
+      '彻底删除外泌体再生、人源干细胞、水光针注射/中胚层导入及 DNA 组织修复宣称，回归表面保湿与改善肤质外观表述。',
+    precedentEn:
+      'FDA CBER has issued public consumer alerts and Warning Letters against unapproved exosome and stem-cell aesthetic products.',
+    precedentZh:
+      'FDA 生物制品中心（CBER）已多次发布针对未获批外泌体与干细胞抗衰产品的安全警告及警告信。',
+    patterns: [
+      '\\b(exosomes?|human\\s+stem\\s+cells?|umbilical\\s+stem\\s+cells?|amniotic\\s+fluid|placental\\s+stem)\\b',
+      '\\b(activates?|regenerates?|repairs?)\\s+(\\w+\\s+){0,2}(stem\\s+cells?|human\\s+dna|cellular\\s+dna|dermal\\s+tissue)\\b',
+      '\\b(mesotherapy\\s+ampoule|injectable\\s+serum|diy\\s+hyaluronic\\s+filler|hyaluron\\s+pen)\\b',
+    ],
+    seoQuestionEn: 'Are exosome serums, stem-cell creams, and hyaluron pens allowed on Amazon or under FDA rules?',
+    seoQuestionZh: '外泌体精华、干细胞抗衰霜或无针水光笔（Hyaluron Pen）可以在美国站合法售卖吗？',
+  },
+  {
+    id: 'COS-ESS-OIL',
+    slug: 'essential-oil-aromatherapy-disease-treatment-claims',
+    verticals: ['cosmetics', 'general'],
+    category: 'Drug Claim',
+    severity: 'high',
+    weight: 24,
+    titleEn: 'Essential Oil / Aromatherapy Therapeutic Disease Claim (Sinus / Asthma / Migraine / Seizures)',
+    titleZh: '精油/芳疗越界医疗宣称（治鼻窦炎/哮喘/偏头痛/癫痫/杀空气病毒）',
+    statute: 'FD&C Act §201(g)(1)(B) — Intended Use & Aromatherapy Drug Boundary',
+    officialRefUrl: 'https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap',
+    officialRefLabel: 'FDA.gov — Cosmetic, Drug, or Aromatherapy Intended Use',
+    whyFlaggedEn:
+      'Essential oils are cosmetics or fragrances ONLY when marketed for pleasant scent or cosmetic cleansing. Claiming an essential oil relieves sinus congestion, treats asthma, stops migraines, calms seizures, or purifies airborne viruses makes it an unapproved new drug.',
+    whyFlaggedZh:
+      '精油仅用于芳香气味或基础洁肤时才属化妆品/香氛。一旦宣称缓解鼻窦充血、治疗哮喘、止偏头痛或净化空气病毒，立刻沦为未获批药物或非法农药。',
+    safeRewriteEn:
+      'Market essential oils strictly for scent and ambiance: "crisp, invigorating eucalyptus aroma for diffusers", "relaxing lavender scent for evening wind-down routines".',
+    safeRewriteZh:
+      '严格限定为香氛与氛围体验：“清新提神的尤加利扩香气息”、“舒缓放松的薰衣草夜间香氛”。',
+    precedentEn:
+      'FDA has sent numerous Warning Letters to essential oil brands citing therapeutic diffusion and topical disease claims.',
+    precedentZh:
+      'FDA 曾向多家头部及中小精油品牌签发警告信，点名批评其扩香治病与鼻腔通气宣称。',
+    patterns: [
+      '\\b(essential\\s+oil|aromatherapy)\\s+(\\w+\\s+){0,4}(cures?|treats?|relieves?|stops?|heals?)\\s+(\\w+\\s+){0,2}(sinus|asthma|bronchitis|migraines?|headaches?|seizures?|infections?|allergies|congestion)\\b',
+      '\\b(clears?\\s+sinus\\s+infections?|purifies?\\s+airborne\\s+viruses?|therapeutic\\s+grade\\s+essential\\s+oil)\\b',
+    ],
+    seoQuestionEn: 'Can essential oils claim "therapeutic grade", sinus relief, or headache cure on Amazon?',
+    seoQuestionZh: '精油产品能在 Amazon 上写“Therapeutic Grade”、缓解鼻窦炎或止头痛吗？',
+  },
+  {
+    id: 'SUP-OTC-COLD',
+    slug: 'cold-cough-allergy-asthma-bronchodilator-otc-drug',
+    verticals: ['supplements', 'general'],
+    category: 'OTC Monograph Drug',
+    severity: 'critical',
+    weight: 26,
+    titleEn: 'OTC Cold, Cough, Allergy & Asthma Drug Claim (Decongestant / Antihistamine / Bronchodilator)',
+    titleZh: '感冒止咳/抗过敏/哮喘类 OTC 药品越界宣称（祛痰/通鼻/抗组胺/支气管扩张）',
+    statute: '21 CFR Part 341 (Cold, Cough, Allergy, Bronchodilator & Antiasthmatic OTC Products)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341',
+    officialRefLabel: 'eCFR — 21 CFR Part 341 Cold, Cough, Allergy & Asthma OTC Monograph',
+    whyFlaggedEn:
+      'Dietary supplements cannot claim to act as a cough suppressant, decongestant, expectorant, or natural antihistamine, nor treat seasonal allergies, hay fever, sinusitis, bronchitis, or asthma—all of which belong strictly to 21 CFR Part 341 OTC Drugs or Rx drugs.',
+    whyFlaggedZh:
+      '膳食补充剂绝不允许宣称具备止咳、通鼻减充血（decongestant）、祛痰（expectorant）、天然抗组胺（natural antihistamine）功效，或治疗花粉过敏、鼻炎、支气管炎与哮喘。',
+    safeRewriteEn:
+      'Use compliant respiratory wellness framing: "supports clear seasonal breathing comfort*", "supports healthy upper-respiratory mucosal wellness*" (+ mandatory DSHEA disclaimer).',
+    safeRewriteZh:
+      '改用日常呼吸养护表达：“支持换季呼吸舒适感*（seasonal breathing comfort）”、“支持上呼吸道日常健康*”（附 DSHEA 免责声明）。',
+    precedentEn:
+      'Quercetin, mullein leaf, stinging nettle, and NAC supplements frequently trigger Amazon flags for "allergy relief" and "clears mucus / asthma".',
+    precedentZh:
+      '槲皮素（Quercetin）、毛蕊花叶、荨麻提取物与 NAC 补剂常因写“allergy relief / clears mucus / asthma”遭平台扫号。',
+    patterns: [
+      '\\b(cough\\s+suppressant|natural\\s+antihistamine|decongestant|expectorant|bronchodilator)\\b',
+      '\\b(relieve|relieves|treat|treats|cure|cures|stop|stops|prevent|prevents|for)\\s+(\\w+\\s+){0,2}(asthma|bronchitis|sinusitis|hay\\s+fever|seasonal\\s+allergies|allergy\\s+symptoms|copd|wheezing|sinus\\s+congestion)\\b',
+      '\\b(allergy|asthma|cough|sinus)\\s+(cure|treatment|medicine|remedy)\\b',
+    ],
+    seoQuestionEn: 'Can mullein leaf or quercetin supplements claim "allergy relief", "expectorant", or "asthma support"?',
+    seoQuestionZh: '毛蕊花叶或槲皮素补剂能在 Amazon 上写“allergy relief / expectorant / asthma”吗？',
+  },
+  {
+    id: 'SUP-OTC-ANTACID',
+    slug: 'antacid-diarrhea-constipation-laxative-otc-drug',
+    verticals: ['supplements', 'general'],
+    category: 'OTC Monograph Drug',
+    severity: 'high',
+    weight: 22,
+    titleEn: 'OTC Antacid / Laxative / Antidiarrheal / Hemorrhoid Drug Claim',
+    titleZh: '抗酸剂/通便泻药/止泻/痔疮类 OTC 药品越界宣称',
+    statute: '21 CFR Part 331 (Antacid OTC Monograph) & 21 CFR 101.93(g)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331',
+    officialRefLabel: 'eCFR — 21 CFR Part 331 Antacid Products for OTC Human Use',
+    whyFlaggedEn:
+      'Claiming a dietary supplement acts as an antacid, neutralizes stomach acid, stops diarrhea, treats chronic constipation, or shrinks hemorrhoids reclassifies it as an OTC drug under 21 CFR Part 331 / digestive drug monographs.',
+    whyFlaggedZh:
+      '保健品宣称“抗酸剂（antacid）”、“中和胃酸”、“止泻（stops diarrhea）”、“治疗顽固便秘”或“消除痔疮（hemorrhoids）”，会直接触碰 OTC 消化道药品专论红线。',
+    safeRewriteEn:
+      'Reframe to mild everyday regularity: "supports healthy digestive balance and occasional regularity*", "soothes occasional mild stomach discomfort*" (+ mandatory DSHEA disclaimer).',
+    safeRewriteZh:
+      '改写为温和日常养护：“支持健康消化平衡与日常排便规律*（occasional regularity）”、“舒缓偶发轻微胃部不适*”。',
+    precedentEn:
+      'Digestive enzyme, senna tea, and fiber supplements draw rapid Amazon bot takedowns when mentioning "antacid", "diarrhea cure", or "hemorrhoid treatment".',
+    precedentZh:
+      '消化酶、番泻叶茶与益生元纤维粉因出现“antacid / stops diarrhea / hemorrhoids”频繁触发 Amazon 下架。',
+    patterns: [
+      '\\b(antacid|neutralizes?\\s+stomach\\s+acid|stops?\\s+diarrhea|cures?\\s+diarrhea|treats?\\s+constipation|cures?\\s+constipation)\\b',
+      '\\b(shrinks?|cures?|treats?|heals?|eliminates?)\\s+(\\w+\\s+){0,2}(hemorrhoids?|stomach\\s+ulcers?|gastritis|diverticulitis)\\b',
+    ],
+    seoQuestionEn: 'Can digestive enzymes or probiotics claim to neutralize stomach acid or stop diarrhea?',
+    seoQuestionZh: '消化酶或益生菌补剂可以写“中和胃酸”、“止泻”或“治便秘”吗？',
+  },
+  {
+    id: 'SUP-ING-CBD',
+    slug: 'cbd-cannabidiol-delta8-thc-amazon-fda-ban',
+    verticals: ['supplements', 'cosmetics', 'pets', 'general'],
+    category: 'Prohibited / Tainted Ingredient',
+    severity: 'critical',
+    weight: 35,
+    titleEn: 'CBD / Cannabidiol / Delta-8 THC Prohibited Ingredient (FDA & Amazon Zero-Tolerance Ban)',
+    titleZh: '红线禁售成分：CBD / 大麻二酚 / Delta-8 THC（FDA 警告信与 Amazon 绝对禁售）',
+    statute: 'FD&C Act §201(ff)(3)(B) & Amazon Prohibited Hemp/CBD Policy',
+    officialRefUrl: 'https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd',
+    officialRefLabel: 'FDA.gov — Regulation of Cannabis and Cannabidiol (CBD) Products',
+    whyFlaggedEn:
+      'FDA maintains that CBD cannot legally be marketed as a dietary supplement or added to food, and Amazon strictly prohibits ALL ingestible and topical CBD, Delta-8, Delta-9, HHC, and full-spectrum cannabinoid listings—resulting in instant ASIN deletion and fund freezes.',
+    whyFlaggedZh:
+      'FDA 认定 CBD 不能合法作为膳食补充剂或食品添加剂销售，且 Amazon 对所有含 CBD、Delta-8/Delta-9、全谱大麻素（full-spectrum cannabinoids）的口服与外用品实行零容忍秒杀并可能冻结资金。',
+    safeRewriteEn:
+      'Remove ALL mentions of CBD, cannabidiol, Delta-8, Delta-9, THC, and "full-spectrum hemp extract" from titles, bullets, packaging, and backend keywords. (Only plain cold-pressed hemp seed oil without cannabinoids is permitted on Amazon.)',
+    safeRewriteZh:
+      '彻底清除标题、五点、包装与后台词中一切 CBD、Cannabidiol、Delta-8、THC 与全谱大麻提取物字样（Amazon 仅允许不含大麻素的普通冷压火麻仁油 Hemp Seed Oil）。',
+    precedentEn:
+      'Hundreds of FDA Warning Letters have targeted CBD & Delta-8 gummies, tinctures, creams, and pet treats.',
+    precedentZh:
+      'FDA 已对数百家 CBD 与 Delta-8 软糖、滴剂、止痛膏及宠物零食卖家签发警告信。',
+    patterns: [
+      '\\b(cbd|cannabidiol|delta[-\\s]?8|delta[-\\s]?9|delta[-\\s]?10|thc[-\\s]?a|hhc|full[-\\s]?spectrum\\s+hemp\\s+extract|broad[-\\s]?spectrum\\s+hemp\\s+extract|phytocannabinoids?)\\b',
+    ],
+    seoQuestionEn: 'Can you sell CBD, full-spectrum hemp extract, or Delta-8 products on Amazon US?',
+    seoQuestionZh: '可以在 Amazon 美国站销售 CBD、全谱大麻提取物或 Delta-8 产品吗？',
+  },
+  {
+    id: 'SUP-ING-NDI',
+    slug: 'colloidal-silver-bpc157-sarms-phenibut-drug-precluded',
+    verticals: ['supplements', 'cosmetics', 'general'],
+    category: 'Prohibited / Tainted Ingredient',
+    severity: 'critical',
+    weight: 34,
+    titleEn: 'High-Enforcement Unapproved Compound (Colloidal Silver / BPC-157 / SARMs / Phenibut / Racetams)',
+    titleZh: '高危禁售/未获批化合物（胶体银 / BPC-157 多肽 / SARMs / 菲尼布特 / 吡拉西坦）',
+    statute: '21 CFR 310.548 (Colloidal Silver) & 21 CFR 310.545 / FD&C Act §201(ff)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545',
+    officialRefLabel: 'eCFR — 21 CFR 310.545 Unapproved OTC Drugs & Restricted Compounds',
+    whyFlaggedEn:
+      'Colloidal silver, research peptides (BPC-157, TB-500, Ipamorelin), SARMs (Ostarine, Ligandrol, RAD-140, MK-677), Phenibut, Vinpocetine, Piracetam, and DMAA/DMBA are heavily enforced by FDA Warning Letters and banned on Amazon & TikTok Shop.',
+    whyFlaggedZh:
+      '胶体银（Colloidal Silver）、研究多肽（BPC-157 / TB-500）、SARMs（Ostarine / RAD-140 / MK-677）、Phenibut、长春西汀与吡拉西坦均属 FDA 警告信高压线及 Amazon/TikTok 禁售品。',
+    safeRewriteEn:
+      'Immediately remove prohibited research peptides, SARMs, phenibut, racetams, or colloidal silver health claims from your catalog before inventory is stranded or seized.',
+    safeRewriteZh:
+      '立即从在售目录中移除上述研究肽、SARMs、菲尼布特、拉西坦或胶体银健康宣称，防止库存被扣押销毁。',
+    precedentEn:
+      'FDA issued repeated Warning Letters targeting BPC-157 capsules, SARMs muscle builders, phenibut nootropics, and colloidal silver sprays.',
+    precedentZh:
+      'FDA 近期连续向售卖 BPC-157 胶囊、SARMs 增肌粉、Phenibut 益智补剂与胶体银喷雾的商家发出警告信。',
+    patterns: [
+      '\\b(colloidal\\s+silver|nano\\s+silver\\s+(drops?|spray|supplement)|bpc[-\\s]?157|tb[-\\s]?500|mk[-\\s]?677|ibutamoren|ostarine|mk[-\\s]?2866|ligandrol|lgd[-\\s]?4033|rad[-\\s]?140|testolone|sarms|phenibut|vinpocetine|piracetam|aniracetam|oxiracetam|noopept|adrafinil|tianeptine|picamilon|dmba)\\b',
+    ],
+    seoQuestionEn: 'Are BPC-157, SARMs, Phenibut, Piracetam, or Colloidal Silver legal dietary supplements in the U.S.?',
+    seoQuestionZh: 'BPC-157、SARMs、Phenibut、吡拉西坦或胶体银在美国可以作为保健品售卖吗？',
+  },
+  {
+    id: 'SUP-DIS-INTIMATE',
+    slug: 'womens-intimate-bv-fertility-pregnancy-infant-claims',
+    verticals: ['supplements', 'cosmetics', 'general'],
+    category: 'Disease Claim',
+    severity: 'critical',
+    weight: 28,
+    titleEn: 'Intimate Health, Fertility, Pregnancy & Infant Disease Claim (BV / Infertility / Colic / Ear Infection)',
+    titleZh: '私护/备孕/母婴高危疾病宣称（细菌性阴道炎 BV / 助孕治不孕 / 婴儿肠绞痛 / 中耳炎）',
+    statute: '21 CFR 101.93(g)(2) — Urogenital, Reproductive & Pediatric Disease Claims',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93',
+    officialRefLabel: 'eCFR — 21 CFR 101.93 Disease Claim Criteria',
+    whyFlaggedEn:
+      'Boric acid suppositories or women’s probiotics claiming to cure bacterial vaginosis (BV), vaginal infections, or infertility—and baby drops claiming to cure infant colic, ear infections, or teething pain—are strictly prohibited drug claims under FDA rules.',
+    whyFlaggedZh:
+      '硼酸栓/女性益生菌宣称治疗细菌性阴道炎（BV）、妇科感染或不孕不育，以及母婴滴剂宣称治疗婴儿肠绞痛（colic）、中耳炎或出牙止痛，均属 FDA 严查高危药物宣称。',
+    safeRewriteEn:
+      'Use gentle wellness wording only: "supports healthy vaginal pH balance*", "supports everyday reproductive wellness*", or "helps soothe occasional fussy tummies*" (never treat BV, infections, infertility, or pediatric diseases).',
+    safeRewriteZh:
+      '改用日常平衡表达：“支持女性私处健康 pH 平衡*”、“支持备孕期日常营养*”，绝不触碰 BV、感染、不孕或婴儿疾病词。',
+    precedentEn:
+      'Women’s probiotic capsules, boric acid products, and homeopathic baby colic/teething drops face heightened FDA and Amazon pediatric safety enforcement.',
+    precedentZh:
+      '女性硼酸/益生菌产品及母婴肠绞痛/出牙滴剂是 FDA 与 Amazon 儿科安全审查重灾区。',
+    patterns: [
+      '\\b(treats?|cures?|clears?|stops?|eliminates?|prevents?|for)\\s+(\\w+\\s+){0,2}(bacterial\\s+vaginosis|bv\\s+infections?|vaginal\\s+infections?|infertility|miscarriage|infant\\s+colic|baby\\s+colic|ear\\s+infections?|otitis|thrush|mastitis)\\b',
+      '\\b(cures?\\s+bv|bv\\s+(treatment|cure|remedy)|fertility\\s+cure|prevents?\\s+miscarriage)\\b',
+    ],
+    seoQuestionEn: 'Can women’s probiotics or boric acid products claim to cure bacterial vaginosis (BV) or infertility?',
+    seoQuestionZh: '女性益生菌或硼酸产品能在 Amazon 上写治疗细菌性阴道炎（BV）或助孕治不孕吗？',
+  },
+  {
+    id: 'SUP-DIS-EYE-NEURO',
+    slug: 'tinnitus-macular-degeneration-thyroid-withdrawal-disease-claims',
+    verticals: ['supplements', 'general'],
+    category: 'Disease Claim',
+    severity: 'critical',
+    weight: 28,
+    titleEn: 'Vision, Hearing, Thyroid & Addiction Disease Claim (Tinnitus / Macular Degeneration / Hashimoto’s / Withdrawal)',
+    titleZh: '耳鸣/黄斑变性/甲减桥本/戒断反应等明确疾病宣称',
+    statute: '21 CFR 101.93(g) — Explicit Disease & Addiction Treatment Claims',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93',
+    officialRefLabel: 'eCFR — 21 CFR 101.93 Explicit Disease Criteria',
+    whyFlaggedEn:
+      'Tinnitus (ringing in the ears), macular degeneration, hypothyroidism/Hashimoto’s, lupus, multiple sclerosis, and opioid/alcohol withdrawal are explicit medical diseases. Supplements targeting these conditions are top targets for FDA/FTC joint health-fraud enforcement.',
+    whyFlaggedZh:
+      '耳鸣（Tinnitus）、黄斑变性、甲减/桥本氏甲状腺炎、红斑狼疮及戒毒/戒酒戒断反应均属明确临床疾病，保健品提及这些词极易招致 FDA 与 FTC 联合健康欺诈执法。',
+    safeRewriteEn:
+      'Switch to general nutritional support: "supports healthy eye nutrition with lutein & zeaxanthin*", "supports normal thyroid nutrient intake*", "supports healthy inner-ear microcirculation*".',
+    safeRewriteZh:
+      '转为营养素基础支持：“提供叶黄素支持日常眼部营养*”、“支持正常甲状腺营养所需*”，彻底删除耳鸣、黄斑病变与桥本字样。',
+    precedentEn:
+      'Tinnitus relief drops and "opioid/alcohol withdrawal" botanical capsules have drawn aggressive FDA Warning Letters and injunctions.',
+    precedentZh:
+      '耳鸣缓解滴剂与甲状腺/戒断类草本胶囊曾屡次遭遇 FDA 警告信与联邦禁令。',
+    patterns: [
+      '\\b(tinnitus\\s+(relief|cure|treatment|drops?|remedy)|stops?\\s+(ear\\s+)?ringing|cures?\\s+tinnitus)\\b',
+      '\\b(treats?|cures?|reverses?|prevents?|relieves?|stops?)\\s+(\\w+\\s+){0,2}(macular\\s+degeneration|hashimoto[\'’]?s|hypothyroidism|hyperthyroidism|thyroid\\s+disease|lupus|multiple\\s+sclerosis|opioid\\s+withdrawal|alcohol\\s+withdrawal|addiction)\\b',
+    ],
+    seoQuestionEn: 'Can supplements claim "tinnitus relief", "reverses macular degeneration", or "treats Hashimoto’s"?',
+    seoQuestionZh: '保健品可以写“缓解耳鸣（tinnitus relief）”或“调理桥本甲状腺炎”吗？',
+  },
+  {
+    id: 'SUP-CGMP-001',
+    slug: 'prescription-strength-rx-replacement-claim',
+    verticals: ['supplements', 'cosmetics', 'general'],
+    category: 'Disease Claim',
+    severity: 'critical',
+    weight: 28,
+    titleEn: 'Illegal "Prescription Strength" / "Replaces Your Medication" Drug Implication',
+    titleZh: '违规宣称“处方级强度（Prescription Strength）/ 替代西药”暗示药物等效',
+    statute: '21 CFR 101.93(g)(2)(ix) & 21 CFR Part 111 (Implied Drug Equivalence)',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111',
+    officialRefLabel: 'eCFR — 21 CFR Part 111 Dietary Supplement cGMP & Regulatory Framework',
+    whyFlaggedEn:
+      'Under 21 CFR 101.93(g)(2)(ix), claiming a supplement or cosmetic is "prescription strength", "Rx grade", "pharmaceutical grade", or acts as a substitute for prescription drugs (statins, metformin, Adderall, Xanax, Ozempic) is automatically an illegal drug claim.',
+    whyFlaggedZh:
+      '依据 21 CFR 101.93(g)(2)(ix)，将保健品或护肤品称为“处方强度（prescription strength）”、“药用级（Rx grade）”或宣称可替代他汀/二甲双胍/处方药，直接构成隐性违法药物宣称。',
+    safeRewriteEn:
+      'Replace drug-comparison phrasing with factual potency disclosures: "concentrated botanical extract", "standardized to 95% curcuminoids", or "high-potency daily formula*".',
+    safeRewriteZh:
+      '改为客观提取浓度描述：“高浓缩植物提取物”、“标准化 95% 有效成分含量”，严禁与任何处方药对比或称处方级。',
+    precedentEn:
+      'FDA Warning Letters explicitly quote "natural alternative to Adderall/Xanax/Metformin" and "prescription strength" as direct proof of drug intent.',
+    precedentZh:
+      'FDA 警告信多次直接截取“天然替代 Adderall/二甲双胍”与“prescription strength”作为违法定性铁证。',
+    patterns: [
+      '\\b(prescription[-\\s]?strength|rx[-\\s]?strength|rx[-\\s]?grade|pharmaceutical[-\\s]?grade\\s+treatment)\\b',
+      '\\b(replaces?|substitute\\s+for|natural\\s+alternative\\s+to|ditch\\s+your|stop\\s+taking\\s+your)\\s+(\\w+\\s+){0,2}(prescription|medication|meds|statins?|metformin|adderall|xanax|prozac|antibiotics|insulin|steroids?)\\b',
+    ],
+    seoQuestionEn: 'Can a supplement or skincare cream say "prescription strength" or "natural alternative to prescription meds"?',
+    seoQuestionZh: '保健品或面霜可以在详情页写“Prescription Strength”或“处方药天然替代”吗？',
+  },
+  {
+    id: 'PET-DRUG-001',
+    slug: 'pet-supplement-unapproved-animal-drug-claim',
+    verticals: ['pets', 'general'],
+    category: 'Animal / Pet Drug Claim',
+    severity: 'critical',
+    weight: 28,
+    titleEn: 'Unapproved Animal / Pet Drug Claim (Dog Arthritis / Seizures / Hot Spots / Kennel Cough / Fleas)',
+    titleZh: '宠物补剂/洗护未获批兽药违规（犬猫关节炎/癫痫/热斑皮炎/耳螨/驱虫杀蚤）',
+    statute: '21 CFR Part 510 (New Animal Drugs) & FDA CVM Enforcement Policy',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510',
+    officialRefLabel: 'eCFR — 21 CFR Part 510 New Animal Drugs',
+    whyFlaggedEn:
+      'Crucial trap for Amazon Pet Supplies sellers: DSHEA does NOT apply to animals! FDA CVM enforces even stricter drug-claim rules on dog/cat chews, ear washes, and shampoos claiming to treat arthritis, hip dysplasia, anxiety, seizures, hot spots, mange, kennel cough, UTIs, or kill fleas/ticks (also an EPA pesticide trigger).',
+    whyFlaggedZh:
+      '宠物卖家最易踩的致命盲区：美国 DSHEA 膳食补充剂法**不适用于宠物**！FDA 兽药中心（CVM）对犬猫软糖、洗耳液、香波监管更严，写“治关节炎/髋关节发育不良/分离焦虑/热斑皮炎/耳部感染/杀跳蚤蜱虫”极易触发兽药与 EPA 农药双重下架。',
+    safeRewriteEn:
+      'Use conservative pet-nutrition/grooming language: "supports healthy hip & joint mobility in active dogs", "helps maintain calm behavior during travel or fireworks", "gently cleanses skin and coat".',
+    safeRewriteZh:
+      '收敛为保守宠物营养与日常洗护表述：“支持活跃犬只关节灵活度”、“帮助旅行或雷雨时维持平静状态”、“温和清洁被毛与皮肤”。',
+    precedentEn:
+      'FDA CVM routinely issues Warning Letters to online pet supplement brands claiming to treat canine arthritis, hip dysplasia, ear infections, and hot spots.',
+    precedentZh:
+      'FDA 兽药中心（CVM）持续对宣称治疗犬猫关节炎、皮肤热斑与耳部感染的线上宠物品牌发警告信。',
+    patterns: [
+      '\\b(treats?|cures?|heals?|stops?|prevents?|relieves?|for)\\s+(\\w+\\s+){0,3}(hip\\s+dysplasia|kennel\\s+cough|mange|hot\\s+spots?|canine\\s+arthritis|dog\\s+arthritis|pet\\s+arthritis|dog\\s+anxiety|separation\\s+anxiety|pet\\s+seizures?|dog\\s+seizures?|heartworm|ear\\s+mites?|dog\\s+ear\\s+infections?)\\b',
+      '\\b(kills?|repels?|eliminates?)\\s+(\\w+\\s+){0,2}(fleas?|ticks?|heartworms?|ringworms?|ear\\s+mites?)\\b',
+    ],
+    seoQuestionEn: 'Can dog joint chews, calming treats, or pet shampoos claim to treat arthritis, hot spots, or fleas on Amazon?',
+    seoQuestionZh: '宠物关节软糖、安抚零食或沐浴露可以在 Amazon 上写治疗关节炎、热斑或杀跳蚤吗？',
+  },
+  {
+    id: 'DEV-QSR-002',
+    slug: 'uncleared-blood-glucose-watch-plasma-pen-hifu-microneedling',
+    verticals: ['devices'],
+    category: 'Medical Device / Biologics',
+    severity: 'critical',
+    weight: 30,
+    titleEn: 'Uncleared High-Risk Device Claim (Non-Invasive Blood Glucose Watch / Plasma Pen / HIFU / Deep Microneedling)',
+    titleZh: '高危未获批器械红线（无创测血糖手表 / 等离子点痣笔 / 家用超声刀 HIFU / 深层微针）',
+    statute: '21 CFR Part 820 (QSR/QMSR) & FDA Safety Communications on Unapproved Aesthetic/Monitoring Devices',
+    officialRefUrl: 'https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820',
+    officialRefLabel: 'eCFR — 21 CFR Part 820 Quality System Regulation (Medical Devices)',
+    whyFlaggedEn:
+      'FDA has explicitly warned that NO smartwatch or smart ring is FDA-authorized to measure blood glucose non-invasively. Likewise, plasma fibroblast pens, mole-removal pens, home HIFU ultrasound lifts, and microneedling pens (>0.3mm / penetrating living dermis) are regulated medical devices requiring 510(k)/PMA clearance and 21 CFR 820 compliance.',
+    whyFlaggedZh:
+      'FDA 已明文警告目前全球尚无任何智能手表/指环获批“无创测血糖”；同时等离子点痣笔（Plasma Pen）、家用 HIFU 超声刀与穿透真皮层的深层微针（>0.3mm）均属受控医疗器械，无 510(k) 必被封杀。',
+    safeRewriteEn:
+      'Remove ALL blood-glucose / blood-pressure diagnostic claims from non-cleared wearables. For cosmetic rollers without 510(k), stay strictly <=0.25mm exfoliation-appearance only and remove plasma-pen, mole-removal, and HIFU/ultrasound lifting claims.',
+    safeRewriteZh:
+      '非持证穿戴设备立即删除一切无创血糖/血压医疗监测词；无 510(k) 的美容滚轮严禁写穿透真皮/点痣/HIFU 超声刀提拉。',
+    precedentEn:
+      'FDA issued dedicated Safety Communications warning consumers and marketplaces against non-invasive glucose smartwatches and unapproved microneedling/plasma devices.',
+    precedentZh:
+      'FDA 已针对无创血糖手表与未获批点痣/微针器械发布过专项联邦安全警告。',
+    patterns: [
+      '\\b(non[-\\s]?invasive\\s+(blood\\s+)?glucose|measures?\\s+blood\\s+sugar|blood\\s+glucose\\s+(smartwatch|watch|ring)|painless\\s+glucose\\s+monitor)\\b',
+      '\\b(plasma\\s+(fibroblast\\s+)?pen|mole\\s+removal\\s+pen|skin\\s+tag\\s+removal\\s+pen|home\\s+hifu|hifu\\s+(machine|device|lifting)|microneedling\\s+pen|derma\\s+pen\\s+(1\\.0|1\\.5|2\\.0|2\\.5)\\s*mm)\\b',
+    ],
+    seoQuestionEn: 'Can you sell non-invasive blood glucose smartwatches, plasma mole pens, or microneedling pens on Amazon?',
+    seoQuestionZh: '无创测血糖智能手表、等离子点痣笔或深层微针笔可以在 Amazon 美国站销售吗？',
+  },
+  {
+    id: 'FTC-SUB-002',
+    slug: 'ftc-zero-side-effects-100-safe-number-one-doctor-claim',
+    verticals: ['cosmetics', 'supplements', 'devices', 'pets', 'general'],
+    category: 'FTC Substantiation',
+    severity: 'medium',
+    weight: 16,
+    titleEn: 'Unsubstantiated Absolute Safety / "#1 Doctor Recommended" Claim (FTC Act §12)',
+    titleZh: 'FTC 绝对安全/无副作用/“第一医生推荐”高风险夸大宣称',
+    statute: 'FTC Act §§5 & 12 (15 U.S.C. §§45, 52) & FTC Endorsement Guides',
+    officialRefUrl: 'https://www.law.cornell.edu/uscode/text/15/52',
+    officialRefLabel: '15 U.S.C. §52 — FTC Act §12 False Advertisement Prohibition',
+    whyFlaggedEn:
+      'Claiming a supplement, cosmetic, or device has "zero side effects", is "100% safe for everyone", or is "#1 Doctor / Dermatologist Recommended" without a statistically valid nationwide survey or clinical safety substantiation violates FTC Act §§5 & 12 and invites NAD/competitor takedown complaints.',
+    whyFlaggedZh:
+      '缺乏全国统计调查或成品临床证据却宣称“零副作用（zero side effects）”、“对所有人 100% 安全”或“#1 皮肤科医生推荐”，违反 FTC 法案且极易被竞品向 Amazon/NAD 精准举报。',
+    safeRewriteEn:
+      'Replace absolute claims with verifiable wording: "gentle formula suitable for daily routines", "dermatologist-tested" (only if you hold the RIPT lab certificate), and include standard sensitivity patch-test guidance.',
+    safeRewriteZh:
+      '改为可自证的温和表述：“温和配方适合日常护理”、“经皮肤科测试（需持有第三方 RIPT 斑贴测试报告）”，切忌写零副作用或 100% 安全。',
+    precedentEn:
+      'Competitor-filed Amazon Policy Violations and FTC warning sweeps frequently target "#1 Dermatologist Recommended" and "100% safe / zero side effects" badges.',
+    precedentZh:
+      '“#1 医生推荐”与“零副作用/100%安全”是海外竞品恶意投诉与 FTC 抽查的常见突破口。',
+    patterns: [
+      '\\b(zero|no)\\s+side\\s+effects\\b',
+      '\\b100%\\s+safe\\s+(for\\s+everyone|with\\s+no\\s+side\\s+effects|guaranteed)\\b',
+      '\\b#?1\\s+(doctor|dermatologist|vet|veterinarian|physician)[-\\s]+(recommended|approved|trusted)\\b',
+      '\\bcompletely\\s+risk[-\\s]?free\\s+(treatment|cure|formula)\\b',
+    ],
+    seoQuestionEn: 'Can an Amazon product claim "zero side effects", "100% safe", or "#1 Dermatologist Recommended"?',
+    seoQuestionZh: 'Amazon 商品能写“Zero Side Effects（零副作用）”或“#1 皮肤科医生推荐”吗？',
+  },
 ];
 
 export const SAMPLE_LISTINGS: Record<
@@ -778,9 +1346,9 @@ export const SAMPLE_LISTINGS: Record<
     labelZh: '护肤精华（高危演示样本）',
     vertical: 'cosmetics',
     title:
-      'FDA Approved Retinol & Tea Tree Anti-Acne Serum – Treats Acne, Reduces Inflammation & Stimulates Collagen Production',
+      'FDA Approved Retinol & Exosome Anti-Acne Serum – Treats Acne, Reduces Inflammation & Stimulates Collagen Production',
     bullets:
-      '• Clinically proven to clear stubborn cystic acne and heal eczema redness fast.\n• Botox alternative formula permanently eliminates deep wrinkles and repairs sun damage at the cellular level.\n• Antibacterial tea tree complex kills 99.9% of bacteria on skin.\n• Manufactured in a facility with official FDA Certificate.',
+      '• Clinically proven to clear stubborn cystic acne and heal eczema redness fast.\n• Botox alternative formula permanently eliminates deep wrinkles and repairs sun damage at the cellular level.\n• Antibacterial tea tree complex kills 99.9% of bacteria on skin with zero side effects.\n• Manufactured in a facility with official FDA Certificate.',
     ingredients:
       'Water, Glycerin, Retinol, Niacinamide, Hydroquinone 2%, Melaleuca Alternifolia (Tea Tree) Leaf Oil, Fragrance.',
   },
@@ -790,9 +1358,9 @@ export const SAMPLE_LISTINGS: Record<
     labelZh: '小檗碱 + 奶蓟草（高危演示样本）',
     vertical: 'supplements',
     title:
-      'Nature’s Ozempic Berberine Complex 1200mg – Lowers Blood Sugar, Liver Detox & Hangover Cure',
+      'Nature’s Ozempic Berberine Complex 1200mg – Prescription Strength, Lowers Blood Sugar & Hangover Cure',
     bullets:
-      '• Supports healthy metabolism and helps lower blood pressure and LDL cholesterol naturally.\n• Fast-acting anxiety relief and cures insomnia without prescription drugs.\n• Relieves acid reflux, GERD, and arthritis joint pain.\n• FDA Approved facility; 100% guaranteed results in 14 days.',
+      '• Supports healthy metabolism and helps lower blood pressure and LDL cholesterol naturally.\n• Fast-acting anxiety relief and cures insomnia without prescription drugs.\n• Relieves acid reflux, GERD, seasonal allergies, and arthritis joint pain.\n• FDA Approved facility; 100% guaranteed results in 14 days.',
     ingredients:
       'Berberine HCl 1200mg, Ashwagandha Root Extract 300mg, Milk Thistle, Yohimbine HCl, DMHA.',
   },
@@ -802,9 +1370,20 @@ export const SAMPLE_LISTINGS: Record<
     labelZh: '红光 LED 美容面罩（高危演示样本）',
     vertical: 'devices',
     title:
-      'FDA Approved Medical-Grade Red Light Therapy LED Face Mask – Cures Acne, Regrows Hair & Relieves Neuropathy',
+      'FDA Approved Medical-Grade Red Light Therapy LED Face Mask & Home HIFU – Cures Acne & Relieves Neuropathy',
     bullets:
-      '• Hospital-grade therapeutic laser wavelengths stimulate collagen synthesis and accelerate wound healing.\n• Antibacterial blue light kills 99.9% of acne-causing bacteria.\n• Product is FDA-registered; clinically proven permanent wrinkle removal at home.',
-    ingredients: 'Medical-grade silicone shell, 630nm/850nm LED array, USB-C controller.',
+      '• Hospital-grade therapeutic laser & IPL permanent hair removal technology.\n• Relieves chronic pain, joint pain, and neuropathy in 10 minutes a day.\n• Product is FDA-Registered; also includes non-invasive blood glucose smartwatch companion.',
+    ingredients: 'Medical-grade silicone shell, 630nm LED array, USB-C controller.',
+  },
+  pet: {
+    id: 'pet',
+    labelEn: 'Dog Joint & Skin Chew (Illustrative Risk Example)',
+    labelZh: '宠物关节与皮肤软糖（高危演示样本）',
+    vertical: 'pets',
+    title:
+      'CBD Hemp Dog Chews – Treats Canine Arthritis, Hip Dysplasia, Separation Anxiety & Hot Spots',
+    bullets:
+      '• Prescription strength formula cures dog ear infections and kennel cough naturally.\n• Kills fleas and ticks from the inside out with zero side effects.\n• #1 Veterinarian Recommended cure for pet seizures.',
+    ingredients: 'Full-Spectrum Hemp Extract (CBD 15mg), Glucosamine, Chondroitin, Turmeric.',
   },
 };

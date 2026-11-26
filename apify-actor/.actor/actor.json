@@ -1,0 +1,12 @@
+{
+  "actorSpecification": 1,
+  "name": "regpulse-fda-compliance-radar",
+  "title": "RegPulse FDA Warning Letters, openFDA Recalls & Amazon Claim Scanner",
+  "description": "MCP-ready regulatory compliance Actor: fetches live FDA.gov Warning Letters, openFDA recalls, and audits Amazon/Shopify product listings against 40 federal 21 CFR, MoCRA, DSHEA, CVM, and EPA FIFRA rules.",
+  "version": "1.0",
+  "dockerfile": "../Dockerfile",
+  "input": "./input_schema.json",
+  "meta": {
+    "templateId": "python-start"
+  }
+}

@@ -23,6 +23,20 @@ export interface RecallRecord {
   officialSourceUrl: string;
 }
 
+export interface WarningLetterRecord {
+  id: string;
+  cmsId: string;
+  postedDate: string;
+  letterIssueDate: string;
+  companyName: string;
+  issuingOffice: string;
+  subject: string;
+  vertical: string;
+  riskTags: string[];
+  isCrossBorderRelevant: boolean;
+  letterUrl: string;
+}
+
 export interface ScanFinding {
   rule: ComplianceRule;
   matchedPhrases: string[];
@@ -47,6 +61,7 @@ export interface ScanResult {
   findings: ScanFinding[];
   mandatoryChecks: MandatoryCheckItem[];
   matchedRecalls: RecallRecord[];
+  matchedWarningLetters: WarningLetterRecord[];
   highlightedHtml: string;
   scannedWordCount: number;
   scannedAtIso: string;
@@ -75,6 +90,14 @@ const FUZZY_BANNED_COMPOUNDS: Array<{ canonical: string; ruleId: string }> = [
   { canonical: 'bimatoprost', ruleId: 'ING-TAINT-001' },
   { canonical: 'hydroquinone', ruleId: 'COS-DRUG-005' },
   { canonical: 'ketoconazole', ruleId: 'COS-OTC-DANDRUFF' },
+  { canonical: 'lidocaine', ruleId: 'COS-OTC-NUMB' },
+  { canonical: 'benzocaine', ruleId: 'COS-OTC-NUMB' },
+  { canonical: 'tetracaine', ruleId: 'COS-OTC-NUMB' },
+  { canonical: 'cannabidiol', ruleId: 'SUP-ING-CBD' },
+  { canonical: 'ostarine', ruleId: 'SUP-ING-NDI' },
+  { canonical: 'phenibut', ruleId: 'SUP-ING-NDI' },
+  { canonical: 'vinpocetine', ruleId: 'SUP-ING-NDI' },
+  { canonical: 'piracetam', ruleId: 'SUP-ING-NDI' },
 ];
 
 // Curated active ingredient / recall keyword filter (prevents matching generic marketing adjectives like "light" -> "slightly")
@@ -163,6 +186,23 @@ function verticalMatchesRecall(vertical: ProductVertical, recall: RecallRecord):
   return true;
 }
 
+function verticalMatchesWarningLetter(vertical: ProductVertical, wl: WarningLetterRecord): boolean {
+  if (vertical === 'general') return true;
+  if (vertical === 'cosmetics') {
+    return wl.vertical === 'Cosmetics & Skincare' || wl.vertical === 'OTC & Pharma / Drugs';
+  }
+  if (vertical === 'supplements') {
+    return wl.vertical === 'Dietary Supplements & Foods' || wl.vertical === 'OTC & Pharma / Drugs';
+  }
+  if (vertical === 'devices') {
+    return wl.vertical === 'Medical & Beauty Devices';
+  }
+  if (vertical === 'pets') {
+    return wl.vertical === 'Animal & Pet Products';
+  }
+  return true;
+}
+
 export function scanListing(
   input: {
     title: string;
@@ -170,7 +210,8 @@ export function scanListing(
     ingredients: string;
     vertical: ProductVertical;
   },
-  recallsCorpus: RecallRecord[] = []
+  recallsCorpus: RecallRecord[] = [],
+  warningLettersCorpus: WarningLetterRecord[] = []
 ): ScanResult {
   const combinedRaw = [input.title, input.bullets, input.ingredients]
     .filter((s) => s && s.trim().length > 0)
@@ -325,6 +366,26 @@ export function scanListing(
     });
   }
 
+  if (input.vertical === 'pets') {
+    const hasPetDrugFlag = findings.some(
+      (f) => f.rule.category === 'Animal / Pet Drug Claim' || f.rule.category === 'EPA Pesticide Trap' || f.rule.id === 'SUP-ING-CBD'
+    );
+    mandatoryChecks.push({
+      id: 'MAND-CVM-01',
+      passed: !hasPetDrugFlag,
+      severity: 'high',
+      titleEn: 'FDA CVM Animal Drug Boundary (DSHEA Does Not Apply to Pets)',
+      titleZh: 'FDA 兽药中心（CVM）合规边界核查（DSHEA 不适用于宠物）',
+      detailEn: !hasPetDrugFlag
+        ? 'No animal drug or flea/tick pesticide claims detected. Maintain NASC-aligned nutritional wording and verify physical label follows AAFCO ingredient definitions.'
+        : 'Animal supplements are NOT covered by DSHEA. Remove all disease treatment or flea/tick killing claims immediately to avoid FDA CVM Warning Letters and Amazon EPA pesticide takedowns.',
+      detailZh: !hasPetDrugFlag
+        ? '未检出明显宠物疾病治疗或 EPA 驱虫/杀蚤违禁词。请保持保守营养养护表达并核对实物标签符合 AAFCO 规范。'
+        : '宠物补剂不享有 DSHEA 豁免权！请立即删除所有犬猫疾病治疗或杀灭跳蚤/蜱虫表述，防止触发 CVM 警告信与 Amazon 农药封禁。',
+      statute: '21 CFR Part 510 & FIFRA §2',
+    });
+  }
+
   let rawScore = 0;
   for (const f of findings) {
     rawScore += f.rule.weight + Math.min(6, (f.matchedPhrases.length - 1) * 3);
@@ -420,6 +481,54 @@ export function scanListing(
     htmlParts.push(escapeHtml(combinedRaw.slice(cursor)));
   }
 
+  // Live FDA Warning Letters Cross-Reference (prioritizing direct company/OEM name matches over generic subject hits)
+  const matchedWarningLetters: WarningLetterRecord[] = [];
+  if (warningLettersCorpus.length > 0) {
+    const rawLower = combinedRaw.toLowerCase();
+    const wlTokens = Array.from(
+      new Set(
+        rawLower
+          .replace(/\S+@\S+\.\S+/g, ' ')
+          .replace(/https?:\/\/\S+/gi, ' ')
+          .replace(/[^a-z0-9\s-]/g, ' ')
+          .split(/\s+/)
+          .filter(
+            (t) =>
+              t.length >= 5 &&
+              !/^\d+$/.test(t) &&
+              !RECALL_STOPWORDS.has(t) &&
+              ![
+                'biotech', 'limited', 'company', 'corporation', 'laboratories', 'solutions',
+                'international', 'products', 'health', 'wellness', 'organic', 'natural',
+                'supplement', 'cosmetic', 'cream', 'serum', 'device', 'audit', 'checking',
+                'supplier', 'enforcement', 'history', 'notice', 'warning', 'letter',
+              ].includes(t)
+          )
+      )
+    ).slice(0, 18);
+    const wlRegexes = wlTokens.map((t) => new RegExp(`\\b${escapeRegex(t)}\\b`, 'i'));
+    const scoredWl: Array<{ wl: WarningLetterRecord; hits: number }> = [];
+    for (const wl of warningLettersCorpus) {
+      if (!verticalMatchesWarningLetter(input.vertical, wl)) continue;
+      let hits = 0;
+      const firmLow = wl.companyName.toLowerCase();
+      if (firmLow.length >= 6 && rawLower.includes(firmLow)) {
+        hits += 10;
+      }
+      for (const rx of wlRegexes) {
+        if (rx.test(wl.companyName)) hits += 4;
+        else if (rx.test(wl.subject)) hits += 1;
+      }
+      if (hits >= 2) {
+        scoredWl.push({ wl, hits });
+      }
+    }
+    scoredWl.sort((a, b) => b.hits - a.hits || b.wl.postedDate.localeCompare(a.wl.postedDate));
+    for (const { wl } of scoredWl.slice(0, 3)) {
+      matchedWarningLetters.push(wl);
+    }
+  }
+
   return {
     score,
     grade,
@@ -427,6 +536,7 @@ export function scanListing(
     findings,
     mandatoryChecks,
     matchedRecalls: dedupedRecalls,
+    matchedWarningLetters,
     highlightedHtml: htmlParts.join('').replace(/\n/g, '<br />'),
     scannedWordCount: wordCount,
     scannedAtIso: new Date().toISOString(),

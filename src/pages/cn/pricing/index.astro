@@ -1,0 +1,156 @@
+---
+import CnLayout from '../../../layouts/CnLayout.astro';
+import WatchlistModal from '../../../components/WatchlistModal';
+import AlertPortal from '../../../components/AlertPortal';
+import { COMPLIANCE_RULES } from '../../../data/complianceRules';
+import warningLettersData from '../../../data/warning_letters.json';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${path}`}`;
+---
+
+<CnLayout
+  title="人民币自助订阅方案 — 200-SKU 批量体检卡与企微/飞书实时预警 | RegPulse 跨境版"
+  description="专为中国美国站卖家设计的人民币透明定价：单品扫描永久免费，¥99 单次买断 200-SKU 批量体检，¥199/季 7×24 FDA 警告信与召回企业微信/飞书推送。"
+  canonicalPath="/cn/pricing/"
+>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 text-center">
+      <p class="text-xs font-bold uppercase tracking-wider text-teal-700">
+        中国美国站跨境卖家专版 • 人民币自助结算 • 付款自动发卡密
+      </p>
+      <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+        别等主力 ASIN 变狗或代工厂吃警告信，才连夜排查 FDA 合规。
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
+        无销售骚扰、零人工等待。先用 ¥99 单次给全店 200 个 SKU 做一次上新前体检，或开通 ¥199/季 企微/飞书群自动监控代工厂警告信与同行业召回。
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 items-stretch">
+      <!-- 免费版 -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">免费单品版</h2>
+          <p class="mt-1 text-xs text-slate-500">适合单条 Listing 草稿日常自查</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-slate-950">¥0</span>
+            <span class="text-xs text-slate-500">/ 永久免费</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+            <li>✓ 无限次单品本地违禁词扫描</li>
+            <li>✓ 覆盖全部 {COMPLIANCE_RULES.length} 项 21 CFR/MoCRA/CVM/EPA 规则</li>
+            <li>✓ 批量 CSV 工具前 3 个 SKU 免费试扫</li>
+            <li>✓ 公开查询 {warningLettersData.length} 封 FDA 警告信与 210 条召回</li>
+          </ul>
+        </div>
+        <a
+          href={withBase('/cn/')}
+          class="mt-8 block w-full text-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-900 hover:bg-slate-50"
+        >
+          立即免费使用
+        </a>
+      </div>
+
+      <!-- 单次买断轻量付费 -->
+      <div class="rounded-2xl border-2 border-slate-900 bg-white p-6 shadow-sm relative flex flex-col justify-between">
+        <span class="absolute -top-3 left-5 rounded-full bg-slate-900 px-3 py-0.5 text-[11px] font-bold text-white">
+          无续费压力 · 拍下即用
+        </span>
+        <div>
+          <h2 class="text-base font-bold text-slate-900">200-SKU 批量体检卡</h2>
+          <p class="mt-1 text-xs text-slate-500">大促/上新前全店一键排雷</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-slate-950">¥99</span>
+            <span class="text-xs text-slate-500">/ 单次买断</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+            <li>✓ <strong>200-SKU 表格批量体检</strong>（支持 Amazon / Shopify CSV）</li>
+            <li>✓ 付款后系统自动发激活卡密，0 等待</li>
+            <li>✓ 一键导出 <strong>Excel/CSV 逐行整改表</strong>（含改写模板与法条）</li>
+            <li>✓ 100% 浏览器本地运行，不上传选品机密</li>
+          </ul>
+        </div>
+        <button
+          type="button"
+          data-plan="200-SKU 批量体检卡 (¥99 单次买断)"
+          class="cn-plan-btn mt-8 w-full rounded-xl bg-slate-900 px-4 py-3 text-xs font-bold text-white hover:bg-slate-800 cursor-pointer"
+        >
+          获取 200-SKU 体检卡（¥99）
+        </button>
+      </div>
+
+      <!-- 主力季卡 -->
+      <div class="rounded-2xl border-2 border-teal-600 bg-white p-6 shadow-md relative flex flex-col justify-between">
+        <span class="absolute -top-3 left-5 rounded-full bg-teal-700 px-3 py-0.5 text-[11px] font-bold text-white">
+          跨境卖家首选
+        </span>
+        <div>
+          <h2 class="text-base font-bold text-slate-900">FDA 实时预警季卡</h2>
+          <p class="mt-1 text-xs text-slate-500">7×24 盯防代工厂、核心成分与竞品</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-slate-950">¥199</span>
+            <span class="text-xs text-slate-500">/ 季度</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+            <li>✓ <strong>无限次 200-SKU 批量体检</strong>与整改导出</li>
+            <li>✓ <strong>10 个核心监控词槽位</strong>（代工厂/成分/品牌/510k）</li>
+            <li>✓ 双库监控：<strong>FDA 警告信 + openFDA 召回</strong>每 12 小时巡检</li>
+            <li>✓ 企业微信 / 飞书群机器人 / 邮件实时推送</li>
+            <li>✓ 自助控制台随时修改监控词，含 7 天免费试跑</li>
+          </ul>
+        </div>
+        <button
+          type="button"
+          data-plan="FDA 实时预警季卡 (¥199/季)"
+          class="cn-plan-btn mt-8 w-full rounded-xl bg-teal-700 px-4 py-3 text-xs font-bold text-white hover:bg-teal-800 cursor-pointer"
+        >
+          申请 7 天免费试跑（¥199/季）
+        </button>
+      </div>
+
+      <!-- 多店铺版 -->
+      <div class="rounded-2xl border border-slate-200 bg-slate-950 text-white p-6 shadow-sm flex flex-col justify-between">
+        <div>
+          <h2 class="text-base font-bold">多店铺 / 代运营季卡</h2>
+          <p class="mt-1 text-xs text-slate-400">适合大卖、品牌孵化与合规顾问团队</p>
+          <div class="mt-5 flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold">¥599</span>
+            <span class="text-xs text-slate-400">/ 季度</span>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-xs text-slate-200">
+            <li>✓ <strong>不限监控词数量</strong>，全行业覆盖</li>
+            <li>✓ 不限次数 200-SKU 客户目录体检</li>
+            <li>✓ 510(k) 器械竞品获批与代码异动追踪</li>
+            <li>✓ 多群 Webhook 并发推送 + 月度汇总留档</li>
+          </ul>
+        </div>
+        <button
+          type="button"
+          data-plan="多店铺/代运营季卡 (¥599/季)"
+          class="cn-plan-btn mt-8 w-full rounded-xl bg-teal-500 px-4 py-3 text-xs font-bold text-slate-950 hover:bg-teal-400 cursor-pointer"
+        >
+          申请多店铺版试跑（¥599/季）
+        </button>
+      </div>
+    </div>
+
+    <!-- 自助卡密管理入口 -->
+    <div class="pt-4">
+      <AlertPortal client:load locale="zh" />
+    </div>
+  </section>
+
+  <WatchlistModal client:idle locale="zh" />
+
+  <script is:inline>
+    document.querySelectorAll('.cn-plan-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var plan = btn.getAttribute('data-plan') || 'FDA 实时预警季卡 (¥199/季)';
+        window.dispatchEvent(new CustomEvent('regpulse:open-watchlist', { detail: { plan: plan } }));
+      });
+    });
+  </script>
+</CnLayout>

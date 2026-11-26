@@ -1,0 +1,61 @@
+---
+import CnLayout from '../../layouts/CnLayout.astro';
+import ListingScanner from '../../components/ListingScanner';
+import WatchlistModal from '../../components/WatchlistModal';
+import recallsData from '../../data/recalls.json';
+import warningLettersData from '../../data/warning_letters.json';
+import metadata from '../../data/metadata.json';
+import { COMPLIANCE_RULES } from '../../data/complianceRules';
+import type { RecallRecord, WarningLetterRecord } from '../../engine/scanner';
+
+const recalls = recallsData as RecallRecord[];
+const warningLetters = warningLettersData as WarningLetterRecord[];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${path}`}`;
+---
+
+<CnLayout
+  title="RegPulse 跨境版 — 美国站 Amazon/TikTok FDA 违禁词扫描与警告信预警"
+  description="专为中国出海美国站美妆（MoCRA）、保健品（DSHEA）、宠物与美容仪卖家打造：40 项联邦法规违禁词体检、200-SKU 表格批量扫描与企业微信/飞书实时预警。"
+  canonicalPath="/cn/"
+>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div class="max-w-4xl">
+        <div class="inline-flex flex-wrap items-center gap-2 rounded-full border border-teal-200 bg-teal-50/80 px-3 py-1 text-xs font-semibold text-teal-900 mb-4">
+          <span class="inline-block h-2 w-2 rounded-full bg-teal-600" aria-hidden="true"></span>
+          <span>直连美国 FDA.gov 与 openFDA • {warningLetters.length} 封最新警告信 • {metadata.totalRecallsIndexed} 条实时召回 • {COMPLIANCE_RULES.length} 项官方法条规则</span>
+        </div>
+
+        <h1 id="main-content" tabindex="-1" class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 leading-[1.15]">
+          10 秒拦截 FDA 违禁词与 Amazon 扫号下架雷区。
+        </h1>
+
+        <p class="mt-4 text-base text-slate-600 leading-relaxed max-w-3xl">
+          专为深圳/杭州/广州出海美国站的<strong>美妆护肤（MoCRA）</strong>、<strong>膳食补充剂（DSHEA）</strong>、<strong>宠物用品（CVM）</strong>与<strong>美容仪卖家</strong>打造。单品本地扫描永久免费；支持一键上传 <strong>200-SKU 批量表</strong> 与 <strong>企业微信/飞书群实时监控</strong> 代工厂 FDA 警告信与召回动态。
+        </p>
+
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <a
+            href={withBase('/cn/bulk/')}
+            class="inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+          >
+            上传 200-SKU 批量表体检（前 3 行免费） →
+          </a>
+          <a
+            href={withBase('/cn/warning-letters/')}
+            class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+          >
+            查看 {warningLetters.length} 封最新 FDA 警告信（可筛中国工厂）
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+    <ListingScanner client:load recalls={recalls} warningLetters={warningLetters} basePath={base} locale="zh" />
+  </section>
+
+  <WatchlistModal client:idle locale="zh" />
+</CnLayout>

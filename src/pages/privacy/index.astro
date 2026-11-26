@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy | RegPulse Regulatory Intelligence"
+  description="How RegPulse handles browser-local listing scans, CSV files, subscriber email addresses, and watchlist alert configurations."
+  canonicalPath="/privacy/"
+>
+  <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm space-y-6 text-sm text-slate-700 leading-relaxed">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wider text-teal-700">Legal &amp; Compliance</p>
+        <h1 id="main-content" tabindex="-1" class="mt-1 text-3xl font-extrabold text-slate-950">Privacy Policy</h1>
+        <p class="mt-2 text-xs text-slate-500">Effective Date: November 26, 2026</p>
+      </div>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-slate-950">1. Zero-Upload Browser-Local Listing &amp; CSV Scanning</h2>
+        <p>
+          Both the single-SKU Listing Scanner and the 200-SKU Bulk CSV Catalog Scanner execute <strong>100% locally inside your browser</strong>. Your product titles, bullet points, backend search terms, ingredient formulas, and uploaded CSV files are never transmitted to or stored on RegPulse servers.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-slate-950">2. Data We Collect for Paid Subscriptions &amp; Alerts</h2>
+        <p>
+          When you purchase a Bulk Catalog Pass or Watchlist Radar subscription, our payment processor (Merchant of Record) handles all card/billing details—RegPulse never stores credit card numbers. To fulfill automated delivery, we store only: your work email address, active plan status, issued License Key, your chosen watchlist keywords (OEM names, ingredients, or product codes), and your optional Slack or JSON Webhook URL.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-slate-950">3. Data Usage, Retention &amp; Deletion</h2>
+        <p>
+          We never sell, rent, or trade customer emails or watchlist keywords. Your data is used strictly to verify license keys and deliver requested FDA regulatory alerts. You may request complete deletion of your subscriber record and watchlist configuration at any time by emailing <a href="mailto:hachileviathan@gmail.com" class="text-teal-700 font-semibold underline">hachileviathan@gmail.com</a>; deletions are completed within 72 hours.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-slate-950">4. Privacy-First Analytics</h2>
+        <p>
+          We use cookie-free aggregate web analytics (Cloudflare Web Analytics) to measure aggregate page traffic without cross-site tracking or advertising pixels.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

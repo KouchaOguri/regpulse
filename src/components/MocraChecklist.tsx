@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, AlertTriangle, FileDown } from 'lucide-react';
-import { getInitialLang, type Lang } from '../lib/config';
+import { resolveLang, type Lang } from '../lib/config';
 
 interface CheckItem {
   id: string;
@@ -100,24 +100,17 @@ const MOCRA_ITEMS: CheckItem[] = [
   },
 ];
 
-export default function MocraChecklist() {
-  const [lang, setLang] = useState<Lang>('en');
+export default function MocraChecklist({ locale = 'en' }: { locale?: Lang }) {
+  const lang = resolveLang(locale);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    setLang(getInitialLang());
     try {
       const saved = JSON.parse(localStorage.getItem('regpulse_mocra_checks_v1') || '{}');
       if (saved && typeof saved === 'object') setChecked(saved);
     } catch {
       // ignore
     }
-    const handler = (ev: Event) => {
-      const next = (ev as CustomEvent<Lang>).detail;
-      if (next === 'en' || next === 'zh') setLang(next);
-    };
-    window.addEventListener('regpulse:lang', handler);
-    return () => window.removeEventListener('regpulse:lang', handler);
   }, []);
 
   const toggle = (id: string) => {

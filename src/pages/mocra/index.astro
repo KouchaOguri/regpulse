@@ -14,45 +14,41 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
   <section class="border-b border-slate-200 bg-white">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
       <p class="text-xs font-bold uppercase tracking-wider text-teal-700">
-        <span data-i18n-en>Modernization of Cosmetics Regulation Act (MoCRA)</span>
-        <span data-i18n-zh class="hidden">美国《化妆品法规现代化法案》（MoCRA）实操自查</span>
+        Modernization of Cosmetics Regulation Act (MoCRA)
       </p>
       <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
-        <span data-i18n-en>2026 MoCRA Cosmetics &amp; Amazon Compliance Checklist</span>
-        <span data-i18n-zh class="hidden">2026 美国 MoCRA 化妆品新规 &amp; Amazon 审核自查清单</span>
+        2026 MoCRA Cosmetics &amp; Amazon Compliance Checklist
       </h1>
       <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-        <span data-i18n-en>
-          Under MoCRA, responsibility is split between your contract manufacturer (Facility Registration) and you as the Brand Owner / Responsible Person (Product Listing, Safety Substantiation, U.S. Adverse-Event Contact). Audit your readiness below (auto-saved locally) and print your dossier checklist.
-        </span>
-        <span data-i18n-zh class="hidden">
-          在 MoCRA 新规下，代工厂与品牌方（Responsible Person）的法定责任被彻底拆开：工厂管设施注册（FEI），品牌方必须独立负责单品列名、安全性证明留档与包装美国不良事件联系方式。勾选进度自动本地保存，可一键打印/导出 PDF 档案。
-        </span>
+        Under MoCRA, responsibility is split between your contract manufacturer (Facility Registration) and you as the Brand Owner / Responsible Person (Product Listing, Safety Substantiation, U.S. Adverse-Event Contact). Audit your readiness below (auto-saved locally) and print your dossier checklist.
       </p>
     </div>
   </section>
 
   <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-    <MocraChecklist client:load />
+    <MocraChecklist client:load locale="en" />
 
     <div class="rounded-2xl border border-slate-200 bg-slate-900 text-white p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
       <div>
-        <h2 class="text-base font-bold">
-          <span data-i18n-en>Next Step: Scan Your Cosmetic Copy for Hidden Drug Claims</span>
-          <span data-i18n-zh class="hidden">下一步：把化妆品五点描述和成分表放进免费违禁词扫描器</span>
-        </h2>
+        <h2 class="text-base font-bold">Next Step: Scan Your Cosmetic Copy for Hidden Drug Claims</h2>
         <p class="mt-1 text-xs text-slate-300">
-          <span data-i18n-en>Catch acne, eczema, SPF sunscreen, anti-dandruff, sun-damage repair, hydroquinone, and EPA antibacterial traps before Amazon bots do.</span>
-          <span data-i18n-zh class="hidden">提前拦截祛痘/湿疹、未办 OTC 的 SPF 防晒与去屑宣称、修复晒伤、氢醌及 EPA 杀菌词陷阱。</span>
+          Catch acne, eczema, SPF sunscreen, lidocaine numbing, anti-dandruff, exosome/stem-cell, hydroquinone, and EPA antibacterial traps before Amazon bots do.
         </p>
       </div>
-      <a
-        href={withBase('/')}
-        class="rounded-xl bg-teal-500 px-5 py-2.5 text-xs font-bold text-slate-950 hover:bg-teal-400 shrink-0"
-      >
-        <span data-i18n-en>Launch Listing Scanner →</span>
-        <span data-i18n-zh class="hidden">启动免费 Listing 扫描器 →</span>
-      </a>
+      <div class="flex flex-wrap gap-2 shrink-0">
+        <a
+          href={withBase('/')}
+          class="rounded-xl bg-teal-500 px-4 py-2.5 text-xs font-bold text-slate-950 hover:bg-teal-400"
+        >
+          Single Scanner →
+        </a>
+        <a
+          href={withBase('/bulk/')}
+          class="rounded-xl border border-slate-600 bg-slate-800 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-700"
+        >
+          200-SKU Bulk CSV
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

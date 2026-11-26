@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WatchlistModal from '../../components/WatchlistModal';
+import warningLettersData from '../../data/warning_letters.json';
+import type { WarningLetterRecord } from '../../engine/scanner';
+
+export function getStaticPaths() {
+  const letters = warningLettersData as WarningLetterRecord[];
+  return letters.map((wl) => ({
+    params: { id: wl.id },
+    props: { wl },
+  }));
+}
+
+interface Props {
+  wl: WarningLetterRecord;
+}
+
+const { wl } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${path}`}`;
+---
+
+<BaseLayout
+  title={`${wl.companyName} FDA Warning Letter${wl.cmsId ? ` (CMS #${wl.cmsId})` : ''} | RegPulse`}
+  description={`Official FDA Warning Letter issued to ${wl.companyName} by ${wl.issuingOffice} on ${wl.letterIssueDate}: ${wl.subject}.`}
+  canonicalPath={`/warning-letters/${wl.id}/`}
+>
+  <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
+    <nav aria-label="Breadcrumb" class="mb-6 text-xs text-slate-500">
+      <a href={withBase('/')} class="hover:text-slate-900">Home</a>
+      <span class="mx-1.5">/</span>
+      <a href={withBase('/warning-letters/')} class="hover:text-slate-900">FDA Warning Letters</a>
+      <span class="mx-1.5">/</span>
+      <span class="font-mono text-slate-800">{wl.cmsId ? `CMS #${wl.cmsId}` : wl.letterIssueDate}</span>
+    </nav>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="rounded-md bg-amber-100 px-2.5 py-1 text-xs font-bold uppercase text-amber-900">
+          Official FDA Warning Letter
+        </span>
+        <span class="rounded-md bg-teal-50 border border-teal-200 px-2.5 py-1 text-xs font-semibold text-teal-900">
+          {wl.vertical}
+        </span>
+        {wl.cmsId && <span class="font-mono text-xs text-slate-500">CMS #{wl.cmsId}</span>}
+      </div>
+
+      <h1 id="main-content" tabindex="-1" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+        {wl.companyName} — FDA Enforcement Warning Letter
+      </h1>
+
+      <dl class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 border-y border-slate-100 py-4 text-xs">
+        <div>
+          <dt class="text-slate-500 font-semibold">FDA Posted Date</dt>
+          <dd class="mt-1 font-mono font-bold text-slate-900">{wl.postedDate || 'N/A'}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-500 font-semibold">Letter Issue Date</dt>
+          <dd class="mt-1 font-mono font-bold text-slate-900">{wl.letterIssueDate || 'N/A'}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-500 font-semibold">Issuing FDA Office</dt>
+          <dd class="mt-1 font-bold text-slate-900">{wl.issuingOffice}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-6 space-y-5">
+        <div>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Cited Statutory Violation Subject</h2>
+          <p class="mt-2 rounded-xl bg-amber-50/70 border border-amber-200 p-4 text-sm font-semibold text-amber-950 leading-relaxed">
+            {wl.subject}
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Enforcement Signals</h2>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {wl.riskTags.map((tag) => (
+              <span class="rounded-lg bg-slate-100 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-800">
+                {tag === 'China / Cross-Border Firm' ? 'Foreign / Overseas Manufacturer' : tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-700 leading-relaxed">
+          <strong class="text-slate-900">Operator Takeaway:</strong> If your brand sources from this manufacturer or markets products in the same vertical ({wl.vertical}), immediately review your listing copy and supplier cGMP / OTC documentation to prevent import detention or Amazon ASIN suppression.
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+          <a
+            href={wl.letterUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs font-bold text-blue-700 hover:underline"
+          >
+            Read Full Official Warning Letter on FDA.gov ↗
+          </a>
+          <div class="flex flex-wrap gap-2.5">
+            <a
+              href={withBase('/bulk/')}
+              class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+            >
+              Audit Your Catalog CSV
+            </a>
+            <button
+              type="button"
+              id="track-wl-firm-btn"
+              data-firm={wl.companyName}
+              class="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white hover:bg-teal-800 cursor-pointer"
+            >
+              Track “{wl.companyName.slice(0, 22)}” Alerts
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <WatchlistModal client:idle locale="en" />
+
+  <script is:inline>
+    document.getElementById('track-wl-firm-btn')?.addEventListener('click', function (e) {
+      var firm = e.currentTarget.getAttribute('data-firm') || '';
+      window.dispatchEvent(
+        new CustomEvent('regpulse:open-watchlist', {
+          detail: { plan: 'Watchlist Radar Pro ($29/mo)', prefillKeywords: firm },
+        })
+      );
+    });
+  </script>
+</BaseLayout>

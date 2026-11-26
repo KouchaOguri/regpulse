@@ -1,0 +1,53 @@
+---
+import CnLayout from '../../../layouts/CnLayout.astro';
+import WarningLettersExplorer from '../../../components/WarningLettersExplorer';
+import WatchlistModal from '../../../components/WatchlistModal';
+import warningLettersData from '../../../data/warning_letters.json';
+import metadata from '../../../data/metadata.json';
+import type { WarningLetterRecord } from '../../../engine/scanner';
+
+const letters = warningLettersData as WarningLetterRecord[];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const syncDate = ((metadata as any).warningLettersLastSyncedUtc || metadata.lastSyncedUtc).slice(0, 10);
+---
+
+<CnLayout
+  title="FDA 实时官方警告信监控（含中国/跨境代工厂筛选） | RegPulse 跨境版"
+  description="每 12 小时直连 FDA.gov 抓取最新官方 Warning Letters，支持按中国/跨境工厂、OTC 违规、未获批药物与 CGMP 一键检索。"
+  canonicalPath="/cn/warning-letters/"
+>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-wider text-teal-700">FDA.gov 官方警告信实时直连</p>
+          <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+            FDA 实时警告信雷达（已收录最新 {letters.length} 封）
+          </h1>
+          <p class="mt-3 text-sm sm:text-base text-slate-600">
+            同步自美国 FDA.gov 官方警告信总表（最近同步：<strong class="font-mono text-slate-800">{syncDate} UTC</strong>）。支持一键筛选「中国/跨境涉事工厂」、OTC 药品专论违规与 CGMP 缺陷，提前排查代工厂停产或海关扣货风险。
+          </p>
+        </div>
+        <button
+          type="button"
+          id="cn-wl-alert-btn"
+          class="rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-teal-800 cursor-pointer"
+        >
+          开通代工厂企微/飞书预警（¥199/季）
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <WarningLettersExplorer client:load letters={letters} basePath={base} locale="zh" />
+  </section>
+
+  <WatchlistModal client:idle locale="zh" />
+
+  <script is:inline>
+    document.getElementById('cn-wl-alert-btn')?.addEventListener('click', function () {
+      window.dispatchEvent(new CustomEvent('regpulse:open-watchlist', { detail: { plan: 'FDA 实时预警季卡 (¥199/季)' } }));
+    });
+  </script>
+</CnLayout>

@@ -12,12 +12,14 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { SAMPLE_LISTINGS, type ProductVertical } from '../data/complianceRules';
-import { scanListing, type RecallRecord, type ScanResult } from '../engine/scanner';
-import { getInitialLang, type Lang } from '../lib/config';
+import { scanListing, type RecallRecord, type ScanResult, type WarningLetterRecord } from '../engine/scanner';
+import { resolveLang, type Lang } from '../lib/config';
 
 interface Props {
   recalls: RecallRecord[];
+  warningLetters?: WarningLetterRecord[];
   basePath: string;
+  locale?: Lang;
 }
 
 const VERTICAL_OPTIONS: Array<{
@@ -31,29 +33,36 @@ const VERTICAL_OPTIONS: Array<{
     value: 'cosmetics',
     labelEn: 'Cosmetics & Skincare (MoCRA)',
     labelZh: '美妆护肤（MoCRA）',
-    hintEn: 'Serums, creams, hair/lash, SPF/dandruff checks',
-    hintZh: '精华/面霜/洗护/防晒/去屑检测',
+    hintEn: 'Serums, SPF, numbing, oral, colorants',
+    hintZh: '精华/防晒/麻膏/口腔/色素检测',
   },
   {
     value: 'supplements',
     labelEn: 'Dietary Supplements (DSHEA)',
     labelZh: '膳食补充剂 / 保健品',
-    hintEn: 'Capsules, gummies, botanicals, vitamins',
-    hintZh: '胶囊/软糖/草本/维生素/护肝',
+    hintEn: 'Capsules, gummies, botanicals, OTC traps',
+    hintZh: '胶囊/软糖/草本/抗过敏/护肝',
   },
   {
     value: 'devices',
     labelEn: 'Beauty & Light Medical Devices',
     labelZh: '美容仪 / 轻医疗器械',
-    hintEn: 'LED masks, EMS, IPL, TENS, wearables',
-    hintZh: '红光仪/微电流/脱毛仪/穿戴',
+    hintEn: 'LED masks, EMS, IPL, HIFU, wearables',
+    hintZh: '红光仪/微电流/超声刀/穿戴',
+  },
+  {
+    value: 'pets',
+    labelEn: 'Pet Supplements & Grooming (CVM)',
+    labelZh: '宠物补剂 / 洗护（CVM）',
+    hintEn: 'Dog/cat chews, shampoos, flea/tick traps',
+    hintZh: '犬猫软糖/香波/驱虫与兽药红线',
   },
   {
     value: 'general',
-    labelEn: 'General / Multi-Category',
-    labelZh: '通用 / 全类目扫描',
-    hintEn: 'Run all FDA, FTC & EPA FIFRA rules',
-    hintZh: '全量扫描 FDA + FTC + EPA 农药词',
+    labelEn: 'General / All 40 Rules',
+    labelZh: '通用 / 全部 40 条规则',
+    hintEn: 'Run all FDA, FTC, CVM & EPA FIFRA rules',
+    hintZh: '全量扫描 FDA + FTC + CVM + EPA',
   },
 ];
 
@@ -65,6 +74,9 @@ const CATEGORY_ZH: Record<string, string> = {
   'Prohibited / Tainted Ingredient': '禁用/非法添加成分',
   'EPA Pesticide Trap': 'EPA 农药扫号陷阱',
   'FTC Substantiation': 'FTC 临床证据红线',
+  'Cosmetic Labeling & Colorants': '化妆品警示语与色素红线',
+  'Animal / Pet Drug Claim': '宠物未获批兽药违规',
+  'Medical Device / Biologics': '医疗器械/生物制品红线',
 };
 
 const SEVERITY_ZH: Record<string, string> = {
@@ -86,8 +98,8 @@ function extractMonitorKeywords(ingredients: string, vertical: ProductVertical):
   return 'Brand Name, OEM Manufacturer, Key Ingredients';
 }
 
-export default function ListingScanner({ recalls, basePath }: Props) {
-  const [lang, setLang] = useState<Lang>('en');
+export default function ListingScanner({ recalls, warningLetters = [], basePath, locale = 'en' }: Props) {
+  const lang = resolveLang(locale);
   const [vertical, setVertical] = useState<ProductVertical>('cosmetics');
   const [title, setTitle] = useState(SAMPLE_LISTINGS.cosmetic.title);
   const [bullets, setBullets] = useState(SAMPLE_LISTINGS.cosmetic.bullets);
@@ -95,30 +107,18 @@ export default function ListingScanner({ recalls, basePath }: Props) {
   const [isDemoLoaded, setIsDemoLoaded] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [statusMsg, setStatusMsg] = useState('');
-  const [result, setResult] = useState<ScanResult | null>(null);
-
-  useEffect(() => {
-    setLang(getInitialLang());
-    const handler = (ev: Event) => {
-      const next = (ev as CustomEvent<Lang>).detail;
-      if (next === 'en' || next === 'zh') setLang(next);
-    };
-    window.addEventListener('regpulse:lang', handler);
-    return () => window.removeEventListener('regpulse:lang', handler);
-  }, []);
-
-  useEffect(() => {
-    const initial = scanListing(
+  const [result, setResult] = useState<ScanResult | null>(() =>
+    scanListing(
       {
         title: SAMPLE_LISTINGS.cosmetic.title,
         bullets: SAMPLE_LISTINGS.cosmetic.bullets,
         ingredients: SAMPLE_LISTINGS.cosmetic.ingredients,
         vertical: 'cosmetics',
       },
-      recalls
-    );
-    setResult(initial);
-  }, [recalls]);
+      recalls,
+      warningLetters
+    )
+  );
 
   const withBase = (path: string) => {
     const clean = basePath.replace(/\/$/, '');
@@ -127,7 +127,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
 
   const handleRunScan = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const res = scanListing({ title, bullets, ingredients, vertical }, recalls);
+    const res = scanListing({ title, bullets, ingredients, vertical }, recalls, warningLetters);
     setResult(res);
     setStatusMsg(
       lang === 'zh'
@@ -145,7 +145,8 @@ export default function ListingScanner({ recalls, basePath }: Props) {
     setIsDemoLoaded(true);
     const res = scanListing(
       { title: s.title, bullets: s.bullets, ingredients: s.ingredients, vertical: s.vertical },
-      recalls
+      recalls,
+      warningLetters
     );
     setResult(res);
     setStatusMsg(
@@ -212,7 +213,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
     window.dispatchEvent(
       new CustomEvent('regpulse:open-watchlist', {
         detail: {
-          plan: lang === 'zh' ? '中文跨境监控季卡 (¥199/季)' : 'Starter Watchlist ($29/mo)',
+          plan: lang === 'zh' ? 'FDA 实时预警季卡 (¥199/季)' : 'Watchlist Radar Pro ($29/mo)',
           prefillKeywords: extractMonitorKeywords(ingredients, vertical),
         },
       })
@@ -671,6 +672,64 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* Live FDA Warning Letters Cross-Reference */}
+            {warningLetters.length > 0 && (
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm print-card">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <h3 className="text-sm font-bold text-slate-900">
+                    {lang === 'zh'
+                      ? '同行业 FDA 官方警告信（Warning Letters）交叉比对'
+                      : 'Live FDA Warning Letters Enforcement Cross-Check'}
+                  </h3>
+                  <a
+                    href={withBase(lang === 'zh' ? '/cn/warning-letters/' : '/warning-letters/')}
+                    className="text-xs font-semibold text-teal-700 hover:underline no-print"
+                  >
+                    {lang === 'zh'
+                      ? `浏览全部 ${warningLetters.length} 封警告信 →`
+                      : `Browse all ${warningLetters.length} Warning Letters →`}
+                  </a>
+                </div>
+                {result.matchedWarningLetters.length === 0 ? (
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {lang === 'zh'
+                      ? '当前文本未直接命中近期 FDA 警告信涉事企业名或特定违规标签。建议开启 Watchlist 监控，自动盯防你的代工厂名称与核心成分。'
+                      : 'No direct firm or subject match in the newest live FDA Warning Letters index. Add your contract manufacturer (OEM) and active ingredients to Watchlist Radar Pro to receive instant alerts when FDA posts a new letter.'}
+                  </p>
+                ) : (
+                  <ul className="space-y-2.5">
+                    {result.matchedWarningLetters.map((wl) => (
+                      <li key={wl.id} className="rounded-xl border border-amber-200 bg-amber-50/50 p-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-slate-900">{wl.companyName}</span>
+                          <span className="font-mono text-[11px] text-slate-500">
+                            {wl.postedDate} {wl.cmsId ? `• CMS #${wl.cmsId}` : ''}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs text-slate-700">{wl.subject}</p>
+                        <div className="mt-2 flex items-center gap-3 text-[11px]">
+                          <a
+                            href={withBase(`/warning-letters/${wl.id}/`)}
+                            className="font-semibold text-teal-700 hover:underline"
+                          >
+                            {lang === 'zh' ? '查看警告信摘要' : 'View Warning Letter Brief'}
+                          </a>
+                          <a
+                            href={wl.letterUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-700 hover:underline inline-flex items-center gap-0.5"
+                          >
+                            FDA.gov <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                          </a>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
 

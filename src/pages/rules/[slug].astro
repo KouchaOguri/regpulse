@@ -41,15 +41,9 @@ const faqJsonLd = {
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
     <nav aria-label="Breadcrumb" class="mb-6 text-xs text-slate-500">
-      <a href={withBase('/')} class="hover:text-slate-900">
-        <span data-i18n-en>Home</span>
-        <span data-i18n-zh class="hidden">首页</span>
-      </a>
+      <a href={withBase('/')} class="hover:text-slate-900">Home</a>
       <span class="mx-1.5">/</span>
-      <a href={withBase('/rules/')} class="hover:text-slate-900">
-        <span data-i18n-en>21 CFR Rule Library</span>
-        <span data-i18n-zh class="hidden">法规词库</span>
-      </a>
+      <a href={withBase('/rules/')} class="hover:text-slate-900">40-Rule Library</a>
       <span class="mx-1.5">/</span>
       <span class="font-mono text-slate-800">{rule.id}</span>
     </nav>
@@ -67,78 +61,59 @@ const faqJsonLd = {
         </div>
 
         <h1 id="main-content" tabindex="-1" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
-          <span data-i18n-en>{rule.seoQuestionEn}</span>
-          <span data-i18n-zh class="hidden">{rule.seoQuestionZh}</span>
+          {rule.seoQuestionEn}
         </h1>
       </div>
 
       <section class="rounded-xl bg-red-50/60 border border-red-200 p-5">
-        <h2 class="text-sm font-bold text-red-950">
-          <span data-i18n-en>Why FDA &amp; Amazon Bots Flag This Claim</span>
-          <span data-i18n-zh class="hidden">为什么 FDA 执法与 Amazon 扫号机器人会处罚此类表述</span>
-        </h2>
-        <p class="mt-2 text-sm text-red-950/90 leading-relaxed">
-          <span data-i18n-en>{rule.whyFlaggedEn}</span>
-          <span data-i18n-zh class="hidden">{rule.whyFlaggedZh}</span>
-        </p>
+        <h2 class="text-sm font-bold text-red-950">Why FDA &amp; Amazon Bots Flag This Claim</h2>
+        <p class="mt-2 text-sm text-red-950/90 leading-relaxed">{rule.whyFlaggedEn}</p>
       </section>
 
       <section class="rounded-xl bg-emerald-50/70 border border-emerald-200 p-5">
-        <h2 class="text-sm font-bold text-emerald-950">
-          <span data-i18n-en>Compliant Alternative Copy (Safe Rewrite)</span>
-          <span data-i18n-zh class="hidden">安全合规改写模板</span>
-        </h2>
-        <p class="mt-2 text-sm text-emerald-950 leading-relaxed">
-          <span data-i18n-en>{rule.safeRewriteEn}</span>
-          <span data-i18n-zh class="hidden">{rule.safeRewriteZh}</span>
-        </p>
+        <h2 class="text-sm font-bold text-emerald-950">Compliant Alternative Copy (Safe Rewrite)</h2>
+        <p class="mt-2 text-sm text-emerald-950 leading-relaxed">{rule.safeRewriteEn}</p>
       </section>
 
       <section class="rounded-xl bg-slate-50 border border-slate-200 p-5 space-y-2">
-        <h2 class="text-sm font-bold text-slate-900">
-          <span data-i18n-en>Official Statutory Citation &amp; Enforcement Precedent</span>
-          <span data-i18n-zh class="hidden">官方法条出处与真实执法惯例</span>
-        </h2>
+        <h2 class="text-sm font-bold text-slate-900">Official Statutory Citation &amp; Enforcement Precedent</h2>
         <p class="text-xs font-mono text-slate-700 break-words">
-          <strong>
-            <span data-i18n-en>Statute:</span>
-            <span data-i18n-zh class="hidden">法条依据：</span>
-          </strong>{' '}
-          {rule.statute}
+          <strong>Statute:</strong> {rule.statute}
         </p>
-        <p class="text-xs text-slate-700 leading-relaxed">
-          <span data-i18n-en>{rule.precedentEn}</span>
-          <span data-i18n-zh class="hidden">{rule.precedentZh}</span>
-        </p>
+        <p class="text-xs text-slate-700 leading-relaxed">{rule.precedentEn}</p>
         <a
           href={rule.officialRefUrl}
           target="_blank"
           rel="noopener noreferrer"
           class="inline-block pt-1 text-xs font-semibold text-blue-700 hover:underline"
         >
-          <span data-i18n-en>Read Official Source: {rule.officialRefLabel} ↗</span>
-          <span data-i18n-zh class="hidden">直连查阅官方原始法条：{rule.officialRefLabel} ↗</span>
+          Read Official Source: {rule.officialRefLabel} ↗
         </a>
       </section>
 
       <div class="rounded-2xl bg-slate-900 text-white p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-base font-bold">
-            <span data-i18n-en>Check Your Full Listing Against All {COMPLIANCE_RULES.length} Rules Free</span>
-            <span data-i18n-zh class="hidden">免费把整条 Listing 放进 RegPulse 扫描全部 {COMPLIANCE_RULES.length} 项红线规则</span>
+            Audit Your Entire Catalog Against All {COMPLIANCE_RULES.length} Rules
           </h2>
           <p class="mt-1 text-xs text-slate-300">
-            <span data-i18n-en>Instant browser-local scan + vertical-matched openFDA recall check + audit PDF report.</span>
-            <span data-i18n-zh class="hidden">免登录 100% 本地瞬时扫描 + 同行业 openFDA 召回比对 + 可打印审计 PDF 报告。</span>
+            Instant browser-local single listing scan free, or upload a 200-SKU CSV for bulk remediation.
           </p>
         </div>
-        <a
-          href={withBase('/')}
-          class="rounded-xl bg-teal-500 px-5 py-2.5 text-xs font-bold text-slate-950 hover:bg-teal-400 shrink-0"
-        >
-          <span data-i18n-en>Open Free Scanner →</span>
-          <span data-i18n-zh class="hidden">打开免费体检扫描器 →</span>
-        </a>
+        <div class="flex flex-wrap gap-2 shrink-0">
+          <a
+            href={withBase('/')}
+            class="rounded-xl bg-teal-500 px-4 py-2.5 text-xs font-bold text-slate-950 hover:bg-teal-400"
+          >
+            Free Scanner →
+          </a>
+          <a
+            href={withBase('/bulk/')}
+            class="rounded-xl border border-slate-600 bg-slate-800 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-700"
+          >
+            Bulk 200-SKU CSV
+          </a>
+        </div>
       </div>
     </div>
   </article>

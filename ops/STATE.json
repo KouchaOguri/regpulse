@@ -1,68 +1,77 @@
 {
-  "schemaVersion": "1.1",
+  "schemaVersion": "2.0",
   "project": "RegPulse",
-  "updatedAtUtc": "2026-11-26T10:23:00Z",
+  "updatedAtUtc": "2026-11-26T22:05:00Z",
   "milestone": {
-    "current": "Phase 2 - Milestone 1 & 2 Complete (Ready for Milestone 3 Investor Unlocks & Cold-Start Distribution)",
-    "status": "milestone_1_2_verified"
+    "current": "Phase 2 - v2.0 Commercial Hardening Complete (All 5 Investor Demands Shipped & Verified; Ready for Step 1 Domain Approval)",
+    "status": "v2_0_ready_for_domain_unlock"
   },
   "repository": {
     "localPath": "d:/hachimi/regpulse",
     "remoteUrl": "https://github.com/KouchaOguri/regpulse",
     "branch": "main",
-    "previousVerifiedSha": "afa8ffc",
-    "releaseVersion": "v1.1.1"
+    "previousVerifiedSha": "681f88e",
+    "releaseVersion": "v2.0.0"
   },
   "deployment": {
     "liveUrl": "https://kouchaoguri.github.io/regpulse/",
+    "isolatedCnUrl": "https://kouchaoguri.github.io/regpulse/cn/",
     "customDomainCandidate": "regpulsehq.com",
     "customDomainPurchased": false,
-    "autoSyncSchedule": "Every 12 hours via GitHub Actions (02:15 & 14:15 UTC)"
+    "autoSyncSchedule": "Every 12 hours via GitHub Actions (02:15 & 14:15 UTC — syncs openFDA Recalls + live FDA.gov Warning Letters + Alert Dispatch + IndexNow)"
   },
   "budget": {
     "authorizedLimitCny": 150,
     "cashSpentCny": 0,
     "pendingApprovalItems": [
       {
-        "item": "Custom .com domain (regpulsehq.com via Cloudflare Registrar)",
+        "step": "Step 1 (Immediate Unlock for L2 External Intent Validation)",
+        "item": "Custom .com domain (regpulsehq.com via Cloudflare Registrar) + Cloudflare Web Analytics + Cloudflare Worker deployment (api.regpulsehq.com)",
         "estimatedCny": 75,
         "estimatedUsd": 10.44,
         "status": "awaiting_investor_approval"
       }
+    ],
+    "deferredUntilL2Verified": [
+      "Creem.io Global USD KYC (Alipay payout)",
+      "Mianbaoduo CN RMB KYC",
+      "Apify Store Payout (Payoneer)"
     ]
   },
-  "kycAndBilling": {
-    "creemIo": "ready_for_investor_kyc",
-    "mianbaoduo": "ready_for_investor_kyc",
-    "openFdaApiKey": "optional_free_signup_ready",
-    "leadWebhook": "ready_to_wire_web3forms_or_cloudflare_worker"
+  "selfResolvedZeroRiskItems": {
+    "openFdaApiKey": "Attempted via browser; hit CAPTCHA/bot check — stopped per policy. Eliminated dependency: keyless openFDA allows 1,000 req/day vs our 22 req/day usage (2.2%). Permanently removed from investor TODO.",
+    "web3Forms": "Attempted via browser; hit HTTP 403 Cloudflare Turnstile — stopped per policy. Permanently replaced by self-owned Cloudflare Worker POST /api/leads in fulfillment-worker/."
   },
   "evidenceLevels": {
     "L0_buildAndVerification": {
       "syncManifestVerified": true,
+      "warningLettersIndexed": 198,
       "recallsIndexed": 210,
       "foodLeaksInCosmetics": 0,
       "clearances510kIndexed": 40,
-      "cosmeticEventsTotal": 85511,
-      "cosmeticEventsNonTalc": 13982,
-      "citationsLockVerified": true,
-      "citationsLockedHttp200": "20/20",
-      "liveOpenFdaRoundTripSpotCheck": "8/8 HTTP 200 match (5 recalls + 3 510k)",
-      "goldenScannerTests": "8/8 passed",
-      "antiFabricationStaticScan": "passed_src_and_dist"
+      "statutoryRulesCount": 40,
+      "verticalsSupported": 5,
+      "staticPagesBuilt": 463,
+      "englishPagesBuilt": 459,
+      "cnIsolatedPagesBuilt": 4,
+      "citationsLockedHttp200": "33/33",
+      "liveOpenFdaRoundTripSpotCheck": "8/8 HTTP 200 match",
+      "goldenScannerTests": "8/8 passed (40 rules + Pet CVM + Warning Letters cross-ref)",
+      "automatedFulfillmentE2ETests": "10/10 passed (Creem HMAC + idempotency + Mianbaoduo + License verify + Watchlist save + 2 live FDA alerts dispatched + 0 duplicate replays + /api/leads + cancel revoke)",
+      "dualMarketIsolationGate": "passed (459/459 EN HTML pages have 0 UI CJK & 0 RMB/WeCom/Feishu/Mianbaoduo leaks; 0 /cn/ URLs in sitemap-0.xml)",
+      "apifyActorSmokeTest": "passed"
     },
     "L1_liveRenderAndIndependentQA": {
-      "pagesHttp200Verified": true,
-      "redTeamRound1Score": "5.5/10 (NO-GO; 4 P0s + 3 P1s identified)",
-      "redTeamRound2Score": "8.2/10 (CONDITIONAL GO; all engineering/i18n/mobile P0s closed; 3 residual bugs patched in v1.1.1)",
-      "remainingPaidConversionGate": "Custom domain + branded email + live Creem/Mianbaoduo checkout + async lead POST + Dec 1 CodexCLI blind review",
+      "redTeamRound1Score": "5.5/10 (NO-GO)",
+      "redTeamRound2Score": "8.2/10 (CONDITIONAL GO on v1.1)",
+      "redTeamRound3PendingOnLiveV2": true,
       "codexCliCrossModelAuditDate": "2026-12-01"
     },
     "L2_externalSignals": {
       "analyticsConnected": false,
       "externalUniqueScans": "unmeasured",
       "externalWatchlistRequests": 0,
-      "note": "Self-visits and QA runs strictly excluded; public cold-start distribution not yet launched."
+      "note": "Self-visits and QA runs strictly excluded; awaits Step 1 custom domain + Cloudflare Web Analytics."
     },
     "L3_verifiedRevenue": {
       "paidOrders": 0,

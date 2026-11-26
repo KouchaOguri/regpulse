@@ -361,12 +361,38 @@ def main() -> None:
         by_class[r["classification"]] = by_class.get(r["classification"], 0) + 1
 
     now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    # Preserve existing Warning Letters metadata & manifest provenance if already synced on disk
+    existing_meta = {}
+    meta_path = DATA_DIR / "metadata.json"
+    if meta_path.exists():
+        try:
+            existing_meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        except Exception:
+            existing_meta = {}
+    existing_manifest = {}
+    manifest_path = DATA_DIR / "sync_manifest.json"
+    if manifest_path.exists():
+        try:
+            existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except Exception:
+            existing_manifest = {}
+
+    wl_path = DATA_DIR / "warning_letters.json"
+    wl_count = 0
+    if wl_path.exists():
+        try:
+            wl_count = len(json.loads(wl_path.read_text(encoding="utf-8")))
+        except Exception:
+            wl_count = 0
+
     metadata = {
         "lastSyncedUtc": now_iso,
         "lastSyncedDisplay": datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC"),
         "totalRecallsIndexed": len(all_recalls),
         "total510kIndexed": len(clearances_510k),
         "totalRssAlerts": len(rss_alerts),
+        "totalWarningLettersIndexed": wl_count or existing_meta.get("totalWarningLettersIndexed", 0),
+        "warningLettersLastSyncedUtc": existing_meta.get("warningLettersLastSyncedUtc", now_iso),
         "cosmeticEventsInOpenFDA": cosmetic_trends.get("totalEventsInOpenFDA", 0),
         "nonTalcCosmeticEvents": cosmetic_trends.get("nonTalcEventsCount", 0),
         "countsByVertical": by_vertical,
@@ -378,6 +404,7 @@ def main() -> None:
             "https://api.fda.gov/device/510k.json",
             "https://api.fda.gov/cosmetic/event.json",
             "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls/rss.xml",
+            "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/compliance-actions-and-activities/warning-letters",
         ],
     }
 
@@ -398,11 +425,22 @@ def main() -> None:
             "recordCount": len(obj) if isinstance(obj, list) else (obj.get("totalEventsInOpenFDA") if "totalEventsInOpenFDA" in obj else 1),
         }
 
+    if wl_path.exists():
+        file_hashes["warning_letters.json"] = {
+            "sha256": sha256_file(wl_path),
+            "bytes": wl_path.stat().st_size,
+            "recordCount": wl_count,
+        }
+
+    preserved_wl_eps = [
+        ep for ep in existing_manifest.get("endpoints", []) if "warning-letters" in ep.get("url", "")
+    ]
     manifest = {
-        "schemaVersion": "1.1",
+        "schemaVersion": "1.2",
         "syncedAtUtc": now_iso,
+        "warningLettersSyncedAtUtc": existing_manifest.get("warningLettersSyncedAtUtc", now_iso),
         "apiKeyUsed": bool(API_KEY),
-        "endpoints": ENDPOINT_LOG,
+        "endpoints": ENDPOINT_LOG + preserved_wl_eps,
         "artifacts": file_hashes,
     }
     (DATA_DIR / "sync_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")

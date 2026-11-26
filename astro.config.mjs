@@ -10,7 +10,13 @@ export default defineConfig({
   site: siteUrl,
   base: basePath,
   trailingSlash: 'always',
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      // Strictly isolate /cn/ cross-border routes out of US English search sitemaps
+      filter: (page) => !page.includes('/cn/'),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

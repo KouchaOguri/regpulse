@@ -1,0 +1,38 @@
+---
+import CnLayout from '../../../layouts/CnLayout.astro';
+import BulkCatalogScanner from '../../../components/BulkCatalogScanner';
+import WatchlistModal from '../../../components/WatchlistModal';
+import recallsData from '../../../data/recalls.json';
+import warningLettersData from '../../../data/warning_letters.json';
+import { COMPLIANCE_RULES } from '../../../data/complianceRules';
+import type { RecallRecord, WarningLetterRecord } from '../../../engine/scanner';
+
+const recalls = recallsData as RecallRecord[];
+const warningLetters = warningLettersData as WarningLetterRecord[];
+---
+
+<CnLayout
+  title="200-SKU Amazon/Shopify 表格批量 FDA 违禁词预审 | RegPulse 跨境版"
+  description="100% 浏览器本地批量扫描最高 200 个 SKU，覆盖全部 40 项 FDA、MoCRA、OTC 专论、宠物 CVM 与 EPA 农药扫号规则，支持一键导出整改 CSV 表。"
+  canonicalPath="/cn/bulk/"
+>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <p class="text-xs font-bold uppercase tracking-wider text-teal-700">
+        整店上新/大促前批量防扫号 • 100% 浏览器本地运算不上传选品表
+      </p>
+      <h1 id="main-content" tabindex="-1" class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+        200-SKU 批量 CSV 合规体检与整改导出
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 max-w-3xl">
+        拖入 Amazon 批量上传表或 Shopify 导出表，1 秒内跑完 {COMPLIANCE_RULES.length} 项美国 FDA / OTC 专论 / EPA 农药扫号规则。前 3 个 SKU 永久免费预览，使用 ¥99 单次卡或 ¥199/季预警卡密即刻解锁全部 200 行并一键导出整改表给运营团队执行。
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <BulkCatalogScanner client:load recalls={recalls} warningLetters={warningLetters} locale="zh" />
+  </section>
+
+  <WatchlistModal client:idle locale="zh" />
+</CnLayout>
