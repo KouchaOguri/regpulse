@@ -39,12 +39,41 @@ const benignCosmetic = scanListing(
     title: 'Gentle Salicylic-Free Cleanser for Acne-Prone Skin – Helps Prevent Dry Skin',
     bullets:
       '• Alcohol-free, non-comedogenic daily cleanser. Visibly softens the appearance of fine lines.\n• Note: This cosmetic is not FDA approved.\n• Adverse event questions? Contact Responsible Person at support@example.com or 1-800-555-0100.',
-    ingredients: 'Water, Glycerin, Panthenol, Allantoin.',
+    ingredients: 'Water, Glycerin, Panthenol, Allantoin. Safety contact: safety@brand.com.',
   },
   recalls
 );
 assert.equal(benignCosmetic.findings.length, 0, `Benign cosmetic false positives: ${benignCosmetic.findings.map((f) => `${f.rule.id}:${f.matchedPhrases}`)}`);
 assert.equal(benignCosmetic.score, 0);
+assert.ok(
+  benignCosmetic.matchedRecalls.every((r) => r.vertical === 'Cosmetics & Skincare' && r.sourceCategory !== 'food'),
+  `Benign cosmetic leaked non-cosmetic recall: ${benignCosmetic.matchedRecalls.map((r) => `${r.recallingFirm}(${r.sourceCategory}/${r.vertical})`)}`
+);
+
+// 2b. Verify email domain token ("brand" in safety@brand.com) never triggers recall matches
+const emailOnlyCosmetic = scanListing(
+  {
+    vertical: 'cosmetics',
+    title: 'Pure Squalane Moisture Drops',
+    bullets: '• Fragrance-free daily hydration. Adverse events: safety@brand.com',
+    ingredients: 'Squalane, Glycerin, Safety contact: safety@brand.com',
+  },
+  recalls
+);
+assert.equal(emailOnlyCosmetic.matchedRecalls.length, 0, `Email token leaked recall: ${emailOnlyCosmetic.matchedRecalls.map((r) => r.recallingFirm)}`);
+
+// 2c. Standalone GERD and standalone Nail Fungus must both be caught
+const standaloneChecks = scanListing(
+  {
+    vertical: 'general',
+    title: 'Daily Formula for GERD and Nail Fungus',
+    bullets: '',
+    ingredients: '',
+  },
+  recalls
+);
+assert.ok(standaloneChecks.findings.some((f) => f.rule.id === 'SUP-DIS-GI'), 'Standalone GERD must trigger SUP-DIS-GI');
+assert.ok(standaloneChecks.findings.some((f) => f.rule.id === 'COS-OTC-DANDRUFF'), 'Standalone Nail Fungus must trigger COS-OTC-DANDRUFF');
 
 // 3. Red-Team Case B (Supplements): Hangover Cure + Acid Reflux/GERD + Liver Detox + Boosts Testosterone + Dandruff/Nail Fungus
 const caseB = scanListing(

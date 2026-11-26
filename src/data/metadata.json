@@ -1,17 +1,17 @@
 {
-  "lastSyncedUtc": "2026-11-26T10:10:09Z",
-  "lastSyncedDisplay": "Nov 26, 2026 · 10:10 UTC",
+  "lastSyncedUtc": "2026-11-26T10:22:13Z",
+  "lastSyncedDisplay": "Nov 26, 2026 · 10:22 UTC",
   "totalRecallsIndexed": 210,
   "total510kIndexed": 40,
   "totalRssAlerts": 20,
   "cosmeticEventsInOpenFDA": 85511,
   "nonTalcCosmeticEvents": 13982,
   "countsByVertical": {
-    "Dietary Supplements": 87,
-    "OTC & Unapproved Drugs": 17,
-    "Food & Consumables": 33,
+    "Dietary Supplements": 89,
+    "OTC & Unapproved Drugs": 20,
+    "Food & Consumables": 35,
     "Medical & Beauty Devices": 33,
-    "Cosmetics & Skincare": 40
+    "Cosmetics & Skincare": 33
   },
   "countsByClassification": {
     "Not Yet Classified": 1,

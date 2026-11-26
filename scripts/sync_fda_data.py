@@ -119,7 +119,12 @@ def slugify(text: str, max_len: int = 64) -> str:
 
 def infer_vertical(category: str, desc: str, reason: str) -> str:
     blob = f"{desc} {reason}".lower()
-    if any(k in blob for k in [
+    food_dairy_guard = any(k in blob for k in [
+        "ice cream", "creamery", "yogurt", "butter", "cheese", "sandwich", "bakery",
+        "cookie", "cake", "chocolate", "sour cream", "whipped cream", "salad", "sauce",
+        "tortilla", "snack", "bread", "pasta", "noodle", "candy", "cereal", "beverage",
+    ])
+    if not food_dairy_guard and category != "food" and any(k in blob for k in [
         "cosmetic", "lotion", "serum", "cream", "shampoo", "conditioner", "mascara",
         "makeup", "sunscreen", "eyelash", "facial", "cleanser", "lip balm", "deodorant",
         "moisturizer", "skin lightening", "skincare", "body wash", "toner", "ointment"

@@ -166,7 +166,7 @@ export const COMPLIANCE_RULES: ComplianceRule[] = [
     patterns: [
       '\\banti[-\\s]?dandruff\\b',
       '\\b(treat|treats|cure|cures|eliminate|eliminates|control|controls|stop|stops|fight|fights|remove|removes|relieve|relieves)\\s+(\\w+\\s+){0,2}(dandruff|seborrheic\\s+dermatitis|scalp\\s+psoriasis|warts?|skin\\s+tags?|moles?|nail\\s+fungus|toenail\\s+fungus|athlete[\'’]?s\\s+foot|ringworm)\\b',
-      '\\b(wart|skin\\s+tag|mole)\\s+(remover|removal|treatment|eliminator)\\b',
+      '\\b(nail\\s+fungus|toenail\\s+fungus|wart|skin\\s+tag|mole)\\s*(remover|removal|treatment|eliminator|cure|relief)?\\b',
       '\\bketoconazole\\b',
     ],
     seoQuestionEn: 'Is "anti-dandruff" or "skin tag remover" a cosmetic or an OTC drug under FDA rules?',
@@ -389,9 +389,9 @@ export const COMPLIANCE_RULES: ComplianceRule[] = [
     whyFlaggedZh:
       'FDA 对非获批产品提及癌症、皮肤癌、肿瘤、抗癌保持绝对零容忍，极易引发紧急警告信、禁令以及 Amazon 店铺永久封号。',
     safeRewriteEn:
-      'Delete every mention of cancer, tumor, or carcinogens. Stick strictly to general antioxidant/cellular wellness phrasing such as "provides antioxidant support*".',
+      'Delete every mention of cancer, skin cancer, tumors, or carcinogens completely. Keep copy strictly limited to general cosmetic appearance or lawful wellness maintenance.',
     safeRewriteZh:
-      '彻底删除所有癌症、肿瘤相关词汇，仅保留“提供日常抗氧化支持*（provides antioxidant support*）”等泛健康表述。',
+      '彻底删除所有癌症、皮肤癌、肿瘤相关词汇，仅保留合法的日常外观修饰或普通健康养护表述。',
     precedentEn:
       'Mushroom extracts, turmeric/curcumin, soursop, and sunscreens/teas frequently draw aggressive FDA & FTC joint actions for cancer claims.',
     precedentZh:
@@ -528,6 +528,7 @@ export const COMPLIANCE_RULES: ComplianceRule[] = [
       '\\bhangover\\s+(cure|relief|prevention|remedy|recovery|pill|defender)\\b',
       '\\b(prevents?|cures?|treats?|relieves?)\\s+(a\\s+)?hangovers?\\b',
       '\\b(relieve|relieves|treat|treats|cure|cures|heal|heals|stop|stops|prevent|prevents|for)\\s+(\\w+\\s+){0,2}(acid\\s+reflux|gerd|heartburn|fatty\\s+liver|cirrhosis|leaky\\s+gut|ibs|ulcers?|crohn[\'’]?s|colitis)\\b',
+      '\\bgerd\\b',
       '\\b(liver\\s+detox|detoxes?\\s+liver|cleanses?\\s+toxins?|flushes?\\s+toxins?|heavy\\s+metal\\s+detox)\\b',
     ],
     seoQuestionEn: 'Can milk thistle or probiotics claim "hangover cure", "liver detox", or "acid reflux relief"?',

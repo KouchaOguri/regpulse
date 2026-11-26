@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WatchlistModal from '../../components/WatchlistModal';
+import { COMPLIANCE_RULES } from '../../data/complianceRules';
 ---
 
 <BaseLayout
@@ -51,8 +52,8 @@ import WatchlistModal from '../../components/WatchlistModal';
               <span data-i18n-zh class="hidden">✓ 无限次浏览器本地极速违禁词扫描（不上传草稿）</span>
             </li>
             <li>
-              <span data-i18n-en>✓ All 18 21 CFR, MoCRA, DSHEA &amp; EPA FIFRA rules</span>
-              <span data-i18n-zh class="hidden">✓ 覆盖全部 18 项 21 CFR、MoCRA、OTC 与 EPA 规则</span>
+              <span data-i18n-en>✓ All {COMPLIANCE_RULES.length} 21 CFR, MoCRA, DSHEA &amp; EPA FIFRA rules</span>
+              <span data-i18n-zh class="hidden">✓ 覆盖全部 {COMPLIANCE_RULES.length} 项 21 CFR、MoCRA、OTC 与 EPA 规则</span>
             </li>
             <li>
               <span data-i18n-en>✓ Safe compliant rewrite suggestions</span>

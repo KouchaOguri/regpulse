@@ -90,6 +90,8 @@ const RECALL_STOPWORDS = new Set([
   'strength', 'advanced', 'clinical', 'proven', 'results', 'days', 'weeks', 'months', 'years',
   'seed', 'seeds', 'herb', 'herbal', 'vegetable', 'cellulose', 'rice', 'flour', 'citrate', 'oxide',
   'sodium', 'potassium', 'chloride', 'oil', 'oils', 'vitamin', 'vitamins', 'mineral', 'minerals',
+  'brand', 'safety', 'contact', 'support', 'example', 'austin', 'street', 'responsible', 'person',
+  'questions', 'comments', 'adverse', 'event', 'report', 'email', 'phone', 'label', 'ingredients',
 ]);
 
 function levenshtein(a: string, b: string): number {
@@ -337,13 +339,22 @@ export function scanListing(
     score >= 65 ? 'CRITICAL' : score >= 35 ? 'HIGH' : score >= 15 ? 'ELEVATED' : 'LOW';
 
   // Precision Vertical-Scoped, Whole-Word, Ingredient-Only Live OpenFDA Recall Cross-Reference
+  const sanitizedIngredients = (input.ingredients || '')
+    .replace(/\S+@\S+\.\S+/g, ' ')
+    .replace(/https?:\/\/\S+/gi, ' ')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ');
   const ingTokens = Array.from(
     new Set(
-      (input.ingredients || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, ' ')
+      sanitizedIngredients
         .split(/\s+/)
-        .filter((t) => t.length >= 5 && !/^\d+$/.test(t) && !RECALL_STOPWORDS.has(t))
+        .filter(
+          (t) =>
+            t.length >= 5 &&
+            !/^\d+$/.test(t) &&
+            !/^\d+(mg|mcg|ml|oz|iu|g)$/.test(t) &&
+            !RECALL_STOPWORDS.has(t)
+        )
     )
   ).slice(0, 20);
 
