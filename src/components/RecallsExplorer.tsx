@@ -8,16 +8,40 @@ interface Props {
   basePath: string;
 }
 
-const VERTICALS = [
-  'All',
-  'Dietary Supplements',
-  'Cosmetics & Skincare',
-  'Medical & Beauty Devices',
-  'OTC & Unapproved Drugs',
-  'Food & Consumables',
+const VERTICAL_OPTIONS = [
+  { value: 'All', en: 'All Verticals', zh: '全部行业类目' },
+  { value: 'Dietary Supplements', en: 'Dietary Supplements', zh: '膳食补充剂 / 保健品' },
+  { value: 'Cosmetics & Skincare', en: 'Cosmetics & Skincare', zh: '美妆护肤' },
+  { value: 'Medical & Beauty Devices', en: 'Medical & Beauty Devices', zh: '医疗与美容器械' },
+  { value: 'OTC & Unapproved Drugs', en: 'OTC & Unapproved Drugs', zh: 'OTC 与未获批药品' },
+  { value: 'Food & Consumables', en: 'Food & Consumables', zh: '食品与消费品' },
 ];
 
-const CLASSES = ['All', 'Class I', 'Class II', 'Class III'];
+const CLASS_OPTIONS = [
+  { value: 'All', en: 'All Classes', zh: '全部等级' },
+  { value: 'Class I', en: 'Class I (Severe)', zh: 'Class I（最高风险）' },
+  { value: 'Class II', en: 'Class II (Moderate)', zh: 'Class II（中度风险）' },
+  { value: 'Class III', en: 'Class III (Low)', zh: 'Class III（低度风险）' },
+];
+
+const VERTICAL_ZH_MAP: Record<string, string> = {
+  'Dietary Supplements': '膳食补充剂',
+  'Cosmetics & Skincare': '美妆护肤',
+  'Medical & Beauty Devices': '医疗/美容器械',
+  'OTC & Unapproved Drugs': 'OTC/未获批药',
+  'Food & Consumables': '食品与消费品',
+};
+
+const TAG_ZH_MAP: Record<string, string> = {
+  'Unapproved New Drug': '未获批新药',
+  'Tainted / Hidden Drug API': '非法添加西药',
+  'Undeclared Allergen / Colorant': '未标明过敏原/色素',
+  'Misbranding / Label Defect': '错误标签/包装缺陷',
+  'CGMP / Contamination': 'CGMP/微生物污染',
+  'Heavy Metals / Chemical': '重金属/化学超标',
+  '510(k) / Clearance Issue': '510(k) 许可缺失',
+  'Regulatory Enforcement': '常规监管执法',
+};
 
 export default function RecallsExplorer({ recalls, basePath }: Props) {
   const [lang, setLang] = useState<Lang>('en');
@@ -63,8 +87,8 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
           <div className="md:col-span-6">
             <label htmlFor="recall-search-input" className="block text-xs font-semibold text-slate-700 mb-1">
               {lang === 'zh'
-                ? '检索供应商 / 成分 / 违规原因 / 召回编号'
-                : 'Search Recalling Firm, Ingredient, Violation Reason, or Recall #'}
+                ? '检索供应商 / 商品名 / 成分 / 违规原因 / 召回编号'
+                : 'Search Recalling Firm, Product, Ingredient, Reason, or Recall #'}
             </label>
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
@@ -79,7 +103,7 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
                 autoCorrect="off"
                 autoCapitalize="none"
                 spellCheck={false}
-                placeholder={lang === 'zh' ? '例如：sildenafil, lead, lotion, unapproved...' : 'e.g., sildenafil, undeclared, lotion, salmonella...'}
+                placeholder={lang === 'zh' ? '例如：supplement, cream, sildenafil, unapproved...' : 'e.g., supplement, cream, sildenafil, undeclared...'}
                 className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 py-2 text-sm text-slate-900 min-h-[44px]"
               />
             </div>
@@ -98,9 +122,9 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
               }}
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 min-h-[44px]"
             >
-              {VERTICALS.map((v) => (
-                <option key={v} value={v}>
-                  {v}
+              {VERTICAL_OPTIONS.map((v) => (
+                <option key={v.value} value={v.value}>
+                  {lang === 'zh' ? v.zh : v.en}
                 </option>
               ))}
             </select>
@@ -119,9 +143,9 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
               }}
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 min-h-[44px]"
             >
-              {CLASSES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              {CLASS_OPTIONS.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {lang === 'zh' ? c.zh : c.en}
                 </option>
               ))}
             </select>
@@ -131,7 +155,7 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
           <span role="status" aria-live="polite">
             {lang === 'zh'
-              ? `当前匹配 ${filtered.length} 条真实 openFDA 执法记录（展示前 ${shown.length} 条）`
+              ? `当前匹配 ${filtered.length} 条去重后的真实 openFDA 执法记录（展示前 ${shown.length} 条）`
               : `Showing ${shown.length} of ${filtered.length} matching live openFDA enforcement records`}
           </span>
           {(query || vertical !== 'All' || classification !== 'All') && (
@@ -150,7 +174,6 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
         </div>
       </search>
 
-      {/* Responsive accessible table following modern-web-guidance: responsive-table */}
       <div
         tabIndex={0}
         role="region"
@@ -163,7 +186,7 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
           </caption>
           <thead>
             <tr>
-              <th scope="col">{lang === 'zh' ? '涉事企业 / 编号' : 'Recalling Firm / #'}</th>
+              <th scope="col">{lang === 'zh' ? '涉事企业 / 受影响产品' : 'Recalling Firm & Product'}</th>
               <th scope="col">{lang === 'zh' ? '等级与类目' : 'Class & Vertical'}</th>
               <th scope="col">{lang === 'zh' ? '违规召回原因' : 'Reason for Recall'}</th>
               <th scope="col">{lang === 'zh' ? '报告日期' : 'Report Date'}</th>
@@ -180,9 +203,14 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
             ) : (
               shown.map((rec) => (
                 <tr key={rec.id} className="rp-feed-card">
-                  <th scope="row" className="font-semibold text-slate-900 max-w-[240px]">
+                  <th scope="row" className="font-semibold text-slate-900 max-w-[270px]">
                     <div className="leading-snug">{rec.recallingFirm}</div>
-                    <div className="mt-1 font-mono text-[11px] font-normal text-slate-500">
+                    {rec.productShort && (
+                      <div className="mt-1 text-xs font-normal text-slate-600 leading-snug line-clamp-2">
+                        {rec.productShort}
+                      </div>
+                    )}
+                    <div className="mt-1 font-mono text-[11px] font-normal text-slate-400">
                       {rec.recallNumber} • {rec.state || rec.country || 'USA'}
                     </div>
                   </th>
@@ -198,7 +226,9 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
                     >
                       {rec.classification}
                     </span>
-                    <div className="mt-1 text-xs text-slate-600">{rec.vertical}</div>
+                    <div className="mt-1 text-xs text-slate-600">
+                      {lang === 'zh' ? VERTICAL_ZH_MAP[rec.vertical] || rec.vertical : rec.vertical}
+                    </div>
                   </td>
                   <td data-label={lang === 'zh' ? '违规召回原因' : 'Reason for Recall'} className="max-w-md">
                     <p className="text-xs text-slate-800 leading-relaxed line-clamp-3">
@@ -210,7 +240,7 @@ export default function RecallsExplorer({ recalls, basePath }: Props) {
                           key={tag}
                           className="inline-block rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-700"
                         >
-                          {tag}
+                          {lang === 'zh' ? TAG_ZH_MAP[tag] || tag : tag}
                         </span>
                       ))}
                     </div>

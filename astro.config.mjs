@@ -9,6 +9,7 @@ const basePath = process.env.BASE_PATH !== undefined ? process.env.BASE_PATH : '
 export default defineConfig({
   site: siteUrl,
   base: basePath,
+  trailingSlash: 'always',
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],

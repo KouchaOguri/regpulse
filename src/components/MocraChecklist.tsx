@@ -106,6 +106,12 @@ export default function MocraChecklist() {
 
   useEffect(() => {
     setLang(getInitialLang());
+    try {
+      const saved = JSON.parse(localStorage.getItem('regpulse_mocra_checks_v1') || '{}');
+      if (saved && typeof saved === 'object') setChecked(saved);
+    } catch {
+      // ignore
+    }
     const handler = (ev: Event) => {
       const next = (ev as CustomEvent<Lang>).detail;
       if (next === 'en' || next === 'zh') setLang(next);
@@ -115,7 +121,15 @@ export default function MocraChecklist() {
   }, []);
 
   const toggle = (id: string) => {
-    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+    setChecked((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try {
+        localStorage.setItem('regpulse_mocra_checks_v1', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
   };
 
   const completedCount = Object.values(checked).filter(Boolean).length;
@@ -134,7 +148,7 @@ export default function MocraChecklist() {
           <div className="h-3 w-full rounded-full bg-slate-100 overflow-hidden">
             <div
               className={`h-full transition-all duration-300 ${pct === 100 ? 'bg-emerald-600' : 'bg-teal-600'}`}
-              style={{ width: `${Math.max(4, pct)}%` }}
+              style={{ width: `${pct}%` }}
             />
           </div>
         </div>

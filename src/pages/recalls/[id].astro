@@ -28,9 +28,15 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
     <nav aria-label="Breadcrumb" class="mb-6 text-xs text-slate-500">
-      <a href={withBase('/')} class="hover:text-slate-900">Home</a>
+      <a href={withBase('/')} class="hover:text-slate-900">
+        <span data-i18n-en>Home</span>
+        <span data-i18n-zh class="hidden">首页</span>
+      </a>
       <span class="mx-1.5">/</span>
-      <a href={withBase('/recalls/')} class="hover:text-slate-900">FDA Recall Radar</a>
+      <a href={withBase('/recalls/')} class="hover:text-slate-900">
+        <span data-i18n-en>FDA Recall Radar</span>
+        <span data-i18n-zh class="hidden">FDA 召回雷达</span>
+      </a>
       <span class="mx-1.5">/</span>
       <span class="font-mono text-slate-800">{rec.recallNumber}</span>
     </nav>
@@ -61,19 +67,31 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
 
       <dl class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 border-y border-slate-100 py-4 text-xs">
         <div>
-          <dt class="text-slate-500 font-semibold">Report Date</dt>
+          <dt class="text-slate-500 font-semibold">
+            <span data-i18n-en>Report Date</span>
+            <span data-i18n-zh class="hidden">报告日期</span>
+          </dt>
           <dd class="mt-1 font-mono font-bold text-slate-900">{rec.reportDate || 'N/A'}</dd>
         </div>
         <div>
-          <dt class="text-slate-500 font-semibold">Initiation Date</dt>
+          <dt class="text-slate-500 font-semibold">
+            <span data-i18n-en>Initiation Date</span>
+            <span data-i18n-zh class="hidden">召回启动日</span>
+          </dt>
           <dd class="mt-1 font-mono font-bold text-slate-900">{rec.initiationDate || 'N/A'}</dd>
         </div>
         <div>
-          <dt class="text-slate-500 font-semibold">Status</dt>
+          <dt class="text-slate-500 font-semibold">
+            <span data-i18n-en>Status</span>
+            <span data-i18n-zh class="hidden">当前状态</span>
+          </dt>
           <dd class="mt-1 font-bold text-slate-900">{rec.status || 'Active'}</dd>
         </div>
         <div>
-          <dt class="text-slate-500 font-semibold">Firm Location</dt>
+          <dt class="text-slate-500 font-semibold">
+            <span data-i18n-en>Firm Location</span>
+            <span data-i18n-zh class="hidden">企业所在地</span>
+          </dt>
           <dd class="mt-1 font-bold text-slate-900">
             {[rec.city, rec.state, rec.country].filter(Boolean).join(', ') || 'U.S.'}
           </dd>
@@ -82,26 +100,38 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
 
       <div class="mt-6 space-y-5">
         <div>
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Reason for FDA Recall</h2>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span data-i18n-en>Reason for FDA Recall</span>
+            <span data-i18n-zh class="hidden">FDA 官方召回原因（原文）</span>
+          </h2>
           <p class="mt-2 rounded-xl bg-red-50/60 border border-red-200 p-4 text-sm font-medium text-red-950 leading-relaxed">
             {rec.reasonForRecall}
           </p>
         </div>
 
         <div>
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Affected Product Description</h2>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span data-i18n-en>Affected Product Description</span>
+            <span data-i18n-zh class="hidden">涉事产品明细描述（原文）</span>
+          </h2>
           <p class="mt-2 text-sm text-slate-800 leading-relaxed">{rec.productDescription}</p>
         </div>
 
         {rec.distributionPattern && (
           <div>
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Distribution Pattern</h2>
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span data-i18n-en>Distribution Pattern</span>
+              <span data-i18n-zh class="hidden">分销渠道与波及范围</span>
+            </h2>
             <p class="mt-1.5 text-sm text-slate-700">{rec.distributionPattern}</p>
           </div>
         )}
 
         <div>
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Risk Classification Tags</h2>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span data-i18n-en>Risk Classification Tags</span>
+            <span data-i18n-zh class="hidden">风险分类标签</span>
+          </h2>
           <div class="mt-2 flex flex-wrap gap-2">
             {rec.riskTags.map((tag) => (
               <span class="rounded-lg bg-slate-100 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-800">
@@ -118,14 +148,16 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
             rel="noopener noreferrer"
             class="text-xs font-semibold text-blue-700 hover:underline"
           >
-            Verify Raw Official openFDA Record (JSON) ↗
+            <span data-i18n-en>Verify Raw Official openFDA Record (JSON) ↗</span>
+            <span data-i18n-zh class="hidden">直连验证 openFDA 官方原始记录 (JSON) ↗</span>
           </a>
           <div class="flex flex-wrap gap-2.5">
             <a
               href={withBase('/')}
               class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
             >
-              Scan Your Own Listing Free
+              <span data-i18n-en>Scan Your Own Listing Free</span>
+              <span data-i18n-zh class="hidden">免费扫描我的 Listing</span>
             </a>
             <button
               type="button"
@@ -133,7 +165,8 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
               data-firm={rec.recallingFirm}
               class="rounded-xl bg-teal-700 px-4 py-2 text-xs font-bold text-white hover:bg-teal-800 cursor-pointer"
             >
-              Monitor “{rec.recallingFirm.slice(0, 26)}” Alerts
+              <span data-i18n-en>Monitor “{rec.recallingFirm.slice(0, 24)}” Alerts</span>
+              <span data-i18n-zh class="hidden">监控该涉事企业后续动态</span>
             </button>
           </div>
         </div>
@@ -146,9 +179,10 @@ const withBase = (path: string) => `${base}${path.startsWith('/') ? path : `/${p
   <script is:inline>
     document.getElementById('monitor-this-firm-btn')?.addEventListener('click', function (e) {
       var firm = e.currentTarget.getAttribute('data-firm') || '';
+      var isZh = document.documentElement.lang === 'zh-CN';
       window.dispatchEvent(
         new CustomEvent('regpulse:open-watchlist', {
-          detail: { plan: 'Starter Watchlist ($29/mo)', prefillKeywords: firm },
+          detail: { plan: isZh ? '中文跨境监控季卡 (¥199/季)' : 'Starter Watchlist ($29/mo)', prefillKeywords: firm },
         })
       );
     });

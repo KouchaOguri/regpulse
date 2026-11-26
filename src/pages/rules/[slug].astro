@@ -41,9 +41,15 @@ const faqJsonLd = {
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
     <nav aria-label="Breadcrumb" class="mb-6 text-xs text-slate-500">
-      <a href={withBase('/')} class="hover:text-slate-900">Home</a>
+      <a href={withBase('/')} class="hover:text-slate-900">
+        <span data-i18n-en>Home</span>
+        <span data-i18n-zh class="hidden">首页</span>
+      </a>
       <span class="mx-1.5">/</span>
-      <a href={withBase('/rules/')} class="hover:text-slate-900">21 CFR Rule Library</a>
+      <a href={withBase('/rules/')} class="hover:text-slate-900">
+        <span data-i18n-en>21 CFR Rule Library</span>
+        <span data-i18n-zh class="hidden">法规词库</span>
+      </a>
       <span class="mx-1.5">/</span>
       <span class="font-mono text-slate-800">{rule.id}</span>
     </nav>
@@ -89,8 +95,17 @@ const faqJsonLd = {
       </section>
 
       <section class="rounded-xl bg-slate-50 border border-slate-200 p-5 space-y-2">
-        <h2 class="text-sm font-bold text-slate-900">Official Statutory Citation &amp; Enforcement Precedent</h2>
-        <p class="text-xs font-mono text-slate-700"><strong>Statute:</strong> {rule.statute}</p>
+        <h2 class="text-sm font-bold text-slate-900">
+          <span data-i18n-en>Official Statutory Citation &amp; Enforcement Precedent</span>
+          <span data-i18n-zh class="hidden">官方法条出处与真实执法惯例</span>
+        </h2>
+        <p class="text-xs font-mono text-slate-700 break-words">
+          <strong>
+            <span data-i18n-en>Statute:</span>
+            <span data-i18n-zh class="hidden">法条依据：</span>
+          </strong>{' '}
+          {rule.statute}
+        </p>
         <p class="text-xs text-slate-700 leading-relaxed">
           <span data-i18n-en>{rule.precedentEn}</span>
           <span data-i18n-zh class="hidden">{rule.precedentZh}</span>
@@ -101,7 +116,8 @@ const faqJsonLd = {
           rel="noopener noreferrer"
           class="inline-block pt-1 text-xs font-semibold text-blue-700 hover:underline"
         >
-          Read Official Government Source: {rule.officialRefLabel} ↗
+          <span data-i18n-en>Read Official Source: {rule.officialRefLabel} ↗</span>
+          <span data-i18n-zh class="hidden">直连查阅官方原始法条：{rule.officialRefLabel} ↗</span>
         </a>
       </section>
 
@@ -112,14 +128,16 @@ const faqJsonLd = {
             <span data-i18n-zh class="hidden">免费把整条 Listing 放进 RegPulse 扫描全部 {COMPLIANCE_RULES.length} 项红线规则</span>
           </h2>
           <p class="mt-1 text-xs text-slate-300">
-            Instant browser-local scan + live openFDA recall cross-check + PDF report.
+            <span data-i18n-en>Instant browser-local scan + vertical-matched openFDA recall check + audit PDF report.</span>
+            <span data-i18n-zh class="hidden">免登录 100% 本地瞬时扫描 + 同行业 openFDA 召回比对 + 可打印审计 PDF 报告。</span>
           </p>
         </div>
         <a
           href={withBase('/')}
           class="rounded-xl bg-teal-500 px-5 py-2.5 text-xs font-bold text-slate-950 hover:bg-teal-400 shrink-0"
         >
-          Open Free Scanner →
+          <span data-i18n-en>Open Free Scanner →</span>
+          <span data-i18n-zh class="hidden">打开免费体检扫描器 →</span>
         </a>
       </div>
     </div>

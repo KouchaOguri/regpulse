@@ -31,7 +31,7 @@ const jsonLd = {
 
 <BaseLayout
   title="RegPulse — Free FDA Drug-Claim & MoCRA Listing Scanner + Live Recall Radar"
-  description="Catch FDA drug claims, EPA FIFRA pesticide bot traps, and MoCRA label gaps in 10 seconds before Amazon or TikTok Shop suppresses your ASIN. Powered by live openFDA data."
+  description="Catch FDA drug claims, OTC SPF/dandruff triggers, EPA FIFRA pesticide bot traps, and MoCRA label gaps in 10 seconds before Amazon or TikTok Shop suppresses your ASIN."
   canonicalPath="/"
   jsonLd={jsonLd}
 >
@@ -41,8 +41,8 @@ const jsonLd = {
       <div class="max-w-4xl">
         <div class="inline-flex flex-wrap items-center gap-2 rounded-full border border-teal-200 bg-teal-50/80 px-3 py-1 text-xs font-semibold text-teal-900 mb-4">
           <span class="inline-block h-2 w-2 rounded-full bg-teal-600" aria-hidden="true"></span>
-          <span data-i18n-en>Synced live with openFDA • {metadata.totalRecallsIndexed} Recent Enforcement Recalls &amp; {metadata.cosmeticEventsInOpenFDA.toLocaleString()} Cosmetic Adverse Events</span>
-          <span data-i18n-zh class="hidden">实时同步美国 openFDA 官方库 • 已收录 {metadata.totalRecallsIndexed} 条近期召回与 {metadata.cosmeticEventsInOpenFDA.toLocaleString()} 条化妆品不良事件</span>
+          <span data-i18n-en>Synced live with openFDA • {metadata.totalRecallsIndexed} Deduplicated Recalls &amp; {COMPLIANCE_RULES.length} Browser-Verified Statutory Rules</span>
+          <span data-i18n-zh class="hidden">实时同步美国 openFDA 官方库 • 已收录 {metadata.totalRecallsIndexed} 条去重召回与 {COMPLIANCE_RULES.length} 项官方法条规则</span>
         </div>
 
         <h1 id="main-content" tabindex="-1" class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 leading-[1.12]">
@@ -55,7 +55,7 @@ const jsonLd = {
             Built for <strong>Cosmetics (MoCRA)</strong>, <strong>Dietary Supplements (DSHEA)</strong>, and <strong>Beauty/Medical Device</strong> sellers. Paste your title, bullets, and ingredients for an instant 21 CFR citation-backed audit, safe rewrite copy, and live openFDA recall cross-check—at 1/100th the price of enterprise RegTech.
           </span>
           <span data-i18n-zh class="hidden">
-            专为出海美妆（MoCRA）、膳食补充剂（DSHEA）与美容仪/轻医疗卖家打造。粘贴商品标题、五点与成分表，毫秒级定位 <strong>21 CFR 法规违禁词、EPA 农药扫号陷阱、FDA 非法添加成分</strong>，附安全合规改写与 openFDA 实时召回交叉比对。
+            专为出海美妆（MoCRA）、膳食补充剂（DSHEA）与美容仪/轻医疗卖家打造。粘贴商品标题、五点与成分表，毫秒级定位 <strong>21 CFR 法规违禁词、OTC 防晒/去屑触发词、EPA 农药扫号陷阱与非法添加成分</strong>，附安全改写建议与同行业 openFDA 召回比对。
           </span>
         </p>
       </div>
@@ -68,7 +68,10 @@ const jsonLd = {
             <span data-i18n-zh class="hidden">实时同步 FDA 召回</span>
           </div>
           <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">{metadata.totalRecallsIndexed}</div>
-          <div class="text-[11px] text-slate-500 mt-0.5">Synced {metadata.lastSyncedUtc.slice(0, 10)} UTC</div>
+          <div class="text-[11px] text-slate-500 mt-0.5 whitespace-nowrap">
+            <span data-i18n-en>Synced {metadata.lastSyncedUtc.slice(0, 10)} UTC</span>
+            <span data-i18n-zh class="hidden">同步于 {metadata.lastSyncedUtc.slice(0, 10)} UTC</span>
+          </div>
         </div>
         <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
@@ -76,15 +79,21 @@ const jsonLd = {
             <span data-i18n-zh class="hidden">法规规则模块</span>
           </div>
           <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">{COMPLIANCE_RULES.length}</div>
-          <div class="text-[11px] text-slate-500 mt-0.5">21 CFR • MoCRA • FIFRA • FTC</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">
+            <span data-i18n-en>21 CFR • MoCRA • FIFRA • FTC</span>
+            <span data-i18n-zh class="hidden">每条外链均经真浏览器锁定 200</span>
+          </div>
         </div>
         <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-            <span data-i18n-en>MoCRA Events Indexed</span>
-            <span data-i18n-zh class="hidden">MoCRA 不良事件总量</span>
+            <span data-i18n-en>Cosmetic Events Indexed</span>
+            <span data-i18n-zh class="hidden">化妆品不良事件库</span>
           </div>
           <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">{metadata.cosmeticEventsInOpenFDA.toLocaleString()}</div>
-          <div class="text-[11px] text-slate-500 mt-0.5">openFDA Cosmetic FAERS</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">
+            <span data-i18n-en>openFDA CAERS (incl. non-talc view)</span>
+            <span data-i18n-zh class="hidden">openFDA 官方不良事件（含去滑石粉视图）</span>
+          </div>
         </div>
         <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
@@ -92,7 +101,10 @@ const jsonLd = {
             <span data-i18n-zh class="hidden">近期 510(k) 获批</span>
           </div>
           <div class="mt-1 text-2xl font-extrabold text-slate-900 tabular-nums">{metadata.total510kIndexed}</div>
-          <div class="text-[11px] text-slate-500 mt-0.5">CDRH Device Feed</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">
+            <span data-i18n-en>CDRH Device Clearance Feed</span>
+            <span data-i18n-zh class="hidden">CDRH 医疗与美容器械直连</span>
+          </div>
         </div>
       </div>
     </div>
@@ -104,7 +116,7 @@ const jsonLd = {
   </section>
 
   <!-- Why RegPulse vs Enterprise RegTech -->
-  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 no-print">
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 no-print">
     <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
       <div class="max-w-3xl mb-6">
         <h2 class="text-2xl font-extrabold tracking-tight text-slate-950">
@@ -113,7 +125,7 @@ const jsonLd = {
         </h2>
         <p class="mt-2 text-sm text-slate-600">
           <span data-i18n-en>Enterprise regulatory platforms gate pricing behind sales demos and charge five figures annually. RegPulse delivers instant self-serve screening and continuous enforcement alerts built specifically for e-commerce operators.</span>
-          <span data-i18n-zh class="hidden">传统企业级 FDA 情报软件动辄年费 1 万美元起，代理机构单 SKU 人工审标 250 美元/次。RegPulse 用自动化官方法规引擎把合规门槛降到人人用得起。</span>
+          <span data-i18n-zh class="hidden">传统企业级 FDA 情报软件动辄年费 1 万美元起，代理机构单 SKU 人工审标 250 美元/次。RegPulse 用自动化官方法规引擎把合规门槛降到中小卖家用得起。</span>
         </p>
       </div>
 
@@ -122,36 +134,96 @@ const jsonLd = {
           <caption id="compare-caption" class="visually-hidden">RegPulse comparison against legacy enterprise regulatory platforms and compliance agencies</caption>
           <thead>
             <tr>
-              <th scope="col">Capability</th>
-              <th scope="col" class="bg-teal-50! text-teal-950!">RegPulse (Self-Serve)</th>
-              <th scope="col">Enterprise QRI (Redica / Basil)</th>
-              <th scope="col">Compliance Agencies (Registrar Corp)</th>
+              <th scope="col">
+                <span data-i18n-en>Capability</span>
+                <span data-i18n-zh class="hidden">核心能力对比</span>
+              </th>
+              <th scope="col" class="bg-teal-50! text-teal-950!">
+                <span data-i18n-en>RegPulse (Self-Serve)</span>
+                <span data-i18n-zh class="hidden">RegPulse（自助合规引擎）</span>
+              </th>
+              <th scope="col">
+                <span data-i18n-en>Enterprise QRI (Redica / Basil)</span>
+                <span data-i18n-zh class="hidden">企业级情报（Redica / Basil）</span>
+              </th>
+              <th scope="col">
+                <span data-i18n-en>Compliance Agencies (Registrar Corp)</span>
+                <span data-i18n-zh class="hidden">传统合规代理（Registrar Corp）</span>
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row" class="font-semibold text-slate-900">Typical Cost</th>
-              <td data-label="RegPulse" class="font-bold text-teal-800">Free Scanner • $29–$79/mo (¥199/季)</td>
-              <td data-label="Enterprise QRI">$5,000 – $50,000+ / year (Quote Only)</td>
-              <td data-label="Agencies">$150–$250 / SKU review + $800+/yr agent</td>
+              <th scope="row" class="font-semibold text-slate-900">
+                <span data-i18n-en>Typical Cost</span>
+                <span data-i18n-zh class="hidden">常规费用</span>
+              </th>
+              <td data-label="RegPulse" class="font-bold text-teal-800">
+                <span data-i18n-en>Free Scanner • $29–$79/mo (¥199/qtr)</span>
+                <span data-i18n-zh class="hidden">单条扫描免费 • $29–$79/月（中文版 ¥199/季）</span>
+              </td>
+              <td data-label="Enterprise QRI">
+                <span data-i18n-en>$5,000 – $50,000+ / year (Quote Only)</span>
+                <span data-i18n-zh class="hidden">$5,000 – $50,000+/年（仅企业询价）</span>
+              </td>
+              <td data-label="Agencies">
+                <span data-i18n-en>$150–$250 / SKU review + $800+/yr agent</span>
+                <span data-i18n-zh class="hidden">$150–$250/SKU 人工审标 + $800+/年美代</span>
+              </td>
             </tr>
             <tr>
-              <th scope="row" class="font-semibold text-slate-900">Amazon &amp; TikTok Listing Scan</th>
-              <td data-label="RegPulse">Instant (&lt;100ms), 21 CFR + EPA FIFRA + Rewrites</td>
-              <td data-label="Enterprise QRI">Not built for Amazon/DTC listing copy</td>
-              <td data-label="Agencies">Manual 3–7 business day turnaround</td>
+              <th scope="row" class="font-semibold text-slate-900">
+                <span data-i18n-en>Amazon &amp; TikTok Listing Scan</span>
+                <span data-i18n-zh class="hidden">电商 Listing 扫号预审</span>
+              </th>
+              <td data-label="RegPulse">
+                <span data-i18n-en>Instant (&lt;100ms), 21 CFR + EPA FIFRA + Rewrites</span>
+                <span data-i18n-zh class="hidden">毫秒级出结果，覆盖 21 CFR + EPA 农药词 + 合规改写</span>
+              </td>
+              <td data-label="Enterprise QRI">
+                <span data-i18n-en>Not built for Amazon/DTC listing copy</span>
+                <span data-i18n-zh class="hidden">面向药厂 QA，不做电商文案扫号检测</span>
+              </td>
+              <td data-label="Agencies">
+                <span data-i18n-en>Manual 3–7 business day turnaround</span>
+                <span data-i18n-zh class="hidden">人工排期审核需 3–7 个工作日</span>
+              </td>
             </tr>
             <tr>
-              <th scope="row" class="font-semibold text-slate-900">Zero-Hallucination Citations</th>
-              <td data-label="RegPulse">100% Statutory &amp; Official FDA.gov Links</td>
-              <td data-label="Enterprise QRI">Yes (Pharma QA focused)</td>
-              <td data-label="Agencies">Manual consultant memo</td>
+              <th scope="row" class="font-semibold text-slate-900">
+                <span data-i18n-en>Zero-Hallucination Citations</span>
+                <span data-i18n-zh class="hidden">防幻觉官方法条溯源</span>
+              </th>
+              <td data-label="RegPulse">
+                <span data-i18n-en>100% CI-Locked eCFR &amp; FDA.gov Citations</span>
+                <span data-i18n-zh class="hidden">100% CI 自动核验锁定的 eCFR / FDA 官方出处</span>
+              </td>
+              <td data-label="Enterprise QRI">
+                <span data-i18n-en>Yes (Pharma QA focused)</span>
+                <span data-i18n-zh class="hidden">支持（偏制药厂检查档案）</span>
+              </td>
+              <td data-label="Agencies">
+                <span data-i18n-en>Manual consultant memo</span>
+                <span data-i18n-zh class="hidden">顾问邮件人工反馈</span>
+              </td>
             </tr>
             <tr>
-              <th scope="row" class="font-semibold text-slate-900">Bilingual US / China Cross-Border</th>
-              <td data-label="RegPulse">Native EN + 中文跨境视角</td>
-              <td data-label="Enterprise QRI">English only</td>
-              <td data-label="Agencies">Limited / High add-on fees</td>
+              <th scope="row" class="font-semibold text-slate-900">
+                <span data-i18n-en>Bilingual US / China Cross-Border</span>
+                <span data-i18n-zh class="hidden">中美跨境双语支持</span>
+              </th>
+              <td data-label="RegPulse">
+                <span data-i18n-en>Native EN + Chinese Cross-Border Mode</span>
+                <span data-i18n-zh class="hidden">原生英/中双语 + 企业微信/飞书推送</span>
+              </td>
+              <td data-label="Enterprise QRI">
+                <span data-i18n-en>English only</span>
+                <span data-i18n-zh class="hidden">仅英文界面</span>
+              </td>
+              <td data-label="Agencies">
+                <span data-i18n-en>Limited / High add-on fees</span>
+                <span data-i18n-zh class="hidden">中文顾问需高额加价</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -169,14 +241,15 @@ const jsonLd = {
             <span data-i18n-en>Latest Class I (Highest Risk) FDA Recalls</span>
             <span data-i18n-zh class="hidden">最新 FDA Class I（最高风险）召回快讯</span>
           </h2>
-          <a href={withBase('/recalls/')} class="text-xs font-semibold text-teal-700 hover:underline">
-            View all {metadata.totalRecallsIndexed} →
+          <a href={withBase('/recalls/')} class="text-xs font-semibold text-teal-700 hover:underline shrink-0">
+            <span data-i18n-en>View all {metadata.totalRecallsIndexed} →</span>
+            <span data-i18n-zh class="hidden">查看全部 {metadata.totalRecallsIndexed} 条 →</span>
           </a>
         </div>
         <ul class="space-y-3">
           {recentCritical.map((rec) => (
             <li class="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 hover:border-teal-300 transition-colors">
-              <div class="flex items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
                 <span class="rounded bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase text-red-900">
                   {rec.classification} • {rec.vertical}
                 </span>
@@ -198,8 +271,9 @@ const jsonLd = {
             <span data-i18n-en>High-Risk Amazon &amp; FDA Claim Guides</span>
             <span data-i18n-zh class="hidden">高频 Amazon 扫号与 FDA 法规避坑百科</span>
           </h2>
-          <a href={withBase('/rules/')} class="text-xs font-semibold text-teal-700 hover:underline">
-            All {COMPLIANCE_RULES.length} Rules →
+          <a href={withBase('/rules/')} class="text-xs font-semibold text-teal-700 hover:underline shrink-0">
+            <span data-i18n-en>All {COMPLIANCE_RULES.length} Rules →</span>
+            <span data-i18n-zh class="hidden">全部 {COMPLIANCE_RULES.length} 条法规 →</span>
           </a>
         </div>
         <ul class="space-y-2.5">
@@ -223,6 +297,37 @@ const jsonLd = {
             </li>
           ))}
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Data Methodology & Zero-Fabrication Transparency -->
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 no-print">
+    <div class="rounded-2xl border border-slate-200 bg-slate-900 text-slate-200 p-6 sm:p-7">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="max-w-3xl">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-teal-400">
+            <span data-i18n-en>Deterministic Verification &amp; Data Integrity Methodology</span>
+            <span data-i18n-zh class="hidden">确定性法规校验与零造假数据透明承诺</span>
+          </h2>
+          <p class="mt-2 text-xs leading-relaxed text-slate-300">
+            <span data-i18n-en>
+              Every statutory citation in RegPulse is locked in CI via headless browser verification against official eCFR, FDA.gov, EPA.gov, and U.S. Code endpoints. Recall records are pulled every 12 hours directly from openFDA APIs and verified via SHA-256 provenance manifests with live random round-trip spot-checks—zero fabricated case studies or unverified testimonials.
+            </span>
+            <span data-i18n-zh class="hidden">
+              RegPulse 的每一条法条外链均在构建流水线中通过真浏览器核验并锁定 `HTTP 200`；所有召回与 510(k) 均每 12 小时直连美国 openFDA 官方接口同步，并经 SHA-256 哈希核对与随机实时回查校验。零编造警告信编号、零虚假用户好评。
+            </span>
+          </p>
+        </div>
+        <a
+          href="https://github.com/KouchaOguri/regpulse"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-700 shrink-0"
+        >
+          <span data-i18n-en>Inspect Sync Pipeline on GitHub ↗</span>
+          <span data-i18n-zh class="hidden">查看开源同步校验源码 ↗</span>
+        </a>
       </div>
     </div>
   </section>

@@ -1,0 +1,427 @@
+{
+  "generatedAtUtc": "2026-11-26T10:11:00Z",
+  "totalUrlsVerified": 20,
+  "allPassed": true,
+  "rulesMapping": [
+    {
+      "ruleId": "FDA-TERM-001",
+      "statute": "FD&C Act §301(l) & 21 CFR 807.39",
+      "officialRefUrl": "https://www.fda.gov/consumers/consumer-updates/it-really-fda-approved",
+      "httpStatus": 200,
+      "verifiedTitle": "Is It Really 'FDA Approved'? | FDA",
+      "finalUrl": "https://www.fda.gov/consumers/consumer-updates/it-really-fda-approved",
+      "ok": true
+    },
+    {
+      "ruleId": "FDA-TERM-002",
+      "statute": "21 CFR 807.39 & MoCRA Facility Registration Policy",
+      "officialRefUrl": "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products",
+      "httpStatus": 200,
+      "verifiedTitle": "Registration & Listing of Cosmetic Product Facilities and Products | FDA",
+      "finalUrl": "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-OTC-SPF",
+      "statute": "21 CFR Part 352 & CARES Act OTC Sunscreen Deemed Final Order (M020)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 352 -- Sunscreen Drug Products for Over-the-Counter Human Use [Stayed Indefinitely]",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-OTC-DANDRUFF",
+      "statute": "21 CFR Part 358 Subpart H (Dandruff, Seborrheic Dermatitis & Psoriasis OTC Monograph)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 358 Subpart H -- Drug Products for the Control of Dandruff, Seborrheic Dermatitis, and Psoriasis",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-DRUG-001",
+      "statute": "FD&C Act §201(g)(1)(B) & 21 CFR Part 333 Subpart D (OTC Acne Monograph)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 333 Subpart D -- Topical Acne Drug Products",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-DRUG-002",
+      "statute": "FD&C Act §201(g)(1)(C) & 21 CFR Part 701 (Cosmetic Labeling)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 701 -- Cosmetic Labeling",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-DRUG-003",
+      "statute": "21 CFR 310.527 (Hair Grower and Hair Loss Prevention Drug Products)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 310.527 -- Drug products containing active ingredients offered over-the-counter (OTC) for external use as hair growers or for hair loss prevention.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-DRUG-004",
+      "statute": "FD&C Act §201(g)(1)(C) & FDA Cosmetic vs. Drug Boundary",
+      "officialRefUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+      "httpStatus": 200,
+      "verifiedTitle": "Is It a Cosmetic, a Drug, or Both? (Or Is It Soap?) | FDA",
+      "finalUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+      "ok": true
+    },
+    {
+      "ruleId": "COS-DRUG-005",
+      "statute": "21 U.S.C. §355h (CARES Act OTC Monograph Reform — Hydroquinone Ban) & FD&C Act §201(g)",
+      "officialRefUrl": "https://www.law.cornell.edu/uscode/text/21/355h",
+      "httpStatus": 200,
+      "verifiedTitle": "21 U.S. Code § 355h - Regulation of certain nonprescription drugs that are marketed without an approved drug application | U.S. Code | US Law | LII / Legal Information Institute",
+      "finalUrl": "https://www.law.cornell.edu/uscode/text/21/355h",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-001",
+      "statute": "21 CFR 101.93(g) (DSHEA Disease Claim Criteria)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 101.93 -- Certain types of statements for dietary supplements.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-002",
+      "statute": "FD&C Act §201(g) & §505(a) — Unapproved New Drug (Zero Tolerance)",
+      "officialRefUrl": "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments",
+      "httpStatus": 200,
+      "verifiedTitle": "Illegally Sold Cancer Treatments | FDA",
+      "finalUrl": "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-003",
+      "statute": "21 CFR 101.93(g)(2)(i) — Explicit Disease Conditions",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 101.93 -- Certain types of statements for dietary supplements.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-004",
+      "statute": "21 CFR 101.93(g)(2)(ii) & FDA Structure/Function Guidance",
+      "officialRefUrl": "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims",
+      "httpStatus": 200,
+      "verifiedTitle": "Structure/Function Claims | FDA",
+      "finalUrl": "https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/structurefunction-claims",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-005",
+      "statute": "FD&C Act §201(g) & 21 CFR 101.93(g)",
+      "officialRefUrl": "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims",
+      "httpStatus": 200,
+      "verifiedTitle": "Structure/Function Claims | FDA",
+      "finalUrl": "https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/structurefunction-claims",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-GI",
+      "statute": "21 CFR 101.93(g) — Alcohol Intoxication & Gastrointestinal Disease Claims",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 101.93 -- Certain types of statements for dietary supplements.",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-HORMONE",
+      "statute": "21 CFR 101.93(g) & Amazon Restricted Sexual Wellness / Supplement Policy",
+      "officialRefUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+      "httpStatus": 200,
+      "verifiedTitle": "Health Fraud Product Database | FDA",
+      "finalUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+      "ok": true
+    },
+    {
+      "ruleId": "SUP-DIS-006",
+      "statute": "21 CFR 101.93(g) & FDA Weight Loss Health Fraud Policy",
+      "officialRefUrl": "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications",
+      "httpStatus": 200,
+      "verifiedTitle": "Weight Loss Product Notifications | FDA",
+      "finalUrl": "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications",
+      "ok": true
+    },
+    {
+      "ruleId": "ING-TAINT-001",
+      "statute": "FD&C Act §505(a) & FDA Health Fraud Product Database",
+      "officialRefUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+      "httpStatus": 200,
+      "verifiedTitle": "Health Fraud Product Database | FDA",
+      "finalUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+      "ok": true
+    },
+    {
+      "ruleId": "ING-COS-002",
+      "statute": "21 CFR Part 700 Subpart B (Prohibited & Restricted Cosmetic Ingredients)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 700 -- General",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700",
+      "ok": true
+    },
+    {
+      "ruleId": "EPA-PEST-001",
+      "statute": "FIFRA (7 U.S.C. §136) & Amazon Restricted Products — Pesticides Policy",
+      "officialRefUrl": "https://www.epa.gov/pesticide-registration/pesticide-registration-manual",
+      "httpStatus": 200,
+      "verifiedTitle": "Pesticide Registration Manual | US EPA",
+      "finalUrl": "https://www.epa.gov/pesticide-registration/pesticide-registration-manual",
+      "ok": true
+    },
+    {
+      "ruleId": "DEV-510K-001",
+      "statute": "FD&C Act §510(k) & 21 CFR Part 807 Subpart E (Premarket Notification)",
+      "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 807 Subpart E -- Premarket Notification Procedures",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E",
+      "ok": true
+    },
+    {
+      "ruleId": "FTC-SUB-001",
+      "statute": "FTC Act §§5 & 12 (15 U.S.C. §§45, 52) & 16 CFR Part 255",
+      "officialRefUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+      "httpStatus": 200,
+      "verifiedTitle": "15 U.S. Code § 52 - Dissemination of false advertisements | U.S. Code | US Law | LII / Legal Information Institute",
+      "finalUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+      "ok": true
+    }
+  ],
+  "urls": {
+    "https://www.fda.gov/consumers/consumer-updates/it-really-fda-approved": {
+      "url": "https://www.fda.gov/consumers/consumer-updates/it-really-fda-approved",
+      "finalUrl": "https://www.fda.gov/consumers/consumer-updates/it-really-fda-approved",
+      "httpStatus": 200,
+      "verifiedTitle": "Is It Really 'FDA Approved'? | FDA",
+      "verifiedH1": "Is It Really 'FDA Approved'?",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:12Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products": {
+      "url": "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products",
+      "finalUrl": "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products",
+      "httpStatus": 200,
+      "verifiedTitle": "Registration & Listing of Cosmetic Product Facilities and Products | FDA",
+      "verifiedH1": "Registration & Listing of Cosmetic Product Facilities and Products",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:16Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 352 -- Sunscreen Drug Products for Over-the-Counter Human Use [Stayed Indefinitely]",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:20Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 358 Subpart H -- Drug Products for the Control of Dandruff, Seborrheic Dermatitis, and Psoriasis",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:22Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 333 Subpart D -- Topical Acne Drug Products",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:24Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 701 -- Cosmetic Labeling",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:26Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 310.527 -- Drug products containing active ingredients offered over-the-counter (OTC) for external use as hair growers or for hair loss prevention.",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:28Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap": {
+      "url": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+      "finalUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+      "httpStatus": 200,
+      "verifiedTitle": "Is It a Cosmetic, a Drug, or Both? (Or Is It Soap?) | FDA",
+      "verifiedH1": "Is It a Cosmetic, a Drug, or Both? (Or Is It Soap?)",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:30Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.law.cornell.edu/uscode/text/21/355h": {
+      "url": "https://www.law.cornell.edu/uscode/text/21/355h",
+      "finalUrl": "https://www.law.cornell.edu/uscode/text/21/355h",
+      "httpStatus": 200,
+      "verifiedTitle": "21 U.S. Code § 355h - Regulation of certain nonprescription drugs that are marketed without an approved drug application | U.S. Code | US Law | LII / Legal Information Institute",
+      "verifiedH1": "21 U.S. Code § 355h - Regulation of certain nonprescription drugs that are marketed without an approved drug application",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:34Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR 101.93 -- Certain types of statements for dietary supplements.",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:36Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments": {
+      "url": "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments",
+      "finalUrl": "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments",
+      "httpStatus": 200,
+      "verifiedTitle": "Illegally Sold Cancer Treatments | FDA",
+      "verifiedH1": "Illegally Sold Cancer Treatments",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:38Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims": {
+      "url": "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims",
+      "finalUrl": "https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/structurefunction-claims",
+      "httpStatus": 200,
+      "verifiedTitle": "Structure/Function Claims | FDA",
+      "verifiedH1": "Structure/Function Claims",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:40Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database": {
+      "url": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+      "finalUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+      "httpStatus": 200,
+      "verifiedTitle": "Health Fraud Product Database | FDA",
+      "verifiedH1": "Health Fraud Product Database",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:43Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications": {
+      "url": "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications",
+      "finalUrl": "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications",
+      "httpStatus": 200,
+      "verifiedTitle": "Weight Loss Product Notifications | FDA",
+      "verifiedH1": "Weight Loss Product Notifications",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:45Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 700 -- General",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:47Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.epa.gov/pesticide-registration/pesticide-registration-manual": {
+      "url": "https://www.epa.gov/pesticide-registration/pesticide-registration-manual",
+      "finalUrl": "https://www.epa.gov/pesticide-registration/pesticide-registration-manual",
+      "httpStatus": 200,
+      "verifiedTitle": "Pesticide Registration Manual | US EPA",
+      "verifiedH1": "Pesticide Registration Manual",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:51Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E": {
+      "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E",
+      "finalUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E",
+      "httpStatus": 200,
+      "verifiedTitle": "eCFR :: 21 CFR Part 807 Subpart E -- Premarket Notification Procedures",
+      "verifiedH1": "Website Feedback",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:53Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://www.law.cornell.edu/uscode/text/15/52": {
+      "url": "https://www.law.cornell.edu/uscode/text/15/52",
+      "finalUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+      "httpStatus": 200,
+      "verifiedTitle": "15 U.S. Code § 52 - Dissemination of false advertisements | U.S. Code | US Law | LII / Legal Information Institute",
+      "verifiedH1": "15 U.S. Code § 52 - Dissemination of false advertisements",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:55Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://open.fda.gov/license": {
+      "url": "https://open.fda.gov/license",
+      "finalUrl": "https://open.fda.gov/license/",
+      "httpStatus": 200,
+      "verifiedTitle": "openFDA",
+      "verifiedH1": "",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:58Z",
+      "verifier": "playwright-chromium"
+    },
+    "https://open.fda.gov/apis/": {
+      "url": "https://open.fda.gov/apis/",
+      "finalUrl": "https://open.fda.gov/apis/",
+      "httpStatus": 200,
+      "verifiedTitle": "openFDA",
+      "verifiedH1": "",
+      "ok": true,
+      "error": "",
+      "verifiedAtUtc": "2026-11-26T10:10:59Z",
+      "verifier": "playwright-chromium"
+    }
+  }
+}

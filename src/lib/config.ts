@@ -1,10 +1,12 @@
 export type Lang = 'en' | 'zh';
 
 export const BILLING_CONFIG = {
-  // Replace with live Creem.io & Mianbaoduo checkout URLs immediately after investor KYC
+  // Populated immediately upon investor Creem.io / Mianbaoduo KYC approval
   creemStarterUrl: '',
   creemProUrl: '',
   mianbaoduoQuarterlyUrl: '',
+  // Optional async lead-capture webhook (Web3Forms / Formspree / Cloudflare Worker)
+  leadWebhookUrl: '',
   contactEmail: 'hachileviathan@gmail.com',
   earlyAccessActive: true,
 };

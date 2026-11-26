@@ -12,6 +12,7 @@ export interface RecallRecord {
   city: string;
   state: string;
   country: string;
+  productShort?: string;
   productDescription: string;
   reasonForRecall: string;
   reportDate: string;
@@ -40,7 +41,7 @@ export interface MandatoryCheckItem {
 }
 
 export interface ScanResult {
-  score: number; // 0 = safest, 100 = critical suppression risk
+  score: number;
   grade: 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL';
   vertical: ProductVertical;
   findings: ScanFinding[];
@@ -58,7 +59,55 @@ const NOT_INTENDED_DISCLAIMER_REGEX =
   /not\s+intended\s+to\s+diagnose,?\s*treat,?\s*cure,?\s*(or\s+)?prevent\s+any\s+disease\.?/gi;
 
 const STRUCTURE_FUNCTION_TRIGGER =
-  /\b(supports?|promotes?|maintains?|helps?\s+maintain|boosts?\s+energy|immune\s+support|joint\s+comfort|restful\s+sleep|healthy\s+metabolism|gut\s+health|digestive\s+health)\b/i;
+  /\b(supports?|promotes?|maintains?|helps?\s+maintain|boosts?|enhances?|improves?|protects?|balances?|detox(es|ifies)?|cleanses?|relieves?|immune\s+support|joint\s+comfort|restful\s+sleep|healthy\s+metabolism|gut\s+health|digestive\s+health|energy\s+levels?|vitality|stamina|focus|clarity)\b/i;
+
+// High-severity pharmaceutical adulterants & banned compounds checked with 1-char Levenshtein typo guard
+const FUZZY_BANNED_COMPOUNDS: Array<{ canonical: string; ruleId: string }> = [
+  { canonical: 'sildenafil', ruleId: 'ING-TAINT-001' },
+  { canonical: 'tadalafil', ruleId: 'ING-TAINT-001' },
+  { canonical: 'vardenafil', ruleId: 'ING-TAINT-001' },
+  { canonical: 'sibutramine', ruleId: 'ING-TAINT-001' },
+  { canonical: 'phenolphthalein', ruleId: 'ING-TAINT-001' },
+  { canonical: 'diclofenac', ruleId: 'ING-TAINT-001' },
+  { canonical: 'dexamethasone', ruleId: 'ING-TAINT-001' },
+  { canonical: 'tianeptine', ruleId: 'ING-TAINT-001' },
+  { canonical: 'yohimbine', ruleId: 'ING-TAINT-001' },
+  { canonical: 'bimatoprost', ruleId: 'ING-TAINT-001' },
+  { canonical: 'hydroquinone', ruleId: 'COS-DRUG-005' },
+  { canonical: 'ketoconazole', ruleId: 'COS-OTC-DANDRUFF' },
+];
+
+// Curated active ingredient / recall keyword filter (prevents matching generic marketing adjectives like "light" -> "slightly")
+const RECALL_STOPWORDS = new Set([
+  'water', 'aqua', 'glycerin', 'extract', 'powder', 'capsule', 'capsules', 'tablet', 'tablets',
+  'cream', 'serum', 'lotion', 'mask', 'formula', 'complex', 'natural', 'organic', 'daily', 'blend',
+  'product', 'approved', 'healthy', 'support', 'supports', 'skin', 'hair', 'body', 'face', 'facial',
+  'with', 'from', 'contains', 'proprietary', 'fragrance', 'acid', 'root', 'leaf', 'bark', 'shell',
+  'light', 'red', 'blue', 'therapy', 'laser', 'grade', 'medical', 'cures', 'treats', 'pain',
+  'free', 'gentle', 'clean', 'cleanser', 'drops', 'glow', 'loose', 'pores', 'scars', 'damage',
+  'silicon', 'silicone', 'array', 'controller', 'usb', 'made', 'usa', 'fast', 'acting', 'relief',
+  'acne', 'anti', 'inflammation', 'wrinkles', 'bacteria', 'skin', 'scalp', 'pure', 'plus', 'extra',
+  'strength', 'advanced', 'clinical', 'proven', 'results', 'days', 'weeks', 'months', 'years',
+  'seed', 'seeds', 'herb', 'herbal', 'vegetable', 'cellulose', 'rice', 'flour', 'citrate', 'oxide',
+  'sodium', 'potassium', 'chloride', 'oil', 'oils', 'vitamin', 'vitamins', 'mineral', 'minerals',
+]);
+
+function levenshtein(a: string, b: string): number {
+  if (a === b) return 0;
+  if (Math.abs(a.length - b.length) > 1) return 2;
+  const dp: number[] = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = dp[0];
+    dp[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const temp = dp[j];
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + cost);
+      prev = temp;
+    }
+  }
+  return dp[b.length];
+}
 
 function escapeHtml(input: string): string {
   return input
@@ -67,6 +116,10 @@ function escapeHtml(input: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function maskDisclaimer(text: string): { masked: string; hasDsheaDisclaimer: boolean } {
@@ -88,6 +141,26 @@ function extractContext(fullText: string, index: number, length: number): string
   return `${prefix}${fullText.slice(start, end).replace(/\s+/g, ' ').trim()}${suffix}`;
 }
 
+function verticalMatchesRecall(vertical: ProductVertical, recall: RecallRecord): boolean {
+  if (vertical === 'general') return true;
+  if (vertical === 'cosmetics') {
+    return recall.vertical === 'Cosmetics & Skincare';
+  }
+  if (vertical === 'supplements') {
+    return (
+      recall.vertical === 'Dietary Supplements' ||
+      (recall.vertical === 'OTC & Unapproved Drugs' &&
+        /sildenafil|tadalafil|sibutramine|yohimbine|supplement|capsule|herbal|weight\s+loss/i.test(
+          `${recall.productDescription} ${recall.reasonForRecall}`
+        ))
+    );
+  }
+  if (vertical === 'devices') {
+    return recall.vertical === 'Medical & Beauty Devices';
+  }
+  return true;
+}
+
 export function scanListing(
   input: {
     title: string;
@@ -104,11 +177,10 @@ export function scanListing(
   const { masked, hasDsheaDisclaimer } = maskDisclaimer(combinedRaw);
   const wordCount = combinedRaw.trim() ? combinedRaw.trim().split(/\s+/).length : 0;
 
-  const findings: ScanFinding[] = [];
+  const findingsMap = new Map<string, { rule: ComplianceRule; matchedSet: Set<string>; snippets: string[] }>();
   const highlightRanges: Array<{ start: number; end: number; severity: RuleSeverity; ruleId: string }> = [];
 
   for (const rule of COMPLIANCE_RULES) {
-    // Apply rule if it covers selected vertical or 'general'
     const applies =
       input.vertical === 'general' ||
       rule.verticals.includes(input.vertical) ||
@@ -141,15 +213,52 @@ export function scanListing(
     }
 
     if (matchedSet.size > 0) {
-      findings.push({
-        rule,
-        matchedPhrases: Array.from(matchedSet).slice(0, 6),
-        snippets,
-      });
+      findingsMap.set(rule.id, { rule, matchedSet, snippets });
     }
   }
 
-  // Sort findings: critical -> high -> medium, then weight desc
+  // Fuzzy 1-edit-distance check for critical adulterants/banned compounds (catches e.g. "Sibutramin", "Hydroqinone")
+  const wordRegex = /\b[a-zA-Z]{8,20}\b/g;
+  let wm: RegExpExecArray | null;
+  while ((wm = wordRegex.exec(masked)) !== null) {
+    const token = wm[0];
+    const tokenLow = token.toLowerCase();
+    for (const item of FUZZY_BANNED_COMPOUNDS) {
+      if (tokenLow === item.canonical) continue; // already caught by exact regex
+      if (levenshtein(tokenLow, item.canonical) === 1) {
+        const rule = COMPLIANCE_RULES.find((r) => r.id === item.ruleId);
+        if (!rule) continue;
+        const applies =
+          input.vertical === 'general' ||
+          rule.verticals.includes(input.vertical) ||
+          rule.verticals.includes('general');
+        if (!applies) continue;
+
+        let entry = findingsMap.get(rule.id);
+        if (!entry) {
+          entry = { rule, matchedSet: new Set<string>(), snippets: [] };
+          findingsMap.set(rule.id, entry);
+        }
+        entry.matchedSet.add(`${token} (≈ ${item.canonical})`);
+        if (entry.snippets.length < 3) {
+          entry.snippets.push(extractContext(combinedRaw, wm.index, token.length));
+        }
+        highlightRanges.push({
+          start: wm.index,
+          end: wm.index + token.length,
+          severity: rule.severity,
+          ruleId: rule.id,
+        });
+      }
+    }
+  }
+
+  const findings: ScanFinding[] = Array.from(findingsMap.values()).map((v) => ({
+    rule: v.rule,
+    matchedPhrases: Array.from(v.matchedSet).slice(0, 6),
+    snippets: v.snippets,
+  }));
+
   const sevRank: Record<RuleSeverity, number> = { critical: 3, high: 2, medium: 1 };
   findings.sort((a, b) => sevRank[b.rule.severity] - sevRank[a.rule.severity] || b.rule.weight - a.rule.weight);
 
@@ -157,7 +266,7 @@ export function scanListing(
   const mandatoryChecks: MandatoryCheckItem[] = [];
   if (input.vertical === 'supplements') {
     const usesStructFunc = STRUCTURE_FUNCTION_TRIGGER.test(masked);
-    if (usesStructFunc || findings.some((f) => f.rule.category === 'Disease Claim')) {
+    if (usesStructFunc || findings.some((f) => f.rule.category === 'Disease Claim' || f.rule.category === 'OTC Monograph Drug')) {
       mandatoryChecks.push({
         id: 'MAND-DSHEA-01',
         passed: hasDsheaDisclaimer,
@@ -166,7 +275,7 @@ export function scanListing(
         titleZh: '保健品强制 DSHEA 免责声明（21 CFR 101.93）',
         detailEn: hasDsheaDisclaimer
           ? 'Standard FDA DSHEA disclaimer detected and excluded from false-positive disease matching.'
-          : 'Your listing makes wellness/structure-function claims without the mandatory disclaimer: "*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease."',
+          : 'Your listing makes wellness/physiological claims without the mandatory disclaimer: "*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease."',
         detailZh: hasDsheaDisclaimer
           ? '已检测到标准 FDA DSHEA 免责声明（系统已自动屏蔽该免责段落，防止误报）。'
           : '文案包含功能/健康支持宣称，但缺少法定强制免责声明：“*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.”',
@@ -214,7 +323,6 @@ export function scanListing(
     });
   }
 
-  // Compute Risk Score (0-100)
   let rawScore = 0;
   for (const f of findings) {
     rawScore += f.rule.weight + Math.min(6, (f.matchedPhrases.length - 1) * 3);
@@ -228,31 +336,26 @@ export function scanListing(
   const grade: ScanResult['grade'] =
     score >= 65 ? 'CRITICAL' : score >= 35 ? 'HIGH' : score >= 15 ? 'ELEVATED' : 'LOW';
 
-  // Cross-reference live OpenFDA Recalls corpus by ingredient & product tokens
-  const stopWords = new Set([
-    'water', 'aqua', 'glycerin', 'oil', 'extract', 'powder', 'capsule', 'capsules',
-    'tablet', 'tablets', 'cream', 'serum', 'lotion', 'mask', 'formula', 'complex',
-    'natural', 'organic', 'daily', 'blend', 'product', 'approved', 'healthy',
-    'support', 'supports', 'skin', 'hair', 'body', 'face', 'facial', 'with', 'from',
-    'contains', 'proprietary', 'fragrance', 'acid', 'root', 'leaf', 'bark', 'mg', 'ml',
-  ]);
-  const tokens = Array.from(
+  // Precision Vertical-Scoped, Whole-Word, Ingredient-Only Live OpenFDA Recall Cross-Reference
+  const ingTokens = Array.from(
     new Set(
-      `${input.ingredients} ${input.title}`
+      (input.ingredients || '')
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, ' ')
         .split(/\s+/)
-        .filter((t) => t.length >= 4 && !stopWords.has(t))
+        .filter((t) => t.length >= 5 && !/^\d+$/.test(t) && !RECALL_STOPWORDS.has(t))
     )
-  ).slice(0, 24);
+  ).slice(0, 20);
 
+  const tokenRegexes = ingTokens.map((t) => new RegExp(`\\b${escapeRegex(t)}\\b`, 'i'));
   const scoredRecalls: Array<{ rec: RecallRecord; hits: number }> = [];
-  if (tokens.length > 0 && recallsCorpus.length > 0) {
+  if (tokenRegexes.length > 0 && recallsCorpus.length > 0) {
     for (const rec of recallsCorpus) {
-      const hay = `${rec.recallingFirm} ${rec.productDescription} ${rec.reasonForRecall}`.toLowerCase();
+      if (!verticalMatchesRecall(input.vertical, rec)) continue;
+      const hay = `${rec.recallingFirm} ${rec.productDescription} ${rec.reasonForRecall}`;
       let hits = 0;
-      for (const tok of tokens) {
-        if (hay.includes(tok)) hits += 1;
+      for (const rx of tokenRegexes) {
+        if (rx.test(hay)) hits += 1;
       }
       if (hits > 0) {
         scoredRecalls.push({ rec, hits });
@@ -260,7 +363,17 @@ export function scanListing(
     }
   }
   scoredRecalls.sort((a, b) => b.hits - a.hits || b.rec.reportDate.localeCompare(a.rec.reportDate));
-  const matchedRecalls = scoredRecalls.slice(0, 5).map((x) => x.rec);
+
+  // Deduplicate by (recallingFirm, reasonForRecall[:60])
+  const dedupedRecalls: RecallRecord[] = [];
+  const seenRecallKey = new Set<string>();
+  for (const { rec } of scoredRecalls) {
+    const k = `${rec.recallingFirm.toLowerCase()}|${rec.reasonForRecall.slice(0, 60).toLowerCase()}`;
+    if (seenRecallKey.has(k)) continue;
+    seenRecallKey.add(k);
+    dedupedRecalls.push(rec);
+    if (dedupedRecalls.length >= 4) break;
+  }
 
   // Build safe inline highlighted HTML
   highlightRanges.sort((a, b) => a.start - b.start || b.end - a.end);
@@ -302,7 +415,7 @@ export function scanListing(
     vertical: input.vertical,
     findings,
     mandatoryChecks,
-    matchedRecalls,
+    matchedRecalls: dedupedRecalls,
     highlightedHtml: htmlParts.join('').replace(/\n/g, '<br />'),
     scannedWordCount: wordCount,
     scannedAtIso: new Date().toISOString(),

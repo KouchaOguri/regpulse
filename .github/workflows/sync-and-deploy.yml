@@ -1,4 +1,4 @@
-name: Sync Live FDA Data & Deploy RegPulse
+name: Sync Live FDA Data, Verify Facts & Deploy RegPulse
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Sync latest live FDA data
+      - name: Sync latest live FDA data & provenance manifest
         env:
           FDA_API_KEY: ${{ secrets.FDA_API_KEY }}
         run: python scripts/sync_fda_data.py
@@ -43,8 +43,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Astro static site & programmatic SEO pages
+      - name: Hard Anti-Hallucination Gate, Golden Tests & Astro Build
         env:
+          FDA_API_KEY: ${{ secrets.FDA_API_KEY }}
           SITE_URL: ${{ vars.SITE_URL || 'https://kouchaoguri.github.io' }}
           BASE_PATH: ${{ vars.BASE_PATH || '/regpulse' }}
         run: npm run build

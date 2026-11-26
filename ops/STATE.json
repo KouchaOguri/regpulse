@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "project": "RegPulse",
+  "updatedAtUtc": "2026-11-26T09:51:00Z",
+  "milestone": {
+    "current": "Phase 2 - Milestone 1 (Hardening & Independent Red-Team QA)",
+    "status": "in_progress"
+  },
+  "repository": {
+    "localPath": "d:/hachimi/regpulse",
+    "remoteUrl": "https://github.com/KouchaOguri/regpulse",
+    "branch": "main",
+    "deployedCommitSha": "6e76dc9"
+  },
+  "deployment": {
+    "liveUrl": "https://kouchaoguri.github.io/regpulse/",
+    "customDomainCandidate": "regpulsehq.com",
+    "customDomainPurchased": false,
+    "autoSyncSchedule": "Every 12 hours via GitHub Actions (02:15 & 14:15 UTC)"
+  },
+  "budget": {
+    "authorizedLimitCny": 150,
+    "cashSpentCny": 0,
+    "committedPendingApprovalCny": 0
+  },
+  "kycAndBilling": {
+    "creemIo": "not_started",
+    "mianbaoduo": "not_started",
+    "openFdaApiKey": "not_configured_using_public_1k_day_limit"
+  },
+  "evidenceLevels": {
+    "L0_buildAndVerification": {
+      "syncManifestVerified": false,
+      "citationsLockVerified": false,
+      "scannerTestsPassed": true,
+      "lastRunUtc": "2026-11-26T09:41:23Z"
+    },
+    "L1_liveRenderAndIndependentQA": {
+      "pagesHttp200Verified": true,
+      "redTeamQaCompleted": false,
+      "codexCliCrossModelAuditDate": "2026-12-01"
+    },
+    "L2_externalSignals": {
+      "analyticsConnected": false,
+      "externalUniqueScans": "unmeasured",
+      "externalWatchlistRequests": 0,
+      "note": "Self-visits and QA runs strictly excluded; remains unmeasured until third-party privacy analytics is wired."
+    },
+    "L3_verifiedRevenue": {
+      "paidOrders": 0,
+      "grossRevenueUsd": 0,
+      "grossRevenueCny": 0,
+      "netSettledCny": 0
+    }
+  }
+}

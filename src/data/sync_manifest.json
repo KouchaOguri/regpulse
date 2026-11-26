@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.1",
+  "syncedAtUtc": "2026-11-26T10:10:09Z",
+  "apiKeyUsed": false,
+  "endpoints": [
+    {
+      "url": "https://api.fda.gov/food/enforcement.json?sort=report_date:desc&limit=65&search=product_description:(supplement+OR+capsule+OR+gummy+OR+vitamin+OR+herbal+OR+probiotic+OR+collagen)",
+      "httpStatus": 200,
+      "recordsReturned": 65,
+      "totalReportedByApi": 1076,
+      "fetchedAtUtc": "2026-11-26T10:09:51Z"
+    },
+    {
+      "url": "https://api.fda.gov/drug/enforcement.json?sort=report_date:desc&limit=65&search=product_description:(cream+OR+serum+OR+lotion+OR+shampoo+OR+sunscreen+OR+skin+OR+ointment+OR+cleanser)",
+      "httpStatus": 200,
+      "recordsReturned": 65,
+      "totalReportedByApi": 823,
+      "fetchedAtUtc": "2026-11-26T10:09:53Z"
+    },
+    {
+      "url": "https://api.fda.gov/drug/enforcement.json?sort=report_date:desc&limit=50&search=reason_for_recall:(sildenafil+OR+tadalafil+OR+sibutramine+OR+unapproved+OR+undeclared)",
+      "httpStatus": 200,
+      "recordsReturned": 50,
+      "totalReportedByApi": 668,
+      "fetchedAtUtc": "2026-11-26T10:09:55Z"
+    },
+    {
+      "url": "https://api.fda.gov/food/enforcement.json?sort=report_date:desc&limit=45",
+      "httpStatus": 200,
+      "recordsReturned": 45,
+      "totalReportedByApi": 29634,
+      "fetchedAtUtc": "2026-11-26T10:09:57Z"
+    },
+    {
+      "url": "https://api.fda.gov/device/enforcement.json?sort=report_date:desc&limit=45",
+      "httpStatus": 200,
+      "recordsReturned": 45,
+      "totalReportedByApi": 40625,
+      "fetchedAtUtc": "2026-11-26T10:10:00Z"
+    },
+    {
+      "url": "https://api.fda.gov/cosmetic/event.json?limit=1",
+      "httpStatus": 200,
+      "recordsReturned": 1,
+      "totalReportedByApi": 85511,
+      "fetchedAtUtc": "2026-11-26T10:10:01Z"
+    },
+    {
+      "url": "https://api.fda.gov/cosmetic/event.json?count=reactions.exact&limit=15",
+      "httpStatus": 200,
+      "recordsReturned": 15,
+      "totalReportedByApi": null,
+      "fetchedAtUtc": "2026-11-26T10:10:03Z"
+    },
+    {
+      "url": "https://api.fda.gov/cosmetic/event.json?search=NOT+products.product_name:(powder+talc)&limit=1",
+      "httpStatus": 200,
+      "recordsReturned": 1,
+      "totalReportedByApi": 13982,
+      "fetchedAtUtc": "2026-11-26T10:10:04Z"
+    },
+    {
+      "url": "https://api.fda.gov/cosmetic/event.json?search=NOT+products.product_name:(powder+talc)&count=reactions.exact&limit=15",
+      "httpStatus": 200,
+      "recordsReturned": 15,
+      "totalReportedByApi": null,
+      "fetchedAtUtc": "2026-11-26T10:10:06Z"
+    },
+    {
+      "url": "https://api.fda.gov/device/510k.json?sort=decision_date:desc&limit=40",
+      "httpStatus": 200,
+      "recordsReturned": 40,
+      "totalReportedByApi": 176747,
+      "fetchedAtUtc": "2026-11-26T10:10:09Z"
+    },
+    {
+      "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls/rss.xml",
+      "httpStatus": 200,
+      "recordsReturned": 20,
+      "fetchedAtUtc": "2026-11-26T10:10:09Z"
+    }
+  ],
+  "artifacts": {
+    "recalls.json": {
+      "sha256": "02b55f13976ed996a0040380ef26e9089f059f0adf7a7a4d54ad71fbd7bef1e5",
+      "bytes": 267162,
+      "recordCount": 210
+    },
+    "cosmetic_trends.json": {
+      "sha256": "c9142e6717ce1664ebfe2f6b69a0d2307d2aab8c66f2e55c2555ad426a4e1da5",
+      "bytes": 1798,
+      "recordCount": 85511
+    },
+    "clearances_510k.json": {
+      "sha256": "a584ce46d8aaa240d0f9716461545079178d315c8644d1a71a86dae8ff6e33f1",
+      "bytes": 17995,
+      "recordCount": 40
+    },
+    "rss_alerts.json": {
+      "sha256": "ace4265924dbcb7a5c3fe3147c4c71ee237fd60477afe181075c0420d7491e55",
+      "bytes": 13765,
+      "recordCount": 20
+    },
+    "metadata.json": {
+      "sha256": "8c8df86b0a8eede765e0dea7acc1e0a477568b30d79b2d794d694cdd8a53b13c",
+      "bytes": 939,
+      "recordCount": 1
+    }
+  }
+}

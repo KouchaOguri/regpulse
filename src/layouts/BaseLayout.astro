@@ -21,7 +21,7 @@ const isCurrent = (path: string) => {
 };
 const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://kouchaoguri.github.io';
 const canonicalUrl = `${siteOrigin}${withBase(canonicalPath)}`;
-const ogImageUrl = `${siteOrigin}${withBase('/og-card.svg')}`;
+const ogImageUrl = `${siteOrigin}${withBase('/og-card.png')}`;
 
 const navItems = [
   { href: '/', labelEn: 'Listing Scanner', labelZh: '违禁词体检' },
@@ -41,11 +41,14 @@ const navItems = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="alternate icon" href={withBase('/favicon.ico')} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -54,12 +57,12 @@ const navItems = [
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
   </head>
-  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased overflow-x-clip">
     <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
 
     <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm no-print">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between gap-4">
+        <div class="flex h-16 items-center justify-between gap-3">
           <a href={withBase('/')} class="flex items-center gap-2.5 text-slate-900 font-bold tracking-tight shrink-0">
             <img src={withBase('/favicon.svg')} alt="" width="30" height="30" class="rounded-lg" />
             <span class="text-lg">RegPulse</span>
@@ -119,7 +122,8 @@ const navItems = [
               aria-controls="mobile-nav-panel"
               class="md:hidden inline-flex items-center justify-center rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[40px] min-w-[44px]"
             >
-              Menu
+              <span data-i18n-en>Menu</span>
+              <span data-i18n-zh class="hidden">菜单</span>
             </button>
           </div>
         </div>
@@ -146,6 +150,15 @@ const navItems = [
                 </li>
               );
             })}
+            <li class="pt-2">
+              <a
+                href={withBase('/pricing/')}
+                class="block text-center rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
+              >
+                <span data-i18n-en>Monitor FDA Alerts ($29/mo)</span>
+                <span data-i18n-zh class="hidden">开启 FDA 实时预警监控（¥199/季）</span>
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
@@ -168,33 +181,75 @@ const navItems = [
                 Automated FDA drug-claim screening, MoCRA cosmetic compliance checks, and live openFDA enforcement monitoring built for Amazon, TikTok Shop, Shopify, and MedTech teams.
               </span>
               <span data-i18n-zh class="hidden">
-                专为 Amazon、TikTok Shop、Shopify 独立站美妆/保健品/轻医疗卖家打造的自动化 FDA 违禁词预审、MoCRA 合规自查与 openFDA 实时召回预警系统。
+                专为 Amazon、TikTok Shop、Shopify 独立站美妆、膳食补充剂与美容仪卖家打造的自动化 FDA 违禁词预审、MoCRA 合规自查与 openFDA 实时召回预警系统。
               </span>
             </p>
           </div>
 
           <div>
-            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">Product &amp; Data</h2>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">
+              <span data-i18n-en>Product &amp; Data</span>
+              <span data-i18n-zh class="hidden">产品功能与官方数据源</span>
+            </h2>
             <ul class="space-y-2 text-xs text-slate-400">
-              <li><a href={withBase('/')} class="hover:text-white">Free FDA Listing Claim Scanner</a></li>
-              <li><a href={withBase('/recalls/')} class="hover:text-white">Live openFDA Recalls &amp; 510(k) Radar</a></li>
-              <li><a href={withBase('/rules/')} class="hover:text-white">21 CFR &amp; EPA FIFRA Rule Library</a></li>
-              <li><a href={withBase('/mocra/')} class="hover:text-white">2026 MoCRA Cosmetic Checklist</a></li>
-              <li><a href={withBase('/pricing/')} class="hover:text-white">Plans &amp; Watchlist Alerts</a></li>
+              <li>
+                <a href={withBase('/')} class="hover:text-white">
+                  <span data-i18n-en>Free FDA Listing Claim Scanner</span>
+                  <span data-i18n-zh class="hidden">免费 FDA 违禁词预审扫描器</span>
+                </a>
+              </li>
+              <li>
+                <a href={withBase('/recalls/')} class="hover:text-white">
+                  <span data-i18n-en>Live openFDA Recalls &amp; 510(k) Radar</span>
+                  <span data-i18n-zh class="hidden">openFDA 实时召回与 510(k) 雷达</span>
+                </a>
+              </li>
+              <li>
+                <a href={withBase('/rules/')} class="hover:text-white">
+                  <span data-i18n-en>21 CFR &amp; EPA FIFRA Rule Library</span>
+                  <span data-i18n-zh class="hidden">21 CFR 与 EPA 农药法规词库</span>
+                </a>
+              </li>
+              <li>
+                <a href={withBase('/mocra/')} class="hover:text-white">
+                  <span data-i18n-en>2026 MoCRA Cosmetic Checklist</span>
+                  <span data-i18n-zh class="hidden">2026 MoCRA 化妆品合规自查清单</span>
+                </a>
+              </li>
+              <li>
+                <a href={withBase('/pricing/')} class="hover:text-white">
+                  <span data-i18n-en>Plans &amp; Watchlist Alerts</span>
+                  <span data-i18n-zh class="hidden">套餐价格与 7×24 预警订阅</span>
+                </a>
+              </li>
             </ul>
           </div>
 
           <div>
-            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">Regulatory Notice &amp; Data Source</h2>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-3">
+              <span data-i18n-en>Regulatory Notice &amp; Data Source</span>
+              <span data-i18n-zh class="hidden">免责声明与官方数据许可</span>
+            </h2>
             <p class="text-xs leading-relaxed text-slate-400">
-              RegPulse is an independent regulatory intelligence software tool and is <strong>not affiliated with, endorsed by, or sponsored by the U.S. Food and Drug Administration (FDA)</strong>.
-              Outputs are informational screening aids based on public FDA statutes and <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA public datasets</a>, and do not constitute legal advice. Always consult qualified regulatory counsel for formal legal opinions.
+              <span data-i18n-en>
+                RegPulse is an independent regulatory intelligence software tool and is <strong>not affiliated with, endorsed by, or sponsored by the U.S. Food and Drug Administration (FDA)</strong>.
+                Outputs are informational screening aids based on public federal statutes (eCFR) and <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA public datasets</a>, and do not constitute legal advice.
+              </span>
+              <span data-i18n-zh class="hidden">
+                RegPulse 为独立第三方合规情报软件，<strong>与美国食品药品监督管理局（FDA）无任何隶属、授权或背书关系</strong>。扫描结果基于美国公开联邦法典（eCFR）及 <a href="https://open.fda.gov/license" target="_blank" rel="noopener noreferrer" class="underline text-teal-400 hover:text-teal-300">openFDA 官方公开数据集</a>，仅作上架前风险排查参考，不构成正式法律意见。
+              </span>
             </p>
           </div>
         </div>
         <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-500">
-          <span>© 2026 RegPulse Regulatory Intelligence. Public data via openFDA API &amp; FDA.gov.</span>
-          <a href="mailto:hachileviathan@gmail.com" class="hover:text-slate-300">Support &amp; Enterprise Watchlists: hachileviathan@gmail.com</a>
+          <span>
+            <span data-i18n-en>© 2026 RegPulse Regulatory Intelligence. Verified public data via openFDA API &amp; eCFR.</span>
+            <span data-i18n-zh class="hidden">© 2026 RegPulse 合规情报引擎。数据源自 openFDA API 与美国 eCFR 联邦法典。</span>
+          </span>
+          <a href="mailto:hachileviathan@gmail.com?subject=%5BRegPulse%20Support%5D" class="hover:text-slate-300 underline underline-offset-2">
+            <span data-i18n-en>Contact Compliance Support Desk</span>
+            <span data-i18n-zh class="hidden">联系合规支持与企业监控开通</span>
+          </a>
         </div>
       </div>
     </footer>

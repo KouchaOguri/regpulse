@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """
-RegPulse Official FDA Data Ingestion Pipeline
-Fetches real, live public regulatory data from openFDA APIs and FDA Recalls RSS.
-Zero mock data. Respects openFDA rate limits and optional FDA_API_KEY.
+RegPulse Official FDA Data Ingestion Pipeline (v1.2)
+- Pulls targeted Dietary Supplements, Cosmetics, OTC/Unapproved Drugs, and Device recalls from openFDA
+- Pulls BOTH raw & non-talc cosmetic adverse event trends from api.fda.gov/cosmetic/event.json
+- Decodes HTML entities cleanly on FDA.gov Recalls RSS
+- Emits src/data/sync_manifest.json with endpoint URLs, HTTP statuses, counts, and SHA-256 hashes
 """
 
+import hashlib
+import html
 import json
 import os
 import re
@@ -21,36 +25,80 @@ DATA_DIR = ROOT / "src" / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 API_KEY = os.environ.get("FDA_API_KEY", "").strip()
-USER_AGENT = "RegPulse-Regulatory-Sync/1.0 (+https://github.com/KouchaOguri/regpulse)"
+USER_AGENT = "RegPulse-Regulatory-Sync/1.2 (+https://github.com/KouchaOguri/regpulse)"
+
+ENDPOINT_LOG: list[dict] = []
 
 
-def http_get(url: str, timeout: int = 25) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json, application/xml, */*"})
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def clean_truncate(text: str, max_len: int) -> str:
+    t = html.unescape(re.sub(r"<[^>]+>", "", text or "")).strip()
+    t = re.sub(r"\s+", " ", t)
+    if len(t) <= max_len:
+        return t
+    cut = t[: max_len - 1].rsplit(" ", 1)[0]
+    return (cut or t[: max_len - 1]).rstrip(".,;:- ") + "…"
+
+
+def http_get_with_status(url: str, timeout: int = 25) -> tuple[int, bytes]:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/json, application/xml, */*",
+        },
+    )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read()
+        return resp.status, resp.read()
 
 
 def openfda_fetch(path: str, params: dict) -> dict:
     q = dict(params)
     if API_KEY:
         q["api_key"] = API_KEY
-    qs = urllib.parse.urlencode(q, safe=":+[]\"'")
+    qs = urllib.parse.urlencode(q, safe=":+[]\"'()")
     url = f"https://api.fda.gov/{path}?{qs}"
+    redacted_url = re.sub(r"api_key=[^&]+", "api_key=REDACTED", url)
     for attempt in range(3):
         try:
-            raw = http_get(url)
-            return json.loads(raw.decode("utf-8"))
+            status, raw = http_get_with_status(url)
+            parsed = json.loads(raw.decode("utf-8"))
+            ENDPOINT_LOG.append({
+                "url": redacted_url,
+                "httpStatus": status,
+                "recordsReturned": len(parsed.get("results", [])),
+                "totalReportedByApi": parsed.get("meta", {}).get("results", {}).get("total"),
+                "fetchedAtUtc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            })
+            return parsed
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt < 2:
                 time.sleep(2 * (attempt + 1))
                 continue
             print(f"[WARN] HTTP {e.code} on {path}: {e}")
+            ENDPOINT_LOG.append({
+                "url": redacted_url,
+                "httpStatus": e.code,
+                "recordsReturned": 0,
+                "error": str(e),
+                "fetchedAtUtc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            })
             return {}
         except Exception as e:
             if attempt < 2:
                 time.sleep(1.5)
                 continue
             print(f"[WARN] Error on {path}: {e}")
+            ENDPOINT_LOG.append({
+                "url": redacted_url,
+                "httpStatus": 0,
+                "recordsReturned": 0,
+                "error": str(e),
+                "fetchedAtUtc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            })
             return {}
     return {}
 
@@ -71,9 +119,18 @@ def slugify(text: str, max_len: int = 64) -> str:
 
 def infer_vertical(category: str, desc: str, reason: str) -> str:
     blob = f"{desc} {reason}".lower()
-    if any(k in blob for k in ["cosmetic", "lotion", "serum", "cream", "shampoo", "mascara", "makeup", "sunscreen", "eyelash", "skin", "facial", "cleanser", "lip balm", "deodorant"]):
+    if any(k in blob for k in [
+        "cosmetic", "lotion", "serum", "cream", "shampoo", "conditioner", "mascara",
+        "makeup", "sunscreen", "eyelash", "facial", "cleanser", "lip balm", "deodorant",
+        "moisturizer", "skin lightening", "skincare", "body wash", "toner", "ointment"
+    ]) and "pericare" not in blob and "hospital" not in blob:
         return "Cosmetics & Skincare"
-    if any(k in blob for k in ["supplement", "capsule", "tablet", "gummy", "gummies", "vitamin", "herbal", "botanical", "probiotic", "collagen", "extract", "sildenafil", "tadalafil", "sibutramine", "weight loss", "sexual enhancement", "energy", "dietary"]):
+    if any(k in blob for k in [
+        "dietary supplement", "supplement", "capsule", "gummy", "gummies", "vitamin",
+        "herbal", "botanical", "probiotic", "collagen", "sildenafil", "tadalafil",
+        "sibutramine", "weight loss", "sexual enhancement", "male enhancement",
+        "yohimbine", "berberine", "ashwagandha", "turmeric", "melatonin", "magnesium"
+    ]):
         return "Dietary Supplements"
     if category == "device":
         return "Medical & Beauty Devices"
@@ -87,11 +144,11 @@ def extract_risk_tags(reason: str, desc: str) -> list[str]:
     tags = []
     checks = [
         ("Unapproved New Drug", ["unapproved new drug", "unapproved drug", "new drug without"]),
-        ("Tainted / Hidden Drug API", ["sildenafil", "tadalafil", "sibutramine", "diclofenac", "dexamethasone", "phenolphthalein", "tainted", "hidden drug", "active pharmaceutical"]),
+        ("Tainted / Hidden Drug API", ["sildenafil", "tadalafil", "sibutramine", "diclofenac", "dexamethasone", "phenolphthalein", "tainted", "hidden drug", "active pharmaceutical", "undeclared drug"]),
         ("Undeclared Allergen / Colorant", ["undeclared allergen", "undeclared milk", "undeclared soy", "undeclared wheat", "undeclared peanut", "undeclared tree nut", "undeclared egg", "undeclared sesame", "undeclared sulfite", "undeclared yellow", "undeclared red", "undeclared blue", "undeclared fd&c", "undeclared"]),
         ("Misbranding / Label Defect", ["misbranded", "mislabeled", "label", "packaging"]),
         ("CGMP / Contamination", ["cgmp", "good manufacturing", "insanitary", "sterility", "microbial", "contamination", "salmonella", "listeria", "mold", "bacteria", "foreign material"]),
-        ("Heavy Metals / Chemical", ["lead", "mercury", "arsenic", "cadmium", "benzene", "ethylene oxide", "methanol"]),
+        ("Heavy Metals / Chemical", ["lead", "mercury", "arsenic", "cadmium", "benzene", "ethylene oxide", "methanol", "thallium"]),
         ("510(k) / Clearance Issue", ["510(k)", "without marketing clearance", "without clearance", "unapproved device"]),
     ]
     for label, kws in checks:
@@ -102,17 +159,15 @@ def extract_risk_tags(reason: str, desc: str) -> list[str]:
     return tags[:3]
 
 
-def fetch_enforcement(category: str, limit: int = 100) -> list[dict]:
-    data = openfda_fetch(f"{category}/enforcement.json", {"sort": "report_date:desc", "limit": limit})
-    results = data.get("results", [])
+def parse_enforcement_results(category: str, results: list[dict]) -> list[dict]:
     records = []
     for r in results:
         recall_num = (r.get("recall_number") or r.get("event_id") or "").strip()
         if not recall_num:
             continue
-        firm = (r.get("recalling_firm") or "Unknown Firm").strip()
-        desc = (r.get("product_description") or "").strip()
-        reason = (r.get("reason_for_recall") or "").strip()
+        firm = html.unescape((r.get("recalling_firm") or "Unknown Firm").strip())
+        desc = html.unescape((r.get("product_description") or "").strip())
+        reason = html.unescape((r.get("reason_for_recall") or "").strip())
         report_date = format_fda_date(r.get("report_date", ""))
         init_date = format_fda_date(r.get("recall_initiation_date", ""))
         vertical = infer_vertical(category, desc, reason)
@@ -129,42 +184,60 @@ def fetch_enforcement(category: str, limit: int = 100) -> list[dict]:
             "city": (r.get("city") or "").strip(),
             "state": (r.get("state") or "").strip(),
             "country": (r.get("country") or "").strip(),
-            "productDescription": desc[:600],
-            "reasonForRecall": reason[:700],
+            "productShort": clean_truncate(desc, 110),
+            "productDescription": clean_truncate(desc, 600),
+            "reasonForRecall": clean_truncate(reason, 700),
             "reportDate": report_date,
             "initiationDate": init_date,
             "voluntaryMandated": (r.get("voluntary_mandated") or "").strip(),
-            "distributionPattern": (r.get("distribution_pattern") or "")[:300],
+            "distributionPattern": clean_truncate(r.get("distribution_pattern") or "", 300),
             "riskTags": extract_risk_tags(reason, desc),
             "officialSourceUrl": f"https://api.fda.gov/{category}/enforcement.json?search=recall_number:%22{urllib.parse.quote(recall_num)}%22",
         })
     return records
 
 
+def fetch_enforcement(category: str, limit: int = 80, search: str | None = None) -> list[dict]:
+    params: dict = {"sort": "report_date:desc", "limit": limit}
+    if search:
+        params["search"] = search
+    data = openfda_fetch(f"{category}/enforcement.json", params)
+    return parse_enforcement_results(category, data.get("results", []))
+
+
 def fetch_cosmetic_trends() -> dict:
     total_meta = openfda_fetch("cosmetic/event.json", {"limit": 1})
     total_events = total_meta.get("meta", {}).get("results", {}).get("total", 0)
-    top_categories = openfda_fetch("cosmetic/event.json", {"count": "outcomes.exact", "limit": 10}).get("results", [])
-    top_reactions = openfda_fetch("cosmetic/event.json", {"count": "reactions.exact", "limit": 15}).get("results", [])
-    recent_raw = openfda_fetch("cosmetic/event.json", {"sort": "initial_received_date:desc", "limit": 20}).get("results", [])
-    recent = []
-    for item in recent_raw:
-        prods = item.get("products") or []
-        prod_name = prods[0].get("product_name", "Unspecified Cosmetic") if prods else "Unspecified Cosmetic"
-        industry = prods[0].get("industry_name", "Cosmetics") if prods else "Cosmetics"
-        recent.append({
-            "reportNumber": item.get("report_number", ""),
-            "receivedDate": format_fda_date(item.get("initial_received_date", "")),
-            "productName": prod_name[:140],
-            "industryName": industry,
-            "reactions": (item.get("reactions") or [])[:5],
-            "outcomes": (item.get("outcomes") or [])[:3],
-        })
+    top_reactions_raw = openfda_fetch("cosmetic/event.json", {"count": "reactions.exact", "limit": 15}).get("results", [])
+
+    # Query non-talc skincare/hair/beauty reactions (excluding baby powder / talc mass-tort litigation noise)
+    non_talc_meta = openfda_fetch(
+        "cosmetic/event.json",
+        {"search": "NOT+products.product_name:(powder+talc)", "limit": 1},
+    )
+    non_talc_total = non_talc_meta.get("meta", {}).get("results", {}).get("total", 0)
+    non_talc_reactions = openfda_fetch(
+        "cosmetic/event.json",
+        {"search": "NOT+products.product_name:(powder+talc)", "count": "reactions.exact", "limit": 15},
+    ).get("results", [])
+
+    # Filter out obvious talc-litigation cancer terms if any remain from unnamed talc entries
+    litigation_terms = {"ovarian cancer", "fallopian tube cancer", "mesothelioma", "death", "cervix carcinoma", "uterine cancer"}
+    skincare_reactions = [
+        r for r in non_talc_reactions
+        if not any(lt in (r.get("term") or "").lower() for lt in litigation_terms)
+    ][:10]
+
     return {
         "totalEventsInOpenFDA": total_events,
-        "topCategories": top_categories,
-        "topReactions": top_reactions,
-        "recentEvents": recent,
+        "nonTalcEventsCount": non_talc_total,
+        "topReactionsAll": top_reactions_raw[:10],
+        "topReactions": skincare_reactions if skincare_reactions else non_talc_reactions[:10],
+        "methodologyNote": (
+            "Raw openFDA cosmetic adverse event totals include tens of thousands of historical talc/baby-powder "
+            "litigation filings (Ovarian Cancer / Death). RegPulse queries openFDA excluding powder/talc entries "
+            "so beauty brands see actionable skincare, haircare, and topical adverse-event signals."
+        ),
     }
 
 
@@ -177,8 +250,8 @@ def fetch_510k_recent(limit: int = 40) -> list[dict]:
             continue
         out.append({
             "kNumber": knum,
-            "deviceName": (r.get("device_name") or "").strip()[:200],
-            "applicant": (r.get("applicant") or "").strip()[:140],
+            "deviceName": clean_truncate(r.get("device_name") or "", 180),
+            "applicant": clean_truncate(r.get("applicant") or "", 130),
             "countryCode": (r.get("country_code") or "").strip(),
             "productCode": (r.get("product_code") or "").strip(),
             "advisoryCommittee": (r.get("advisory_committee_description") or "").strip(),
@@ -190,56 +263,92 @@ def fetch_510k_recent(limit: int = 40) -> list[dict]:
     return out
 
 
-def fetch_fda_recalls_rss(limit: int = 25) -> list[dict]:
+def fetch_fda_recalls_rss(limit: int = 20) -> list[dict]:
     url = "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls/rss.xml"
     try:
-        raw = http_get(url)
+        status, raw = http_get_with_status(url)
         root = ET.fromstring(raw)
         items = []
         for item in root.findall(".//item")[:limit]:
-            title = (item.findtext("title") or "").strip()
+            title = clean_truncate(item.findtext("title") or "", 200)
             link = (item.findtext("link") or "").strip()
             pub_date = (item.findtext("pubDate") or "").strip()
-            desc = re.sub(r"<[^>]+>", "", (item.findtext("description") or "")).strip()
+            desc = clean_truncate(item.findtext("description") or "", 360)
             if title and link:
                 items.append({
-                    "title": title[:220],
+                    "title": title,
                     "link": link,
                     "pubDate": pub_date,
-                    "summary": desc[:420],
+                    "summary": desc,
                 })
+        ENDPOINT_LOG.append({
+            "url": url,
+            "httpStatus": status,
+            "recordsReturned": len(items),
+            "fetchedAtUtc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        })
         return items
     except Exception as e:
         print(f"[WARN] RSS fetch failed: {e}")
+        ENDPOINT_LOG.append({
+            "url": url,
+            "httpStatus": 0,
+            "recordsReturned": 0,
+            "error": str(e),
+            "fetchedAtUtc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        })
         return []
 
 
 def main() -> None:
-    print("Syncing live FDA data from openFDA & FDA.gov RSS...")
-    food_recalls = fetch_enforcement("food", limit=100)
-    time.sleep(0.4)
-    drug_recalls = fetch_enforcement("drug", limit=100)
-    time.sleep(0.4)
-    device_recalls = fetch_enforcement("device", limit=60)
-    time.sleep(0.4)
+    print("Syncing live FDA data from openFDA (targeted e-commerce verticals + recent enforcement) & FDA.gov RSS...")
+    # Targeted e-commerce relevant queries so Supplements & Cosmetics aren't buried under bulk food/hospital noise
+    sup_food = fetch_enforcement(
+        "food",
+        limit=65,
+        search='product_description:(supplement+OR+capsule+OR+gummy+OR+vitamin+OR+herbal+OR+probiotic+OR+collagen)',
+    )
+    time.sleep(0.3)
+    cos_drug = fetch_enforcement(
+        "drug",
+        limit=65,
+        search='product_description:(cream+OR+serum+OR+lotion+OR+shampoo+OR+sunscreen+OR+skin+OR+ointment+OR+cleanser)',
+    )
+    time.sleep(0.3)
+    tainted_drug = fetch_enforcement(
+        "drug",
+        limit=50,
+        search='reason_for_recall:(sildenafil+OR+tadalafil+OR+sibutramine+OR+unapproved+OR+undeclared)',
+    )
+    time.sleep(0.3)
+    recent_food = fetch_enforcement("food", limit=45)
+    time.sleep(0.3)
+    recent_device = fetch_enforcement("device", limit=45)
+    time.sleep(0.3)
 
-    # Deduplicate by recallNumber + sourceCategory and sort newest first
-    seen = set()
+    # Deduplicate by recallNumber AND collapse duplicate firm+reason clusters (keep max 2 per firm+reason)
+    seen_num = set()
+    firm_reason_counts: dict[tuple[str, str], int] = {}
     all_recalls = []
-    for rec in food_recalls + drug_recalls + device_recalls:
+    for rec in sup_food + cos_drug + tainted_drug + recent_food + recent_device:
         key = (rec["sourceCategory"], rec["recallNumber"])
-        if key not in seen:
-            seen.add(key)
-            all_recalls.append(rec)
+        if key in seen_num:
+            continue
+        fr_key = (rec["recallingFirm"].lower(), rec["reasonForRecall"][:70].lower())
+        if firm_reason_counts.get(fr_key, 0) >= 2:
+            continue
+        seen_num.add(key)
+        firm_reason_counts[fr_key] = firm_reason_counts.get(fr_key, 0) + 1
+        all_recalls.append(rec)
+
     all_recalls.sort(key=lambda x: x.get("reportDate", ""), reverse=True)
 
     cosmetic_trends = fetch_cosmetic_trends()
-    time.sleep(0.4)
-    clearances_510k = fetch_510k_recent(limit=40)
     time.sleep(0.3)
-    rss_alerts = fetch_fda_recalls_rss(limit=25)
+    clearances_510k = fetch_510k_recent(limit=40)
+    time.sleep(0.25)
+    rss_alerts = fetch_fda_recalls_rss(limit=20)
 
-    # Compute summary metrics
     by_vertical: dict[str, int] = {}
     by_class: dict[str, int] = {}
     for r in all_recalls:
@@ -249,10 +358,12 @@ def main() -> None:
     now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     metadata = {
         "lastSyncedUtc": now_iso,
+        "lastSyncedDisplay": datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC"),
         "totalRecallsIndexed": len(all_recalls),
         "total510kIndexed": len(clearances_510k),
         "totalRssAlerts": len(rss_alerts),
         "cosmeticEventsInOpenFDA": cosmetic_trends.get("totalEventsInOpenFDA", 0),
+        "nonTalcCosmeticEvents": cosmetic_trends.get("nonTalcEventsCount", 0),
         "countsByVertical": by_vertical,
         "countsByClassification": by_class,
         "sources": [
@@ -265,13 +376,37 @@ def main() -> None:
         ],
     }
 
-    (DATA_DIR / "recalls.json").write_text(json.dumps(all_recalls, ensure_ascii=False, indent=2), encoding="utf-8")
-    (DATA_DIR / "cosmetic_trends.json").write_text(json.dumps(cosmetic_trends, ensure_ascii=False, indent=2), encoding="utf-8")
-    (DATA_DIR / "clearances_510k.json").write_text(json.dumps(clearances_510k, ensure_ascii=False, indent=2), encoding="utf-8")
-    (DATA_DIR / "rss_alerts.json").write_text(json.dumps(rss_alerts, ensure_ascii=False, indent=2), encoding="utf-8")
-    (DATA_DIR / "metadata.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
+    written_files = {
+        "recalls.json": all_recalls,
+        "cosmetic_trends.json": cosmetic_trends,
+        "clearances_510k.json": clearances_510k,
+        "rss_alerts.json": rss_alerts,
+        "metadata.json": metadata,
+    }
+    file_hashes = {}
+    for fname, obj in written_files.items():
+        p = DATA_DIR / fname
+        p.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+        file_hashes[fname] = {
+            "sha256": sha256_file(p),
+            "bytes": p.stat().st_size,
+            "recordCount": len(obj) if isinstance(obj, list) else (obj.get("totalEventsInOpenFDA") if "totalEventsInOpenFDA" in obj else 1),
+        }
 
-    print(f"Sync complete: {len(all_recalls)} recalls, {len(clearances_510k)} 510(k) clearances, {len(rss_alerts)} RSS alerts, {cosmetic_trends.get('totalEventsInOpenFDA', 0)} total openFDA cosmetic events.")
+    manifest = {
+        "schemaVersion": "1.1",
+        "syncedAtUtc": now_iso,
+        "apiKeyUsed": bool(API_KEY),
+        "endpoints": ENDPOINT_LOG,
+        "artifacts": file_hashes,
+    }
+    (DATA_DIR / "sync_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(
+        f"Sync complete: {len(all_recalls)} deduplicated recalls ({by_vertical}), "
+        f"{len(clearances_510k)} 510(k) clearances, {len(rss_alerts)} RSS alerts, "
+        f"{cosmetic_trends.get('totalEventsInOpenFDA', 0)} total / {cosmetic_trends.get('nonTalcEventsCount', 0)} non-talc cosmetic events."
+    )
 
 
 if __name__ == "__main__":

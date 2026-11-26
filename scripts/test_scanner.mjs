@@ -15,77 +15,103 @@ await esbuild.build({
 });
 
 const { scanListing } = await import(pathToFileURL(outFile).href);
-
 const recalls = JSON.parse(fs.readFileSync(new URL('../src/data/recalls.json', import.meta.url), 'utf-8'));
 
-// Test 1: Compliant supplement WITH standard DSHEA disclaimer must NOT falsely trigger disease claims!
+// 1. Clean supplement WITH DSHEA disclaimer -> 0 findings, LOW, DSHEA PASS
 const cleanSup = scanListing(
   {
     vertical: 'supplements',
     title: 'Magnesium Glycinate 400mg – Supports Restful Sleep and Calm Mood',
     bullets:
-      '• Supports everyday relaxation and normal muscle recovery after exercise.\n• Manufactured in an FDA-registered, cGMP-compliant facility.\n*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.',
+      '• Supports everyday relaxation and normal muscle recovery after exercise.\n• Non-GMO, caffeine-free.\n*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.',
     ingredients: 'Magnesium Glycinate, Vegetable Cellulose Capsule, Rice Flour.',
   },
   recalls
 );
-assert.equal(cleanSup.findings.length, 0, `Expected 0 findings on clean supplement, got: ${JSON.stringify(cleanSup.findings.map(f => f.rule.id))}`);
-assert.equal(cleanSup.grade, 'LOW', `Expected LOW grade, got ${cleanSup.grade}`);
-assert.ok(cleanSup.mandatoryChecks.some((m) => m.id === 'MAND-DSHEA-01' && m.passed), 'DSHEA disclaimer should PASS');
+assert.equal(cleanSup.findings.length, 0, `Clean supplement unexpected findings: ${cleanSup.findings.map((f) => f.rule.id)}`);
+assert.equal(cleanSup.grade, 'LOW');
+assert.ok(cleanSup.mandatoryChecks.some((m) => m.id === 'MAND-DSHEA-01' && m.passed));
 
-// Test 2: Missing DSHEA disclaimer on structure-function supplement MUST warn
-const missingDisclaimer = scanListing(
-  {
-    vertical: 'supplements',
-    title: 'Daily Probiotic Blend – Supports Gut Health and Immune Support',
-    bullets: '• Helps maintain digestive comfort and everyday wellness.',
-    ingredients: 'Lactobacillus acidophilus, Inulin.',
-  },
-  recalls
-);
-assert.equal(missingDisclaimer.findings.length, 0);
-assert.ok(missingDisclaimer.mandatoryChecks.some((m) => m.id === 'MAND-DSHEA-01' && !m.passed), 'Missing DSHEA disclaimer should FAIL');
-
-// Test 3: High-risk skincare with drug claims, hydroquinone, EPA antibacterial, FDA Approved
-const riskyCosmetic = scanListing(
+// 2. False-positive guard: "acne-prone skin", "prevent dry skin", "Not FDA approved" -> 0 findings
+const benignCosmetic = scanListing(
   {
     vertical: 'cosmetics',
-    title: 'FDA Approved Anti-Acne Retinol Serum – Treats Acne & Reduces Inflammation',
-    bullets: '• Kills 99.9% of bacteria and stimulates collagen production. Botox alternative.',
-    ingredients: 'Water, Glycerin, Hydroquinone 2%, Fragrance.',
+    title: 'Gentle Salicylic-Free Cleanser for Acne-Prone Skin – Helps Prevent Dry Skin',
+    bullets:
+      '• Alcohol-free, non-comedogenic daily cleanser. Visibly softens the appearance of fine lines.\n• Note: This cosmetic is not FDA approved.\n• Adverse event questions? Contact Responsible Person at support@example.com or 1-800-555-0100.',
+    ingredients: 'Water, Glycerin, Panthenol, Allantoin.',
   },
   recalls
 );
-assert.equal(riskyCosmetic.grade, 'CRITICAL');
-assert.ok(riskyCosmetic.findings.length >= 5, `Expected >=5 findings, got ${riskyCosmetic.findings.length}`);
-assert.ok(riskyCosmetic.findings.some((f) => f.rule.id === 'EPA-PEST-001'), 'Should catch EPA pesticide trigger');
-assert.ok(riskyCosmetic.findings.some((f) => f.rule.id === 'COS-DRUG-005'), 'Should catch hydroquinone');
+assert.equal(benignCosmetic.findings.length, 0, `Benign cosmetic false positives: ${benignCosmetic.findings.map((f) => `${f.rule.id}:${f.matchedPhrases}`)}`);
+assert.equal(benignCosmetic.score, 0);
 
-// Test 4: Tainted supplement with sildenafil + Nature's Ozempic + lowers blood sugar
-const taintedSup = scanListing(
+// 3. Red-Team Case B (Supplements): Hangover Cure + Acid Reflux/GERD + Liver Detox + Boosts Testosterone + Dandruff/Nail Fungus
+const caseB = scanListing(
   {
     vertical: 'supplements',
-    title: "Nature's Ozempic Berberine – Lowers Blood Sugar & Cures Insomnia",
-    bullets: '• 100% guaranteed results. Clinically proven weight loss.',
-    ingredients: 'Berberine, Sildenafil Citrate, DMAA.',
+    title: 'Liver Detox & Hangover Cure Milk Thistle Capsules – Boosts Testosterone, Cleanses Toxins, Relieves Acid Reflux & GERD, Treats Dandruff & Nail Fungus',
+    bullets: '• Daily herbal complex for fast relief.',
+    ingredients: 'Milk Thistle, Yohimbine HCl.',
   },
   recalls
 );
-assert.equal(taintedSup.grade, 'CRITICAL');
-assert.ok(taintedSup.findings.some((f) => f.rule.id === 'ING-TAINT-001'), 'Should catch tainted drug ingredients');
-assert.ok(taintedSup.findings.some((f) => f.rule.id === 'SUP-DIS-006'), 'Should catch Ozempic/GLP-1 claim');
+assert.equal(caseB.grade, 'CRITICAL', `Case B should be CRITICAL, got ${caseB.grade} (${caseB.score})`);
+assert.ok(caseB.findings.some((f) => f.rule.id === 'SUP-DIS-GI'), 'Case B must flag Hangover/GERD/Liver Detox');
+assert.ok(caseB.findings.some((f) => f.rule.id === 'SUP-DIS-HORMONE'), 'Case B must flag Boosts Testosterone');
+assert.ok(caseB.findings.some((f) => f.rule.id === 'COS-OTC-DANDRUFF'), 'Case B must flag Dandruff / Nail Fungus');
+assert.ok(caseB.findings.some((f) => f.rule.id === 'ING-TAINT-001'), 'Case B must flag Yohimbine');
+assert.ok(caseB.mandatoryChecks.some((m) => m.id === 'MAND-DSHEA-01' && !m.passed), 'Case B must flag missing DSHEA disclaimer');
 
-// Test 5: Clean cosmetic WITH U.S. contact should score 0 / LOW
-const cleanCosmetic = scanListing(
+// 4. Red-Team Case C (Cosmetics): SPF 50 + Anti-Dandruff + Repairs Sun Damage + Fades Acne Scars + Tightens Loose Skin
+const caseC = scanListing(
   {
     vertical: 'cosmetics',
-    title: 'Hydrating Hyaluronic Acid Facial Serum – Visibly Plumps & Softens Look of Fine Lines',
-    bullets: '• Lightweight moisture barrier support for smoother-looking, radiant skin.\n• Questions or adverse event comments? Contact Responsible Person at support@example.com or 1-800-555-0199, Austin TX.',
-    ingredients: 'Water, Sodium Hyaluronate, Glycerin, Panthenol.',
+    title: 'Anti-Dandruff Scalp Serum & Sun Protection SPF 50 Glow Drops – Tightens Loose Skin, Repairs Sun Damage, Fades Acne Scars, Shrinks Pores Permanently',
+    bullets: '• Prevents sunburn and skin cancer. Eliminates scalp psoriasis and reduces rosacea. Removes warts and skin tags.',
+    ingredients: 'Water, Ketoconazole 1%, Hydroqinone 2%.',
   },
   recalls
 );
-assert.equal(cleanCosmetic.score, 0, `Expected score 0 on clean cosmetic, got ${cleanCosmetic.score}`);
-assert.equal(cleanCosmetic.grade, 'LOW');
+assert.equal(caseC.grade, 'CRITICAL');
+assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-OTC-SPF'), 'Case C must catch SPF 50 / Sun Protection');
+assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-OTC-DANDRUFF'), 'Case C must catch Anti-Dandruff / Ketoconazole / Warts');
+assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-DRUG-002'), 'Case C must catch Repairs Sun Damage / Acne Scars / Tightens Loose Skin');
+assert.ok(caseC.findings.some((f) => f.rule.id === 'SUP-DIS-002'), 'Case C must catch "prevents sunburn and skin cancer"');
+assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-DRUG-001'), 'Case C must catch "eliminates scalp psoriasis" / "reduces rosacea"');
+assert.ok(caseC.findings.some((f) => f.rule.id === 'COS-DRUG-005'), 'Case C must fuzzy-catch typo "Hydroqinone"');
 
-console.log('ALL 5 SCANNER ACCURACY & FALSE-POSITIVE GUARD TESTS PASSED!');
+// 5. Fuzzy 1-char typo guard on Sibutramin
+const typoTest = scanListing(
+  {
+    vertical: 'supplements',
+    title: 'Slim Caps – Prevents Heart Attack & Cures Fatty Liver',
+    bullets: '• Heals leaky gut and relieves menopause hot flashes.',
+    ingredients: 'Green Tea, Sibutramin.',
+  },
+  recalls
+);
+assert.ok(typoTest.findings.some((f) => f.rule.id === 'ING-TAINT-001'), 'Must fuzzy-catch Sibutramin typo');
+assert.ok(typoTest.findings.some((f) => f.rule.id === 'SUP-DIS-001'), 'Must catch prevents heart attack');
+assert.ok(typoTest.findings.some((f) => f.rule.id === 'SUP-DIS-GI'), 'Must catch fatty liver / leaky gut');
+assert.ok(typoTest.findings.some((f) => f.rule.id === 'SUP-DIS-HORMONE'), 'Must catch menopause hot flashes');
+
+// 6. Device vertical must NOT leak dietary supplement DSHEA rewrite AND must NOT match 7-Eleven Horchata!
+const deviceTest = scanListing(
+  {
+    vertical: 'devices',
+    title: 'Red Light LED Mask – Cures Pain & Relieves Neuropathy, IPL Permanent Hair Removal, Product is FDA-Registered',
+    bullets: '• EMS muscle stimulator for home use.',
+    ingredients: 'Medical-grade silicone shell, 630nm LED array, USB-C controller.',
+  },
+  recalls
+);
+assert.ok(deviceTest.findings.some((f) => f.rule.id === 'DEV-510K-001'), 'Device must trigger DEV-510K-001');
+assert.ok(deviceTest.findings.some((f) => f.rule.id === 'FDA-TERM-002'), 'Device must trigger FDA-Registered trap');
+assert.ok(!deviceTest.findings.some((f) => f.rule.id === 'SUP-DIS-004'), 'Device must NOT leak supplement rule SUP-DIS-004');
+assert.ok(
+  deviceTest.matchedRecalls.every((r) => r.vertical === 'Medical & Beauty Devices'),
+  `Device recall cross-ref leaked wrong vertical: ${deviceTest.matchedRecalls.map((r) => `${r.recallingFirm}(${r.vertical})`)}`
+);
+
+console.log('ALL 6 GOLDEN ANTI-HALLUCINATION, TYPO-GUARD & VERTICAL-ISOLATION TESTS PASSED!');

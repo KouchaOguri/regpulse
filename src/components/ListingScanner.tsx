@@ -31,15 +31,15 @@ const VERTICAL_OPTIONS: Array<{
     value: 'cosmetics',
     labelEn: 'Cosmetics & Skincare (MoCRA)',
     labelZh: '美妆护肤（MoCRA）',
-    hintEn: 'Serums, creams, hair/lash, cleansers',
-    hintZh: '精华/面霜/洗护/睫毛液',
+    hintEn: 'Serums, creams, hair/lash, SPF/dandruff checks',
+    hintZh: '精华/面霜/洗护/防晒/去屑检测',
   },
   {
     value: 'supplements',
     labelEn: 'Dietary Supplements (DSHEA)',
     labelZh: '膳食补充剂 / 保健品',
     hintEn: 'Capsules, gummies, botanicals, vitamins',
-    hintZh: '胶囊/软糖/草本/维生素',
+    hintZh: '胶囊/软糖/草本/维生素/护肝',
   },
   {
     value: 'devices',
@@ -57,12 +57,42 @@ const VERTICAL_OPTIONS: Array<{
   },
 ];
 
+const CATEGORY_ZH: Record<string, string> = {
+  'Drug Claim': '药物宣称越界',
+  'Disease Claim': '疾病治疗宣称',
+  'OTC Monograph Drug': 'OTC 药品专论触发',
+  'FDA Terminology Misuse': 'FDA 术语/背书违规',
+  'Prohibited / Tainted Ingredient': '禁用/非法添加成分',
+  'EPA Pesticide Trap': 'EPA 农药扫号陷阱',
+  'FTC Substantiation': 'FTC 临床证据红线',
+};
+
+const SEVERITY_ZH: Record<string, string> = {
+  critical: '极危',
+  high: '高危',
+  medium: '中危',
+};
+
+function extractMonitorKeywords(ingredients: string, vertical: ProductVertical): string {
+  const cleaned = ingredients
+    .split(/[,;\n]+/)
+    .map((s) => s.replace(/\d+%|\d+mg|\d+ml/gi, '').trim())
+    .filter((s) => s.length >= 4 && !/^(water|aqua|glycerin|fragrance|vegetable cellulose|rice flour)$/i.test(s))
+    .slice(0, 6);
+  if (cleaned.length > 0) return cleaned.join(', ');
+  if (vertical === 'cosmetics') return 'Retinol, Hydroquinone, Cosmetics OEM';
+  if (vertical === 'supplements') return 'Berberine, Ashwagandha, Supplement OEM';
+  if (vertical === 'devices') return 'LED Mask, IPL Device, 510(k) Product Code GEX';
+  return 'Brand Name, OEM Manufacturer, Key Ingredients';
+}
+
 export default function ListingScanner({ recalls, basePath }: Props) {
   const [lang, setLang] = useState<Lang>('en');
   const [vertical, setVertical] = useState<ProductVertical>('cosmetics');
   const [title, setTitle] = useState(SAMPLE_LISTINGS.cosmetic.title);
   const [bullets, setBullets] = useState(SAMPLE_LISTINGS.cosmetic.bullets);
   const [ingredients, setIngredients] = useState(SAMPLE_LISTINGS.cosmetic.ingredients);
+  const [isDemoLoaded, setIsDemoLoaded] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [statusMsg, setStatusMsg] = useState('');
   const [result, setResult] = useState<ScanResult | null>(null);
@@ -77,7 +107,6 @@ export default function ListingScanner({ recalls, basePath }: Props) {
     return () => window.removeEventListener('regpulse:lang', handler);
   }, []);
 
-  // Run initial scan on mount so visitor immediately sees rich commercial value
   useEffect(() => {
     const initial = scanListing(
       {
@@ -113,6 +142,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
     setTitle(s.title);
     setBullets(s.bullets);
     setIngredients(s.ingredients);
+    setIsDemoLoaded(true);
     const res = scanListing(
       { title: s.title, bullets: s.bullets, ingredients: s.ingredients, vertical: s.vertical },
       recalls
@@ -120,8 +150,8 @@ export default function ListingScanner({ recalls, basePath }: Props) {
     setResult(res);
     setStatusMsg(
       lang === 'zh'
-        ? `已加载示例「${s.labelZh}」并完成扫描（风险分 ${res.score}/100）。`
-        : `Loaded "${s.labelEn}" and scanned (Risk score ${res.score}/100).`
+        ? `已加载高危演示样本「${s.labelZh}」并完成扫描（风险分 ${res.score}/100）。`
+        : `Loaded illustrative risk example "${s.labelEn}" and scanned (Risk score ${res.score}/100).`
     );
   };
 
@@ -129,6 +159,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
     setTitle('');
     setBullets('');
     setIngredients('');
+    setIsDemoLoaded(false);
     setResult(null);
     setStatusMsg(lang === 'zh' ? '已清空输入内容。' : 'Inputs cleared.');
   };
@@ -139,7 +170,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1800);
     } catch {
-      // fallback ignored
+      // ignore
     }
   };
 
@@ -182,7 +213,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
       new CustomEvent('regpulse:open-watchlist', {
         detail: {
           plan: lang === 'zh' ? '中文跨境监控季卡 (¥199/季)' : 'Starter Watchlist ($29/mo)',
-          prefillKeywords: title.slice(0, 80),
+          prefillKeywords: extractMonitorKeywords(ingredients, vertical),
         },
       })
     );
@@ -210,10 +241,12 @@ export default function ListingScanner({ recalls, basePath }: Props) {
           </button>
         </div>
 
-        {/* Preset one-click samples */}
+        {/* Preset one-click illustrative risk examples */}
         <div className="mt-4">
           <p className="text-xs font-semibold text-slate-600 mb-2">
-            {lang === 'zh' ? '一键加载高危真实示例体验：' : 'Load a high-risk example in 1 click:'}
+            {lang === 'zh'
+              ? '一键加载高危演示样本（Illustrative Risk Example）快速体验：'
+              : 'Load an Illustrative Risk Example (demo copy) in 1 click:'}
           </p>
           <div className="flex flex-wrap gap-2">
             {Object.entries(SAMPLE_LISTINGS).map(([key, sample]) => (
@@ -223,14 +256,14 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                 onClick={() => loadSample(key as keyof typeof SAMPLE_LISTINGS)}
                 className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:border-teal-500 hover:bg-teal-50 hover:text-teal-900 transition-colors cursor-pointer"
               >
-                <Sparkles className="w-3 h-3 text-teal-600" aria-hidden="true" />
+                <Sparkles className="w-3 h-3 text-teal-600 shrink-0" aria-hidden="true" />
                 {lang === 'zh' ? sample.labelZh : sample.labelEn}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Vertical Radio Group (per modern-web-guidance: 2-5 exclusive options -> visible radios in fieldset/legend) */}
+        {/* Vertical Radio Group */}
         <fieldset className="mt-5">
           <legend className="text-xs font-semibold uppercase tracking-wide text-slate-700 mb-2">
             {lang === 'zh' ? '选择产品类目（决定适用 FDA 法规集）' : 'Product Category (Sets Applicable FDA Statutes)'}
@@ -279,7 +312,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
           </label>
           <span id="rp-title-hint" className="block text-[11px] text-slate-500 mt-0.5 mb-1.5">
             {lang === 'zh'
-              ? '含品牌名、卖点词、功效词（100% 浏览器本地瞬时检测，不上传私有文案）'
+              ? '100% 浏览器本地瞬时检测（<50ms），不上传你的私有文案草稿'
               : 'Processed locally in your browser (<50ms). Your private draft copy never leaves your device.'}
           </span>
           <input
@@ -287,9 +320,12 @@ export default function ListingScanner({ recalls, basePath }: Props) {
             name="title"
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              setIsDemoLoaded(false);
+            }}
             aria-describedby="rp-title-hint"
-            placeholder={lang === 'zh' ? '粘贴英文商品标题...' : 'e.g., Vitamin C Anti-Aging Facial Serum...'}
+            placeholder={lang === 'zh' ? '粘贴英文商品标题...' : 'e.g., Vitamin C Brightening Facial Serum...'}
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400"
           />
         </div>
@@ -301,15 +337,18 @@ export default function ListingScanner({ recalls, basePath }: Props) {
           </label>
           <span id="rp-bullets-hint" className="block text-[11px] text-slate-500 mt-0.5 mb-1.5">
             {lang === 'zh'
-              ? '自动识别并放行标准 DSHEA 免责声明，防止误报'
-              : 'Standard FDA DSHEA disclaimers are automatically recognized and exempted from false positives.'}
+              ? '自动识别并放行标准 DSHEA 免责声明与“Not FDA Approved”否定语境'
+              : 'Automatically exempts standard FDA DSHEA disclaimers and "not FDA approved" negation phrases.'}
           </span>
           <textarea
             id="rp-bullets"
             name="bullets"
             rows={5}
             value={bullets}
-            onChange={(e) => setBullets(e.target.value)}
+            onChange={(e) => {
+              setBullets(e.target.value);
+              setIsDemoLoaded(false);
+            }}
             aria-describedby="rp-bullets-hint"
             placeholder={lang === 'zh' ? '粘贴五点描述与详情页卖点...' : 'Paste Amazon bullet points, A+ copy, or packaging claims...'}
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 resize-y"
@@ -319,19 +358,22 @@ export default function ListingScanner({ recalls, basePath }: Props) {
         {/* Ingredients & Materials */}
         <div className="mt-4">
           <label htmlFor="rp-ingredients" className="block text-xs font-semibold text-slate-800">
-            {lang === 'zh' ? '成分表 / 原料 / 包装标签文本（用于交叉比对 FDA 召回库）' : 'Ingredients / Active Compounds / Label Footer'}
+            {lang === 'zh' ? '成分表 / 原料 / 包装标签文本（用于交叉比对同行业 FDA 召回库）' : 'Ingredients / Active Compounds / Label Footer'}
           </label>
           <span id="rp-ing-hint" className="block text-[11px] text-slate-500 mt-0.5 mb-1.5">
             {lang === 'zh'
-              ? '自动筛查 FDA 禁用成分、非法添加西药及近 260 条实时 openFDA 召回关联'
-              : 'Screened against 21 CFR 700 bans, FDA tainted-product adulterants & live openFDA recalls.'}
+              ? '筛查 21 CFR 700 禁用成分、高危西药（支持 1 字母拼写容错）及同行业 openFDA 召回'
+              : 'Screened against 21 CFR 700 bans, hidden drug APIs (with typo guard) & vertical-matched openFDA recalls.'}
           </span>
           <textarea
             id="rp-ingredients"
             name="ingredients"
             rows={3}
             value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)}
+            onChange={(e) => {
+              setIngredients(e.target.value);
+              setIsDemoLoaded(false);
+            }}
             aria-describedby="rp-ing-hint"
             placeholder={lang === 'zh' ? '例如：Water, Retinol, Niacinamide, Berberine...' : 'e.g., Water, Glycerin, Niacinamide, Fragrance...'}
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 resize-y"
@@ -346,7 +388,6 @@ export default function ListingScanner({ recalls, basePath }: Props) {
           {lang === 'zh' ? '立即运行 FDA & Amazon 合规风险扫描' : 'Run Free FDA & Amazon Risk Audit'}
         </button>
 
-        {/* Polite Live Region for Screen Readers */}
         <div role="status" aria-live="polite" className="visually-hidden">
           {statusMsg}
         </div>
@@ -358,21 +399,35 @@ export default function ListingScanner({ recalls, basePath }: Props) {
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
             <ShieldCheck className="w-10 h-10 text-slate-400 mx-auto mb-3" aria-hidden="true" />
             <p className="text-sm font-semibold text-slate-800">
-              {lang === 'zh' ? '粘贴商品文案或点击上方示例即可在 0.1 秒内生成合规体检报告' : 'Paste your listing copy or click an example above to generate an instant statutory audit report.'}
+              {lang === 'zh'
+                ? '粘贴商品文案或点击左侧高危演示样本，即可在 0.1 秒内生成法规体检报告'
+                : 'Paste your listing copy or load an Illustrative Risk Example on the left to generate an instant statutory audit report.'}
             </p>
           </div>
         ) : (
           <>
             {/* Score Summary Card */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm print-card">
+              {isDemoLoaded && (
+                <div className="mb-3 rounded-lg bg-slate-100 border border-slate-200 px-3 py-1.5 text-[11px] font-medium text-slate-700 flex items-center justify-between gap-2 no-print">
+                  <span>
+                    {lang === 'zh'
+                      ? '当前显示为【高危演示样本】扫描结果——清空左侧输入框即可检测你的真实 Listing。'
+                      : 'Showing audit for an Illustrative Risk Example — click Clear on the left to scan your own real listing.'}
+                  </span>
+                </div>
+              )}
+
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                     <span>{lang === 'zh' ? 'RegPulse 合规风险体检报告' : 'RegPulse Statutory Audit Summary'}</span>
                     <span>•</span>
-                    <span>{result.scannedWordCount} {lang === 'zh' ? '词' : 'words'}</span>
+                    <span>
+                      {result.scannedWordCount} {lang === 'zh' ? '词' : 'words'}
+                    </span>
                   </div>
-                  <div className="mt-2 flex items-baseline gap-3">
+                  <div className="mt-2 flex flex-wrap items-baseline gap-3">
                     <span className="text-4xl font-extrabold tracking-tight text-slate-900 tabular-nums">
                       {result.score}
                       <span className="text-lg font-medium text-slate-400">/100</span>
@@ -400,20 +455,18 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                     onClick={openWatchlist}
                     className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 cursor-pointer"
                   >
-                    {lang === 'zh' ? '订阅 7×24 预警监控' : 'Monitor Supplier / Category'}
+                    {lang === 'zh' ? '订阅 7×24 预警监控' : 'Monitor Supplier / Ingredients'}
                   </button>
                 </div>
               </div>
 
-              {/* Progress meter */}
               <div className="mt-4 h-2.5 w-full rounded-full bg-slate-100 overflow-hidden" aria-hidden="true">
                 <div
                   className={`h-full transition-all duration-300 ${gradeBadge?.bar || 'bg-teal-600'}`}
-                  style={{ width: `${Math.max(4, result.score)}%` }}
+                  style={{ width: result.score === 0 ? '0%' : `${Math.max(4, result.score)}%` }}
                 />
               </div>
 
-              {/* Quick KPI Strip */}
               <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="rounded-xl bg-red-50/70 border border-red-100 p-3">
                   <div className="text-[11px] font-semibold text-red-800">
@@ -441,7 +494,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                 </div>
                 <div className="rounded-xl bg-teal-50/70 border border-teal-100 p-3">
                   <div className="text-[11px] font-semibold text-teal-800">
-                    {lang === 'zh' ? '命中 FDA 真实召回' : 'FDA Recall Matches'}
+                    {lang === 'zh' ? '同行业 FDA 召回' : 'Matched FDA Recalls'}
                   </div>
                   <div className="text-xl font-extrabold text-teal-950 tabular-nums mt-0.5">
                     {result.matchedRecalls.length}
@@ -503,9 +556,11 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                                 : 'bg-orange-50 text-orange-900 border-orange-200'
                             }`}
                           >
-                            {rule.severity}
+                            {lang === 'zh' ? SEVERITY_ZH[rule.severity] || rule.severity : rule.severity}
                           </span>
-                          <span className="text-[11px] font-semibold text-slate-500">{rule.category}</span>
+                          <span className="text-[11px] font-semibold text-slate-500">
+                            {lang === 'zh' ? CATEGORY_ZH[rule.category] || rule.category : rule.category}
+                          </span>
                           <span className="text-[11px] font-mono text-slate-400">{rule.id}</span>
                         </div>
                         <a
@@ -538,7 +593,6 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                         {lang === 'zh' ? rule.whyFlaggedZh : rule.whyFlaggedEn}
                       </p>
 
-                      {/* Official citation bar */}
                       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs">
                         <span className="font-mono text-slate-700">
                           <strong>{lang === 'zh' ? '法条依据：' : 'Statute: '}</strong>
@@ -555,7 +609,6 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                         </a>
                       </div>
 
-                      {/* Compliant Rewrite Box */}
                       <div className="mt-3 rounded-xl bg-emerald-50/80 border border-emerald-200 p-3.5">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <span className="text-xs font-bold text-emerald-900">
@@ -601,7 +654,7 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                         mc.passed ? 'bg-emerald-50/50 border-emerald-200' : 'bg-amber-50/70 border-amber-200'
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                           {mc.passed ? (
                             <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" aria-hidden="true" />
@@ -621,13 +674,13 @@ export default function ListingScanner({ recalls, basePath }: Props) {
               </div>
             )}
 
-            {/* Live OpenFDA Recall Cross-Reference */}
+            {/* Vertical-Scoped Live OpenFDA Recall Cross-Reference */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm print-card">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <h3 className="text-sm font-bold text-slate-900">
                   {lang === 'zh'
-                    ? '实时 openFDA 官方召回库关联命中'
-                    : 'Live openFDA Enforcement & Recall Cross-Reference'}
+                    ? '同行业 openFDA 官方召回库成分交叉比对'
+                    : 'Vertical-Matched openFDA Enforcement Recall Cross-Check'}
                 </h3>
                 <a
                   href={withBase('/recalls/')}
@@ -638,10 +691,10 @@ export default function ListingScanner({ recalls, basePath }: Props) {
               </div>
 
               {result.matchedRecalls.length === 0 ? (
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   {lang === 'zh'
-                    ? '当前输入的成分/品名未直接命中最新 260 条 openFDA 召回记录。建议订阅监控以在未来出现相关供应商/成分召回时第一时间收到告警。'
-                    : 'No direct keyword matches in the latest 260 openFDA enforcement reports. Subscribe to a Watchlist to receive real-time alerts if your ingredients or suppliers appear in future recalls.'}
+                    ? '当前成分表未精确命中同行业最新 openFDA 召回记录（系统已启用严格同行业+整词边界匹配，避免无关食品/医疗器械误匹配）。建议订阅监控，在未来出现相同成分或代工厂召回时实时预警。'
+                    : 'No exact whole-word ingredient matches in the current vertical openFDA enforcement feed (cross-vertical food/hospital noise is strictly filtered out). Subscribe to a Watchlist for ongoing supplier & ingredient monitoring.'}
                 </p>
               ) : (
                 <ul className="space-y-2.5">
@@ -664,7 +717,10 @@ export default function ListingScanner({ recalls, basePath }: Props) {
                           {rec.recallNumber} • {rec.reportDate}
                         </span>
                       </div>
-                      <p className="mt-1.5 text-xs text-slate-700 line-clamp-2">{rec.reasonForRecall}</p>
+                      {rec.productShort && (
+                        <p className="mt-1 text-[11px] font-medium text-slate-600">{rec.productShort}</p>
+                      )}
+                      <p className="mt-1 text-xs text-slate-800 line-clamp-2">{rec.reasonForRecall}</p>
                       <div className="mt-2 flex items-center gap-3 text-[11px]">
                         <a
                           href={withBase(`/recalls/${rec.id}/`)}

@@ -1,0 +1,3 @@
+{"tsUtc":"2026-11-26T09:28:00Z","level":"L0","event":"project_decision","detail":"CEO selected Proposal A (RegPulse FDA & MoCRA Compliance Radar); rejected B/C for Phase 2 primary track; left suishinote.com and HK VPS untouched."}
+{"tsUtc":"2026-11-26T09:42:03Z","level":"L1","event":"initial_deploy_v1_0","commit":"6e76dc9","url":"https://kouchaoguri.github.io/regpulse/","pagesBuilt":283,"httpChecks":{"home":200,"recalls":200,"rules":200,"mocra":200,"pricing":200,"sitemap":200}}
+{"tsUtc":"2026-11-26T09:49:57Z","level":"L0","event":"p0_defect_detected_by_btw_audit","ruleId":"COS-DRUG-003","defect":"eCFR URL used subchapter-E instead of subpart-E (HTTP 406); all statutory URLs lacked browser lock file","status":"fixing_in_v1_1"}
