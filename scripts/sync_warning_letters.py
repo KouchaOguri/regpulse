@@ -89,9 +89,9 @@ def scrape_warning_letters(target_pages: int = 2) -> tuple[list[dict], int, str]
             viewport={"width": 1280, "height": 900},
         )
         page = ctx.new_page()
-        resp = page.goto(WL_URL, wait_until="domcontentloaded", timeout=30000)
+        resp = page.goto(WL_URL, wait_until="domcontentloaded", timeout=35000)
         http_status = resp.status if resp else 0
-        page.wait_for_selector("table tbody tr", timeout=20000)
+        page.wait_for_selector("table tbody tr", timeout=30000)
         page.wait_for_timeout(1200)
 
         # Switch table page length to 100 entries per page if available
@@ -180,13 +180,33 @@ def scrape_warning_letters(target_pages: int = 2) -> tuple[list[dict], int, str]
 
 def main() -> None:
     print("Syncing live FDA Warning Letters from official FDA.gov DataTable...")
-    records, status, dt_info = scrape_warning_letters(target_pages=2)
+    records: list[dict] = []
+    status = 0
+    dt_info = ""
+    last_err = ""
+    for attempt in range(2):
+        try:
+            records, status, dt_info = scrape_warning_letters(target_pages=2)
+            if status == 200 and len(records) >= 20:
+                break
+        except Exception as e:
+            last_err = str(e)
+            print(f"[WARN] Attempt {attempt + 1} failed: {last_err[:180]}")
+
+    out_file = DATA_DIR / "warning_letters.json"
     if status != 200 or len(records) < 20:
-        print(f"[ERROR] FDA Warning Letters sync failed: HTTP {status}, records={len(records)}")
+        if out_file.exists():
+            cached = json.loads(out_file.read_text(encoding="utf-8"))
+            if len(cached) >= 100:
+                print(
+                    f"[WARN] Live FDA.gov DataTable timed out/throttled ({last_err[:120]}); "
+                    f"preserving {len(cached)} previously verified FDA Warning Letters."
+                )
+                return
+        print(f"[ERROR] FDA Warning Letters sync failed with no valid cache: HTTP {status}, records={len(records)}, err={last_err}")
         sys.exit(1)
 
     now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    out_file = DATA_DIR / "warning_letters.json"
     out_file.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # Update sync_manifest.json with warning_letters provenance
