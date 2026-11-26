@@ -96,7 +96,10 @@ function createMockD1() {
           }
           if (s.startsWith('UPDATE licenses SET status = ?')) {
             for (const [k, l] of tables.licenses.entries()) {
-              if (l.provider_order_id === args[1] || l.email === args[2]) {
+              if (s.includes('provider_order_id = ?') && l.provider_order_id === args[1]) {
+                l.status = args[0];
+                tables.licenses.set(k, l);
+              } else if (s.includes('email = ?') && l.email === args[1] && l.plan !== 'bulk_pass') {
                 l.status = args[0];
                 tables.licenses.set(k, l);
               }
@@ -261,7 +264,23 @@ assert.equal(verifyJson.valid, true);
 assert.equal(verifyJson.bulkLimit, 200);
 assert.equal(verifyJson.maxTrackers, 10);
 
-// 6. Self-serve Watchlist portal save (no human ops!)
+// 6. Self-serve Watchlist portal SSRF guard + valid save (no human ops!)
+const ssrfResp = await handleRequest(
+  new Request('https://api.regpulsehq.com/api/watchlist', {
+    method: 'POST',
+    headers: { 'X-License-Key': creemJson.licenseKey },
+    body: JSON.stringify({
+      email: 'ops@sellerbrand.com',
+      channelType: 'webhook',
+      webhookUrl: 'http://169.254.169.254/latest/meta-data/',
+      keywords: ['Retinol'],
+    }),
+  }),
+  env,
+  mockFetch
+);
+assert.equal(ssrfResp.status, 400, 'SSRF private/HTTP webhookUrl MUST be rejected with HTTP 400');
+
 const wlSaveResp = await handleRequest(
   new Request('https://api.regpulsehq.com/api/watchlist', {
     method: 'POST',

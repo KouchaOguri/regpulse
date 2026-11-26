@@ -285,7 +285,7 @@ export default function BulkCatalogScanner({ recalls, warningLetters = [], local
     setKeyMessage('');
 
     try {
-      // 1. Live Cloudflare Worker D1 license verification when API is configured
+      // 1. Live Cloudflare Worker D1 license verification (strict server-only enforcement when API is configured)
       if (BILLING_CONFIG.apiBaseUrl) {
         const resp = await fetch(`${BILLING_CONFIG.apiBaseUrl.replace(/\/$/, '')}/api/license/verify`, {
           method: 'POST',
@@ -305,9 +305,17 @@ export default function BulkCatalogScanner({ recalls, warningLetters = [], local
             return;
           }
         }
+        setUnlockedPlan(null);
+        setKeyMessage(
+          lang === 'zh'
+            ? '卡密无效或已失效，请检查购买回执邮件中的完整 License Key。'
+            : 'License key not found or inactive. Check your checkout receipt email for your active key.'
+        );
+        setVerifyingKey(false);
+        return;
       }
 
-      // 2. Deterministic offline pilot/verified key format check (RP-BULK-/RP-PRO-/RP-AGY- + 8-char checksum token)
+      // 2. Pre-launch preview mode only (disabled automatically once BILLING_CONFIG.apiBaseUrl is bound)
       if (/^RP-(BULK|PRO|AGY)-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(trimmed)) {
         const planName = trimmed.startsWith('RP-AGY-')
           ? lang === 'zh'

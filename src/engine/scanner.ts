@@ -183,6 +183,11 @@ function verticalMatchesRecall(vertical: ProductVertical, recall: RecallRecord):
   if (vertical === 'devices') {
     return recall.vertical === 'Medical & Beauty Devices';
   }
+  if (vertical === 'pets') {
+    return /\b(pet|dog|cat|canine|feline|puppy|kitten|animal\s+feed|kibble|veterinary)\b/i.test(
+      `${recall.productDescription} ${recall.reasonForRecall}`
+    );
+  }
   return true;
 }
 

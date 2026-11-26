@@ -38,8 +38,18 @@ def http_json(url: str, timeout: int = 20) -> tuple[int, dict]:
         sep = "&" if "?" in url else "?"
         url = f"{url}{sep}api_key={API_KEY}"
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.status, json.loads(resp.read().decode("utf-8"))
+    last_err: Exception | None = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.status, json.loads(resp.read().decode("utf-8"))
+        except Exception as e:
+            last_err = e
+            if attempt < 2:
+                import time
+                time.sleep(1.0 * (attempt + 1))
+    assert last_err is not None
+    raise last_err
 
 
 def check_manifest_and_schema(errors: list[str]) -> tuple[list[dict], list[dict], list[dict]]:

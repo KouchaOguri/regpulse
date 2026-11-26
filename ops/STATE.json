@@ -10,8 +10,8 @@
     "localPath": "d:/hachimi/regpulse",
     "remoteUrl": "https://github.com/KouchaOguri/regpulse",
     "branch": "main",
-    "previousVerifiedSha": "681f88e",
-    "releaseVersion": "v2.0.0"
+    "previousVerifiedSha": "7cf3bee",
+    "releaseVersion": "v2.0.1"
   },
   "deployment": {
     "liveUrl": "https://kouchaoguri.github.io/regpulse/",
@@ -64,7 +64,7 @@
     "L1_liveRenderAndIndependentQA": {
       "redTeamRound1Score": "5.5/10 (NO-GO)",
       "redTeamRound2Score": "8.2/10 (CONDITIONAL GO on v1.1)",
-      "redTeamRound3PendingOnLiveV2": true,
+      "redTeamRound3Score": "9.1/10 (GO — BUY regpulsehq.com NOW; 11/11 EN & 4/4 CN HTTP 200, 12/12 mobile 0px overflow, 0 EN CJK/RMB leaks, 0 /cn/ in sitemap, 10/10 fulfillment E2E; all Round 3 Worker SSRF/cancel-scope/pet-recall/CTA fixes patched in v2.0.1)",
       "codexCliCrossModelAuditDate": "2026-12-01"
     },
     "L2_externalSignals": {

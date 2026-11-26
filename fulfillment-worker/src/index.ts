@@ -143,6 +143,41 @@ async function sendResendEmail(
   return resp.ok;
 }
 
+function isSafeWebhookUrl(raw: string): boolean {
+  if (!raw) return true;
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'https:') return false;
+    const host = parsed.hostname.toLowerCase();
+    if (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '0.0.0.0' ||
+      host === '::1' ||
+      host === '[::1]' ||
+      host.endsWith('.local') ||
+      host.endsWith('.internal') ||
+      /^10\.\d+\.\d+\.\d+$/.test(host) ||
+      /^192\.168\.\d+\.\d+$/.test(host) ||
+      /^169\.254\.\d+\.\d+$/.test(host) ||
+      /^172\.(1[6-9]|2\d|3[01])\.\d+\.\d+$/.test(host)
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function safeJsonParse<T = Record<string, any>>(request: Request): Promise<T | null> {
+  try {
+    return (await request.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
 async function dispatchWebhookPayload(
   fetcher: FetchLike,
   channelType: string,
@@ -150,7 +185,7 @@ async function dispatchWebhookPayload(
   title: string,
   bodyLines: string[]
 ): Promise<boolean> {
-  if (!webhookUrl) return false;
+  if (!webhookUrl || !isSafeWebhookUrl(webhookUrl)) return false;
   const text = `${title}\n${bodyLines.join('\n')}`;
   let payload: Record<string, unknown>;
   if (channelType === 'wecom') {
@@ -199,7 +234,12 @@ export async function handleRequest(
       return jsonResponse({ error: 'Invalid HMAC-SHA256 signature' }, 401, cors);
     }
 
-    const payload = JSON.parse(rawBody) as Record<string, any>;
+    let payload: Record<string, any>;
+    try {
+      payload = JSON.parse(rawBody) as Record<string, any>;
+    } catch {
+      return jsonResponse({ error: 'Malformed JSON payload' }, 400, cors);
+    }
     const eventId = String(payload.id || payload.event_id || '');
     const eventType = String(payload.eventType || payload.type || '');
     if (!eventId) {
@@ -225,9 +265,16 @@ export async function handleRequest(
 
     if (eventType === 'subscription.canceled' || eventType === 'subscription.expired' || eventType === 'refund.created') {
       const nextStatus = eventType === 'refund.created' ? 'refunded' : 'canceled';
-      await env.DB.prepare('UPDATE licenses SET status = ? WHERE provider_order_id = ? OR email = ?')
-        .bind(nextStatus, orderId, email)
-        .run();
+      // Scope strictly to provider_order_id so canceling a Pro subscription never revokes a separate one-time Bulk Pass
+      if (orderId) {
+        await env.DB.prepare('UPDATE licenses SET status = ? WHERE provider_order_id = ?')
+          .bind(nextStatus, orderId)
+          .run();
+      } else if (email) {
+        await env.DB.prepare("UPDATE licenses SET status = ? WHERE email = ? AND plan != 'bulk_pass'")
+          .bind(nextStatus, email)
+          .run();
+      }
       return jsonResponse({ ok: true, statusUpdated: nextStatus }, 200, cors);
     }
 
@@ -410,12 +457,13 @@ export async function handleRequest(
     }
 
     if (request.method === 'POST') {
-      const body = (await request.json()) as {
+      const body = await safeJsonParse<{
         email?: string;
         channelType?: string;
         webhookUrl?: string;
         keywords?: string[];
-      };
+      }>(request);
+      if (!body) return jsonResponse({ error: 'Malformed JSON body' }, 400, cors);
       const maxAllowed = Number(lic.max_trackers) || 10;
       const cleanedKeywords = Array.isArray(body.keywords)
         ? Array.from(new Set(body.keywords.map((k) => String(k).trim()).filter((k) => k.length >= 2))).slice(0, maxAllowed)
@@ -425,6 +473,9 @@ export async function handleRequest(
         ? String(body.channelType)
         : 'email';
       const webhookUrl = String(body.webhookUrl || '').trim();
+      if (webhookUrl && !isSafeWebhookUrl(webhookUrl)) {
+        return jsonResponse({ error: 'Webhook URL must use HTTPS and a public host (private/loopback targets are blocked)' }, 400, cors);
+      }
       const nowIso = new Date().toISOString();
 
       await env.DB.prepare(

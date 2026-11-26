@@ -1258,6 +1258,7 @@ export const COMPLIANCE_RULES: ComplianceRule[] = [
     patterns: [
       '\\b(treats?|cures?|heals?|stops?|prevents?|relieves?|for)\\s+(\\w+\\s+){0,3}(hip\\s+dysplasia|kennel\\s+cough|mange|hot\\s+spots?|canine\\s+arthritis|dog\\s+arthritis|pet\\s+arthritis|dog\\s+anxiety|separation\\s+anxiety|pet\\s+seizures?|dog\\s+seizures?|heartworm|ear\\s+mites?|dog\\s+ear\\s+infections?)\\b',
       '\\b(kills?|repels?|eliminates?)\\s+(\\w+\\s+){0,2}(fleas?|ticks?|heartworms?|ringworms?|ear\\s+mites?)\\b',
+      '\\b(xylitol|birch\\s+sugar)\\b',
     ],
     seoQuestionEn: 'Can dog joint chews, calming treats, or pet shampoos claim to treat arthritis, hot spots, or fleas on Amazon?',
     seoQuestionZh: '宠物关节软糖、安抚零食或沐浴露可以在 Amazon 上写治疗关节炎、热斑或杀跳蚤吗？',
