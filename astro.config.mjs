@@ -3,8 +3,8 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-const siteUrl = process.env.SITE_URL || 'https://kouchaoguri.github.io';
-const basePath = process.env.BASE_PATH !== undefined ? process.env.BASE_PATH : '/regpulse';
+const siteUrl = process.env.SITE_URL || 'https://regpulsehq.com';
+const basePath = process.env.BASE_PATH !== undefined ? process.env.BASE_PATH : '/';
 
 export default defineConfig({
   site: siteUrl,
@@ -13,8 +13,8 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      // Strictly isolate /cn/ cross-border routes out of US English search sitemaps
-      filter: (page) => !page.includes('/cn/'),
+      // Strictly isolate /cn/ cross-border routes and raw JSON feeds out of US English search sitemaps
+      filter: (page) => !page.includes('/cn/') && !page.includes('/feeds/'),
     }),
   ],
   vite: {

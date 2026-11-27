@@ -218,7 +218,10 @@ export async function handleRequest(
     return new Response(null, { status: 204, headers: cors });
   }
 
-  if (path === '/api/health' && request.method === 'GET') {
+  if (path === '/api/health' && (request.method === 'GET' || request.method === 'HEAD')) {
+    if (request.method === 'HEAD') {
+      return new Response(null, { status: 200, headers: cors });
+    }
     return jsonResponse({ ok: true, service: 'regpulse-fulfillment', utc: new Date().toISOString() }, 200, cors);
   }
 
@@ -343,7 +346,12 @@ export async function handleRequest(
     if (!timingSafeEqualHex(signature, expected)) {
       return jsonResponse({ error: 'Invalid signature' }, 401, cors);
     }
-    const body = JSON.parse(rawBody) as Record<string, any>;
+    let body: Record<string, any>;
+    try {
+      body = JSON.parse(rawBody) as Record<string, any>;
+    } catch {
+      return jsonResponse({ error: 'Malformed JSON body' }, 400, cors);
+    }
     const orderId = String(body.order_id || '');
     if (!orderId) return jsonResponse({ error: 'Missing order_id' }, 400, cors);
 
@@ -392,7 +400,8 @@ export async function handleRequest(
 
   // 3. Real-time License Verification for /bulk/ & /alerts/
   if (path === '/api/license/verify' && request.method === 'POST') {
-    const body = (await request.json()) as { licenseKey?: string };
+    const body = await safeJsonParse<{ licenseKey?: string }>(request);
+    if (!body) return jsonResponse({ valid: false, error: 'Malformed JSON body' }, 400, cors);
     const key = String(body.licenseKey || '').trim().toUpperCase();
     if (!key) return jsonResponse({ valid: false, error: 'Empty license key' }, 400, cors);
 
@@ -497,7 +506,8 @@ export async function handleRequest(
 
   // 5. Self-Owned Lead Capture API (Replaces third-party Web3Forms)
   if (path === '/api/leads' && request.method === 'POST') {
-    const body = (await request.json()) as Record<string, any>;
+    const body = await safeJsonParse<Record<string, any>>(request);
+    if (!body) return jsonResponse({ error: 'Malformed JSON body' }, 400, cors);
     const email = String(body.email || '').trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
       return jsonResponse({ error: 'Invalid email address' }, 400, cors);
@@ -516,12 +526,36 @@ export async function handleRequest(
       .run();
 
     if (env.OWNER_ALERT_WEBHOOK) {
-      await dispatchWebhookPayload(fetcher, 'slack', env.OWNER_ALERT_WEBHOOK, '[RegPulse New Lead]', [
-        `Plan: ${plan} (${lang})`,
-        `Email: ${email}`,
-        `Channel: ${channel}`,
-        `Keywords: ${keywords || 'N/A'}`,
-      ]);
+      try {
+        await dispatchWebhookPayload(fetcher, 'slack', env.OWNER_ALERT_WEBHOOK, '[RegPulse New Lead]', [
+          `Plan: ${plan} (${lang})`,
+          `Email: ${email}`,
+          `Channel: ${channel}`,
+          `Keywords: ${keywords || 'N/A'}`,
+        ]);
+      } catch {
+        // Never fail lead capture on optional webhook error
+      }
+    }
+    if (env.RESEND_API_KEY && !email.endsWith('.invalid')) {
+      try {
+        await sendResendEmail(
+          env,
+          fetcher,
+          'alerts@regpulsehq.com',
+          `[RegPulse New Lead] ${plan} (${lang})`,
+          [
+            `New lead captured via ${sourceUrl || 'regpulsehq.com'}:`,
+            `Plan: ${plan} (${lang})`,
+            `Email: ${email}`,
+            `Channel: ${channel}`,
+            `Keywords: ${keywords || 'N/A'}`,
+            `Captured At: ${nowIso}`,
+          ].join('\n')
+        );
+      } catch {
+        // Never fail lead capture on internal email alert error
+      }
     }
     return jsonResponse({ ok: true, capturedAt: nowIso }, 200, cors);
   }
@@ -533,10 +567,11 @@ export async function handleRequest(
       return jsonResponse({ error: 'Unauthorized internal dispatch' }, 401, cors);
     }
 
-    const body = (await request.json()) as {
+    const body = await safeJsonParse<{
       warningLetters?: Array<{ id: string; companyName: string; subject: string; postedDate: string; letterUrl: string; cmsId?: string }>;
       recalls?: Array<{ id: string; recallingFirm: string; productDescription: string; reasonForRecall: string; classification: string; reportDate: string; officialSourceUrl: string }>;
-    };
+    }>(request);
+    if (!body) return jsonResponse({ error: 'Malformed JSON body' }, 400, cors);
     const wls = Array.isArray(body.warningLetters) ? body.warningLetters : [];
     const recs = Array.isArray(body.recalls) ? body.recalls : [];
 

@@ -6,9 +6,9 @@
     "mode": {
       "title": "Execution Mode",
       "type": "string",
-      "description": "Choose 'audit_listings' to check Amazon/Shopify copy for FDA/EPA triggers, 'recalls' to query openFDA recalls, or 'both'.",
-      "enum": ["audit_listings", "recalls", "both"],
-      "default": "both",
+      "description": "Choose 'all' (40-rule listing audit + FDA Warning Letters + openFDA Recalls), 'audit_listings', 'warning_letters', or 'recalls'.",
+      "enum": ["all", "audit_listings", "warning_letters", "recalls", "both"],
+      "default": "all",
       "editor": "select"
     },
     "vertical": {
@@ -20,18 +20,35 @@
       "editor": "select"
     },
     "listings": {
-      "title": "Listings to Audit (Array of {sku, title, bullets, ingredients})",
+      "title": "Listings to Audit (Array of {sku, vertical, title, bullets, ingredients})",
       "type": "array",
-      "description": "Up to 200 product listings to screen for FDA drug claims, OTC monographs, prohibited ingredients, and EPA FIFRA traps.",
+      "description": "Up to 200 product listings to screen against all 40 federal 21 CFR, MoCRA, DSHEA, CVM, and EPA FIFRA rules.",
       "editor": "json",
       "default": [
         {
           "sku": "SAMPLE-001",
+          "vertical": "cosmetics",
           "title": "FDA Approved Anti-Acne Retinol Serum - Treats Eczema & Kills 99.9% Bacteria",
           "bullets": "Clinically proven to repair sun damage and permanently eliminate wrinkles.",
           "ingredients": "Water, Retinol, Hydroquinone 2%"
         }
       ]
+    },
+    "warningLetterQuery": {
+      "title": "FDA Warning Letter Filter Keyword (Optional)",
+      "type": "string",
+      "description": "Optional keyword to filter live FDA.gov Warning Letters by company, subject, ingredient, or office (leave blank for newest letters).",
+      "editor": "textfield",
+      "default": ""
+    },
+    "maxWarningLetters": {
+      "title": "Max FDA Warning Letters to Return",
+      "type": "integer",
+      "description": "Maximum number of live FDA.gov Warning Letter records to return (1 to 100).",
+      "default": 20,
+      "minimum": 1,
+      "maximum": 100,
+      "editor": "number"
     },
     "recallQuery": {
       "title": "openFDA Recall Filter Keyword (Optional)",

@@ -56,9 +56,16 @@ export default function AlertPortal({ locale = 'en' }: Props) {
           setBusy(false);
           return;
         }
-      }
-
-      if (/^RP-(PRO|AGY)-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(key)) {
+        setVerified(false);
+        setIsError(true);
+        setStatusMsg(
+          lang === 'zh'
+            ? '卡密无效、已失效或不包含预警监控权限，请核对购买回执邮件中的完整 License Key。'
+            : 'License key not found, inactive, or does not include Watchlist Alerts. Check your receipt email for an active Pro/Agency key.'
+        );
+        setBusy(false);
+        return;
+      } else if (/^RP-(PRO|AGY)-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(key)) {
         setVerified(true);
         setPlanLabel(key.startsWith('RP-AGY-') ? 'Agency & Aggregator' : 'Watchlist Radar Pro');
         setStatusMsg(

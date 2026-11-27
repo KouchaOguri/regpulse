@@ -1,0 +1,820 @@
+[
+  {
+    "id": "FDA-TERM-001",
+    "slug": "fda-approved-claim-on-cosmetics-or-supplements",
+    "severity": "critical",
+    "weight": 30,
+    "category": "FDA Terminology Misuse",
+    "verticals": [
+      "cosmetics",
+      "supplements",
+      "devices",
+      "general"
+    ],
+    "titleEn": "Unauthorized \"FDA Approved\" / \"FDA Certified\" Claim",
+    "statute": "FD&C Act §301(l) & 21 CFR 807.39",
+    "officialRefUrl": "https://www.fda.gov/consumers/consumer-updates/it-really-fda-approved",
+    "safeRewriteEn": "Remove \"FDA Approved\". For supplements, state \"Manufactured in an FDA-registered, cGMP-compliant facility\" (without implying product approval). For Class II devices with valid 510(k), state \"FDA 510(k) Cleared (K-number)\".",
+    "patterns": [
+      "(?<!\\bnot\\s)(?<!\\bnever\\s)(?<!\\bno\\s)(?<!\\bnon[-\\s])\\bfda[-\\s]+approved\\b",
+      "(?<!\\bnot\\s)\\bapproved\\s+by\\s+(the\\s+)?fda\\b",
+      "\\bfda\\s+approval\\b",
+      "(?<!\\bnot\\s)\\bfda[-\\s]+certified\\b",
+      "(?<!\\bnot\\s)\\bcertified\\s+by\\s+(the\\s+)?fda\\b"
+    ]
+  },
+  {
+    "id": "FDA-TERM-002",
+    "slug": "fda-certificate-and-registration-misrepresentation",
+    "severity": "high",
+    "weight": 20,
+    "category": "FDA Terminology Misuse",
+    "verticals": [
+      "cosmetics",
+      "supplements",
+      "devices"
+    ],
+    "titleEn": "Deceptive \"FDA Registered Product\" / \"FDA Certificate\" Endorsement Claim",
+    "statute": "21 CFR 807.39 & MoCRA Facility Registration Policy",
+    "officialRefUrl": "https://www.fda.gov/cosmetics/registration-listing-cosmetic-product-facilities-and-products",
+    "safeRewriteEn": "State factual facility compliance only if accurate (e.g., \"Produced in a cGMP-audited facility\") and remove \"FDA Registered\" product badges or third-party \"FDA Certificate\" graphics from listing images.",
+    "patterns": [
+      "\\bfda\\s+certificate\\b",
+      "\\bfda\\s+seal\\b",
+      "\\bfda\\s+endorsed\\b",
+      "\\bofficial\\s+fda\\s+badge\\b",
+      "\\bfda\\s+guaranteed\\b",
+      "\\bfda[-\\s]+registered\\s+(product|device|mask|serum|cream|supplement|formula|brand)\\b",
+      "\\bproduct\\s+is\\s+fda[-\\s]+registered\\b"
+    ]
+  },
+  {
+    "id": "COS-OTC-SPF",
+    "slug": "cosmetic-spf-sunscreen-uv-protection-otc-drug",
+    "severity": "critical",
+    "weight": 30,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "OTC Sunscreen Drug Trigger (SPF / Sun Protection / Sunburn Prevention)",
+    "statute": "21 CFR Part 352 & CARES Act OTC Sunscreen Deemed Final Order (M020)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-352",
+    "safeRewriteEn": "If your product is a cosmetic (not an OTC listed sunscreen with Drug Facts panel), remove ALL SPF numbers, \"sun protection\", \"UV shield\", and \"prevents sunburn\" claims entirely.",
+    "patterns": [
+      "\\bspf\\s*\\d+\\+?\\b",
+      "\\b(sun\\s+protection|broad[-\\s]?spectrum\\s+uv|uv[ab]?\\s+protection|blocks?\\s+uv\\s+rays?|sunscreen\\s+protection)\\b",
+      "\\b(prevents?|protects?\\s+against)\\s+sunburn\\b"
+    ]
+  },
+  {
+    "id": "COS-OTC-DANDRUFF",
+    "slug": "anti-dandruff-seborrheic-wart-remover-otc-drug",
+    "severity": "critical",
+    "weight": 28,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "cosmetics",
+      "supplements",
+      "general"
+    ],
+    "titleEn": "OTC Anti-Dandruff / Ketoconazole / Wart & Skin-Tag Removal Drug Claim",
+    "statute": "21 CFR Part 358 Subpart H (Dandruff, Seborrheic Dermatitis & Psoriasis OTC Monograph)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-358/subpart-H",
+    "safeRewriteEn": "For cosmetic scalp products without OTC Drug Facts registration, replace \"anti-dandruff\" with \"gently cleanses dry, flaky-looking scalp\" and remove all wart/skin-tag removal claims.",
+    "patterns": [
+      "\\banti[-\\s]?dandruff\\b",
+      "\\b(treat|treats|cure|cures|eliminate|eliminates|control|controls|stop|stops|fight|fights|remove|removes|relieve|relieves)\\s+(\\w+\\s+){0,2}(dandruff|seborrheic\\s+dermatitis|scalp\\s+psoriasis|warts?|skin\\s+tags?|moles?|nail\\s+fungus|toenail\\s+fungus|athlete['’]?s\\s+foot|ringworm)\\b",
+      "\\b(nail\\s+fungus|toenail\\s+fungus|wart|skin\\s+tag|mole)\\s*(remover|removal|treatment|eliminator|cure|relief)?\\b",
+      "\\bketoconazole\\b"
+    ]
+  },
+  {
+    "id": "COS-DRUG-001",
+    "slug": "cosmetic-acne-eczema-psoriasis-rosacea-claims",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Drug Claim",
+    "verticals": [
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "Cosmetic Skin-Disease Treatment Claim (Acne / Eczema / Psoriasis / Rosacea)",
+    "statute": "FD&C Act §201(g)(1)(B) & 21 CFR Part 333 Subpart D (OTC Acne Monograph)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-333/subpart-D",
+    "safeRewriteEn": "Replace disease treatment verbs with cosmetic appearance claims: e.g., \"helps visibly calm blemish-prone skin\", \"soothes the look of dry, redness-prone skin\", \"leaves skin looking clearer and balanced\".",
+    "patterns": [
+      "\\b(treat|treats|treating|cure|cures|curing|heal|heals|healing|clear|clears|clearing|eliminate|eliminates|fight|fights|prevent|prevents|stop|stops|reduce|reduces|relief|relieves|soothe|soothes)\\s+(\\w+\\s+){0,3}(acne|eczema|psoriasis|rosacea|dermatitis|shingles|cold\\s+sores|herpes|hives)\\b",
+      "\\banti[-\\s]?(acne|eczema|psoriasis|rosacea|dermatitis)\\b",
+      "\\b(acne|eczema|psoriasis|rosacea)\\s+(treatment|cure|remedy|medicine|therapy|killer)\\b"
+    ]
+  },
+  {
+    "id": "COS-DRUG-002",
+    "slug": "cosmetic-inflammation-wound-healing-cell-regeneration",
+    "severity": "critical",
+    "weight": 26,
+    "category": "Drug Claim",
+    "verticals": [
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "Physiological Structure/Function Claim (Inflammation / Wound Healing / Sun Damage / Acne Scars)",
+    "statute": "FD&C Act §201(g)(1)(C) & 21 CFR Part 701 (Cosmetic Labeling)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-701",
+    "safeRewriteEn": "Shift strictly to visual appearance language: \"reduces the appearance of redness\", \"minimizes the look of enlarged pores\", \"softens the appearance of past blemish marks\", \"promotes firmer-looking, radiant skin\".",
+    "patterns": [
+      "\\b(reduce|reduces|reducing|relieve|relieves|eliminate|eliminates|fight|fights|calm|calms)\\s+(\\w+\\s+){0,2}inflammation\\b",
+      "\\banti[-\\s]?inflammatory\\b",
+      "\\b(heal|heals|healing|repair|repairs|repairing|accelerate|accelerates|speed|speeds)\\s+(\\w+\\s+){0,2}(wounds|cuts|burns|scars|sun\\s+damage|uv\\s+damage|damaged\\s+skin|tissue|dna)\\b",
+      "\\b(fade|fades|remove|removes|erase|erases|eliminate|eliminates)\\s+(acne\\s+scars|surgical\\s+scars|stretch\\s+marks)\\b",
+      "\\b(stimulate|stimulates|stimulating|boost|boosts|boosting|increase|increases|rebuild|rebuilds|trigger|triggers)\\s+(\\w+\\s+){0,2}(collagen|elastin|cell\\s+turnover|cellular)\\s+(production|synthesis|regeneration|repair|growth)\\b",
+      "\\bcellular\\s+(regeneration|repair|renewal)\\b",
+      "\\b(tightens?\\s+loose\\s+skin|shrinks?\\s+pores?\\s+permanently|cellulite\\s+(reduction|removal|treatment|cure))\\b"
+    ]
+  },
+  {
+    "id": "COS-DRUG-003",
+    "slug": "hair-regrowth-and-alopecia-drug-claim",
+    "severity": "critical",
+    "weight": 26,
+    "category": "Drug Claim",
+    "verticals": [
+      "cosmetics",
+      "supplements"
+    ],
+    "titleEn": "Hair Regrowth / Anti-Hair-Loss Drug Claim",
+    "statute": "21 CFR 310.527 (Hair Grower and Hair Loss Prevention Drug Products)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.527",
+    "safeRewriteEn": "Use cosmetic fullness language: \"promotes the appearance of thicker, fuller-looking hair\", \"reduces breakage from brushing\", \"nourishes scalp and hair strands\".",
+    "patterns": [
+      "\\b(regrow|regrows|regrowing|grow|grows|stimulate|stimulates)\\s+(\\w+\\s+){0,2}(hair|eyelashes|lashes|brows|follicles)\\b",
+      "\\b(stop|stops|prevent|prevents|reverse|reverses|cure|cures|treat|treats)\\s+(\\w+\\s+){0,2}(hair\\s+loss|balding|baldness|alopecia|thinning\\s+hair)\\b",
+      "\\bhair\\s+regrowth\\b",
+      "\\banti[-\\s]?hair\\s*loss\\b",
+      "\\breactivates?\\s+dormant\\s+(hair\\s+)?follicles\\b"
+    ]
+  },
+  {
+    "id": "COS-DRUG-004",
+    "slug": "permanent-wrinkle-removal-and-botox-alternative",
+    "severity": "high",
+    "weight": 20,
+    "category": "Drug Claim",
+    "verticals": [
+      "cosmetics"
+    ],
+    "titleEn": "Permanent Wrinkle Removal / \"Botox-Like\" Physiological Claim",
+    "statute": "FD&C Act §201(g)(1)(C) & FDA Cosmetic vs. Drug Boundary",
+    "officialRefUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+    "safeRewriteEn": "Use appearance qualifiers: \"temporarily softens the look of fine lines and wrinkles\", \"leaves skin looking visibly smoother and more radiant\".",
+    "patterns": [
+      "\\bbotox\\s+(in\\s+a\\s+bottle|alternative|effect|like)\\b",
+      "\\bfreezes?\\s+(facial\\s+)?muscles\\b",
+      "\\b(permanently\\s+)?(eliminates?|erases?|removes?)\\s+(\\w+\\s+){0,2}(wrinkles|fine\\s+lines|dark\\s+spots|cellulite)\\b",
+      "\\breverses?\\s+(skin\\s+)?aging\\b"
+    ]
+  },
+  {
+    "id": "COS-DRUG-005",
+    "slug": "skin-bleaching-melasma-hydroquinone-drug-claim",
+    "severity": "critical",
+    "weight": 26,
+    "category": "Drug Claim",
+    "verticals": [
+      "cosmetics"
+    ],
+    "titleEn": "Skin Bleaching / Melasma / Illegal OTC Hydroquinone Violation",
+    "statute": "21 U.S.C. §355h (CARES Act OTC Monograph Reform — Hydroquinone Ban) & FD&C Act §201(g)",
+    "officialRefUrl": "https://www.law.cornell.edu/uscode/text/21/355h",
+    "safeRewriteEn": "Remove hydroquinone completely and revise claims to: \"brightens the look of dull, uneven skin tone\" and \"helps visibly fade the appearance of dark spots\".",
+    "patterns": [
+      "\\bhydroquinone\\b",
+      "\\b(treat|treats|cure|cures|remove|removes|eliminate|eliminates|fade|fades)\\s+(\\w+\\s+){0,2}(melasma|hyperpigmentation|vitiligo)\\b",
+      "\\b(bleach|bleaches|bleaching)\\s+(dark\\s+)?skin\\b",
+      "\\binhibits?\\s+melanin\\s+(production|synthesis)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-001",
+    "slug": "supplement-diabetes-blood-pressure-cholesterol-disease-claims",
+    "severity": "critical",
+    "weight": 30,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "Cardiometabolic Disease Claim (Diabetes / Hypertension / Cholesterol / Heart Attack)",
+    "statute": "21 CFR 101.93(g) (DSHEA Disease Claim Criteria)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+    "safeRewriteEn": "Reframe to maintaining already-normal ranges: \"helps support blood sugar levels already within the normal range*\" or \"supports healthy cardiovascular function*\" (+ mandatory DSHEA disclaimer).",
+    "patterns": [
+      "\\b(lower|lowers|lowering|reduce|reduces|reducing|control|controls|treat|treats|cure|cures|prevent|prevents|reverse|reverses)\\s+(\\w+\\s+){0,3}(blood\\s+pressure|hypertension|cholesterol|ldl|triglycerides|blood\\s+sugar|glucose|diabetes|insulin\\s+resistance|heart\\s+disease|heart\\s+attacks?|stroke)\\b",
+      "\\b(diabetes|hypertension|heart\\s+disease)\\s+(cure|treatment|remedy|prevention|relief)\\b",
+      "\\banti[-\\s]?(diabetic|hypertensive)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-002",
+    "slug": "supplement-cancer-tumor-oncology-claim",
+    "severity": "critical",
+    "weight": 35,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "devices",
+      "general"
+    ],
+    "titleEn": "Zero-Tolerance Oncology / Cancer / Tumor Claim",
+    "statute": "FD&C Act §201(g) & §505(a) — Unapproved New Drug (Zero Tolerance)",
+    "officialRefUrl": "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-cancer-treatments",
+    "safeRewriteEn": "Delete every mention of cancer, skin cancer, tumors, or carcinogens completely. Keep copy strictly limited to general cosmetic appearance or lawful wellness maintenance.",
+    "patterns": [
+      "\\b(fight|fights|fighting|prevent|prevents|cure|cures|treat|treats|kill|kills|shrink|shrinks|stop|stops|reduce|reduces)\\s+(\\w+\\s+){0,4}(cancer|tumors?|carcinoma|leukemia|melanoma|cancer\\s+cells)\\b",
+      "\\banti[-\\s]?(cancer|tumor|carcinogenic)\\b",
+      "\\b(skin\\s+)?cancer\\s+(prevention|treatment|cure|fighter|remedy)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-003",
+    "slug": "supplement-anxiety-depression-adhd-alzheimers-mental-health",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "Neurological & Mental-Health Disease Claim (Anxiety / Depression / ADHD / Alzheimer’s / Insomnia)",
+    "statute": "21 CFR 101.93(g)(2)(i) — Explicit Disease Conditions",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+    "safeRewriteEn": "Use permitted everyday wellness language: \"helps manage occasional everyday stress*\", \"supports calm mood and restful sleep*\", \"supports focus and cognitive clarity*\".",
+    "patterns": [
+      "\\b(treat|treats|cure|cures|relieve|relieves|reduce|reduces|fight|fights|alleviate|alleviates|prevent|prevents|eliminate|eliminates|help\\s+with|for)\\s+(\\w+\\s+){0,2}(depression|anxiety|adhd|alzheimer['’]?s?|dementia|parkinson['’]?s?|insomnia|migraines?|ptsd|bipolar|autism|schizophrenia|panic\\s+attacks?)\\b",
+      "\\banti[-\\s]?(depressant|anxiety)\\b",
+      "\\b(anxiety|depression|insomnia|migraine|adhd)\\s+(relief|cure|treatment|remedy)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-004",
+    "slug": "supplement-arthritis-joint-inflammation-pain-relief",
+    "severity": "critical",
+    "weight": 26,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "cosmetics"
+    ],
+    "titleEn": "Arthritis / Chronic Pain / Systemic Inflammation Disease Claim",
+    "statute": "21 CFR 101.93(g)(2)(ii) & FDA Structure/Function Guidance",
+    "officialRefUrl": "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims",
+    "safeRewriteEn": "Rewrite to permitted mobility language: \"supports joint comfort and flexibility*\", \"aids normal post-exercise muscle recovery*\", \"supports healthy inflammatory response after occasional exertion*\".",
+    "patterns": [
+      "\\b(relieve|relieves|treat|treats|cure|cures|reduce|reduces|stop|stops|soothe|soothes|for)\\s+(\\w+\\s+){0,2}(arthritis|osteoarthritis|rheumatoid|gout|sciatica|neuropathy|fibromyalgia|tendonitis|joint\\s+pain|chronic\\s+pain|nerve\\s+pain)\\b",
+      "\\b(arthritis|pain|sciatica|gout|neuropathy)\\s+(relief|cure|treatment|killer|remedy)\\b",
+      "\\bpain\\s+reliever\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-005",
+    "slug": "supplement-antiviral-cold-flu-covid-infection-claim",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "Infectious Disease / Antiviral / Cold, Flu & UTI Treatment Claim",
+    "statute": "FD&C Act §201(g) & 21 CFR 101.93(g)",
+    "officialRefUrl": "https://www.fda.gov/food/food-labeling-nutrition/structurefunction-claims",
+    "safeRewriteEn": "Stick strictly to healthy immune/tract support: \"supports a healthy immune system*\", \"supports urinary tract wellness*\", \"maintains balanced everyday flora*\".",
+    "patterns": [
+      "\\b(prevent|prevents|treat|treats|cure|cures|fight|fights|kill|kills|stop|stops|relieve|relieves|protect\\s+against)\\s+(\\w+\\s+){0,2}(colds?|flu|influenza|covid|coronavirus|viruses?|viral\\s+infections?|bacterial\\s+infections?|uti|urinary\\s+tract\\s+infections?|yeast\\s+infections?|candida|parasites?|strep|pneumonia)\\b",
+      "\\b(antiviral|anti[-\\s]?viral|natural\\s+antibiotic|antibiotic\\s+alternative)\\b",
+      "\\b(cold\\s+and\\s+flu|uti|yeast\\s+infection)\\s+(cure|treatment|remedy|relief|prevention)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-GI",
+    "slug": "supplement-hangover-liver-detox-gerd-leaky-gut-claims",
+    "severity": "critical",
+    "weight": 26,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "Hangover Cure / Acid Reflux (GERD) / Fatty Liver / Leaky Gut & Detox Claim",
+    "statute": "21 CFR 101.93(g) — Alcohol Intoxication & Gastrointestinal Disease Claims",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+    "safeRewriteEn": "Reframe to normal organ maintenance: \"supports healthy liver function*\", \"supports occasional digestive comfort*\", \"helps maintain a balanced gut microbiome*\" (+ mandatory DSHEA disclaimer).",
+    "patterns": [
+      "\\bhangover\\s+(cure|relief|prevention|remedy|recovery|pill|defender)\\b",
+      "\\b(prevents?|cures?|treats?|relieves?)\\s+(a\\s+)?hangovers?\\b",
+      "\\b(relieve|relieves|treat|treats|cure|cures|heal|heals|stop|stops|prevent|prevents|for)\\s+(\\w+\\s+){0,2}(acid\\s+reflux|gerd|heartburn|fatty\\s+liver|cirrhosis|leaky\\s+gut|ibs|ulcers?|crohn['’]?s|colitis)\\b",
+      "\\bgerd\\b",
+      "\\b(liver\\s+detox|detoxes?\\s+liver|cleanses?\\s+toxins?|flushes?\\s+toxins?|heavy\\s+metal\\s+detox)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-HORMONE",
+    "slug": "supplement-testosterone-male-enhancement-pms-menopause-claims",
+    "severity": "high",
+    "weight": 24,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements"
+    ],
+    "titleEn": "Hormonal / Testosterone Booster / Male Enhancement / PMS & Menopause Trigger",
+    "statute": "21 CFR 101.93(g) & Amazon Restricted Sexual Wellness / Supplement Policy",
+    "officialRefUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+    "safeRewriteEn": "Use permitted vitality framing: \"supports male vitality, stamina, and healthy energy levels*\" or \"supports everyday comfort during normal menstrual/midlife transitions*\" (+ DSHEA disclaimer).",
+    "patterns": [
+      "\\b(boosts?|increases?|raises?|maximizes?)\\s+(free\\s+|natural\\s+)?testosterone\\b",
+      "\\b(male\\s+enhancement|erectile\\s+dysfunction|ed\\s+treatment|cures?\\s+impotence)\\b",
+      "\\b(relieve|relieves|treat|treats|cure|cures|eliminate|eliminates|stops?)\\s+(\\w+\\s+){0,3}(pms|pcos|menopause|hot\\s+flashes|infertility|endometriosis)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-006",
+    "slug": "weight-loss-obesity-glp1-ozempic-claim",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "Illegal Weight-Loss / Obesity / \"Nature’s Ozempic\" GLP-1 Drug Comparison",
+    "statute": "21 CFR 101.93(g) & FDA Weight Loss Health Fraud Policy",
+    "officialRefUrl": "https://www.fda.gov/drugs/medication-health-fraud-notifications/weight-loss-product-notifications",
+    "safeRewriteEn": "State realistic metabolic support only: \"supports healthy metabolism when paired with balanced diet and regular exercise*\" or \"helps support feelings of fullness*\".",
+    "patterns": [
+      "\\b(nature['’]?s\\s+ozempic|ozempic\\s+(alternative|dupe|replacement)|wegovy\\s+alternative|mounjaro\\s+alternative|glp[-\\s]?1\\s+(alternative|replacement|dupe))\\b",
+      "\\b(treat|treats|cure|cures|reverse|reverses)\\s+obesity\\b",
+      "\\b(effortless|rapid|instant|guaranteed)\\s+(weight\\s+loss|fat\\s+loss|fat\\s+burning)\\b",
+      "\\bmelts?\\s+(away\\s+)?(belly\\s+)?fat\\b",
+      "\\blose\\s+\\d+\\s*(lbs?|pounds?|kg)\\s+in\\s+\\d+\\s*(days?|weeks?)\\b"
+    ]
+  },
+  {
+    "id": "ING-TAINT-001",
+    "slug": "fda-tainted-supplement-hidden-drug-ingredients",
+    "severity": "critical",
+    "weight": 35,
+    "category": "Prohibited / Tainted Ingredient",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "FDA Tainted Product / High-Risk Adulterant or Restricted Active Ingredient",
+    "statute": "FD&C Act §505(a) & FDA Health Fraud Product Database",
+    "officialRefUrl": "https://www.fda.gov/consumers/health-fraud-scams/health-fraud-product-database",
+    "safeRewriteEn": "Immediately remove the flagged ingredient from formulation and obtain a third-party ISO-17025 Certificate of Analysis (COA) screening for hidden pharmaceutical APIs before shipping to FBA.",
+    "patterns": [
+      "\\b(sildenafil|tadalafil|vardenafil|sibutramine|phenolphthalein|diclofenac|dexamethasone|fluoxetine|desmethyl\\s+carbodenafil|tianeptine|dmaa|1,3-dimethylamylamine|dmha|octodrine|ephedra|ephedrine|kratom|mitragyna\\s+speciosa|bimatoprost|isopropyl\\s+cloprostenate|yohimbine|yohimbe)\\b"
+    ]
+  },
+  {
+    "id": "ING-COS-002",
+    "slug": "fda-prohibited-restricted-cosmetic-ingredients",
+    "severity": "critical",
+    "weight": 30,
+    "category": "Prohibited / Tainted Ingredient",
+    "verticals": [
+      "cosmetics"
+    ],
+    "titleEn": "FDA Prohibited / Restricted Cosmetic Ingredient (21 CFR 700)",
+    "statute": "21 CFR Part 700 Subpart B (Prohibited & Restricted Cosmetic Ingredients)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-700",
+    "safeRewriteEn": "Reformulate without prohibited substances and verify all pigments are on FDA’s approved Color Additives list for the intended application area (especially eye-area and lip-area restrictions).",
+    "patterns": [
+      "\\b(mercury|mercurous\\s+chloride|calomel|ammoniated\\s+mercury|bithionol|chloroform|methylene\\s+chloride|vinyl\\s+chloride|hexachlorophene|halogenated\\s+salicylanilides|chlorofluorocarbon)\\b"
+    ]
+  },
+  {
+    "id": "EPA-PEST-001",
+    "slug": "amazon-epa-fifra-antimicrobial-pesticide-bot-trap",
+    "severity": "critical",
+    "weight": 26,
+    "category": "EPA Pesticide Trap",
+    "verticals": [
+      "cosmetics",
+      "devices",
+      "general"
+    ],
+    "titleEn": "Amazon / EPA FIFRA Pesticide Bot Trap (Antibacterial / Antimicrobial / Mold-Free)",
+    "statute": "FIFRA (7 U.S.C. §136) & Amazon Restricted Products — Pesticides Policy",
+    "officialRefUrl": "https://www.epa.gov/pesticide-registration/pesticide-registration-manual",
+    "safeRewriteEn": "Remove all germ-killing / pest-repelling claims. Use \"keeps product fresh\", \"deep-cleansing formula\", \"hygienic silicone surface\", or \"easy-to-clean material\".",
+    "patterns": [
+      "\\b(antibacterial|anti[-\\s]?bacterial|antimicrobial|anti[-\\s]?microbial|antifungal|anti[-\\s]?fungal|bactericidal|fungicidal|virucidal)\\b",
+      "\\b(kills?|eliminates?|destroys?)\\s+(99\\.?9%?\\s+)?(of\\s+)?(germs|bacteria|fungi|fungus|microbes|mold|mildew|viruses)\\b",
+      "\\b(disinfects?|sanitizes?|sterilizes?)\\s+(skin|hands|surfaces|brushes|tools|air|water)\\b",
+      "\\b(mold|mildew|pest|bug|mosquito|insect)[-\\s]?(resistant|proof|repellent|repelling)\\b"
+    ]
+  },
+  {
+    "id": "DEV-510K-001",
+    "slug": "beauty-device-medical-grade-510k-therapeutic-claim",
+    "severity": "high",
+    "weight": 26,
+    "category": "Drug Claim",
+    "verticals": [
+      "devices",
+      "cosmetics"
+    ],
+    "titleEn": "Uncleared Medical / Beauty Device Claim (510(k) Required: LED / IPL / EMS / Pain / Neuropathy)",
+    "statute": "FD&C Act §510(k) & 21 CFR Part 807 Subpart E (Premarket Notification)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-807/subpart-E",
+    "safeRewriteEn": "If you do NOT hold an active 510(k) clearance (K-number) for this exact SKU, remove \"medical grade\", \"IPL permanent hair removal\", \"EMS muscle stimulator\", and all pain/neuropathy/diagnostic claims; limit strictly to non-medical general wellness or cosmetic appearance routines.",
+    "patterns": [
+      "\\b(medical[-\\s]?grade|hospital[-\\s]?grade|clinical[-\\s]?grade)\\b",
+      "\\b(diagnoses?|detects?|monitors?)\\s+(\\w+\\s+){0,2}(arrhythmia|afib|atrial\\s+fibrillation|sleep\\s+apnea|hypertension|disease|diabetes)\\b",
+      "\\b(cures?|treats?|heals?|relieves?|reduces?)\\s+(\\w+\\s+){0,2}(sleep\\s+apnea|snoring|chronic\\s+pain|nerve\\s+damage|neuropathy|arthritis|joint\\s+pain|muscle\\s+atrophy|varicose\\s+veins)\\b",
+      "\\b(therapeutic\\s+laser|ipl\\s+permanent\\s+hair\\s+removal|permanent\\s+hair\\s+removal|ems\\s+muscle\\s+stimulator|tens\\s+pain\\s+relief)\\b"
+    ]
+  },
+  {
+    "id": "FTC-SUB-001",
+    "slug": "ftc-clinically-proven-guaranteed-cure-superlatives",
+    "severity": "high",
+    "weight": 18,
+    "category": "FTC Substantiation",
+    "verticals": [
+      "cosmetics",
+      "supplements",
+      "devices",
+      "general"
+    ],
+    "titleEn": "Unsubstantiated Clinical Proof / Guaranteed Cure Claim (15 U.S.C. §52 / FTC Act)",
+    "statute": "FTC Act §§5 & 12 (15 U.S.C. §§45, 52) & 16 CFR Part 255",
+    "officialRefUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+    "safeRewriteEn": "Replace absolute proof claims with honest formulation facts: \"formulated with clinically studied ingredients\" (only if true at the studied dose) or \"backed by published ingredient research\".",
+    "patterns": [
+      "\\b(clinically|scientifically|medically|doctor)\\s+(proven|tested\\s+to\\s+cure|guaranteed)\\b",
+      "\\b(100%|fully)\\s+guaranteed\\s+(results|cure|relief|effective)\\b",
+      "\\b(miracle|instant|permanent)\\s+(cure|remedy|healer|fix)\\b"
+    ]
+  },
+  {
+    "id": "COS-OTC-NUMB",
+    "slug": "lidocaine-benzocaine-numbing-cream-otc-drug",
+    "severity": "critical",
+    "weight": 30,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "OTC External Analgesic / Numbing Cream Violation (Lidocaine / Benzocaine / Tetracaine)",
+    "statute": "21 CFR Part 348 (External Analgesic OTC Monograph) & FDA Topical Anesthetic Enforcement",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-348",
+    "safeRewriteEn": "Never sell unapproved tattoo/microneedling numbing creams or >4% lidocaine OTC. If selling a compliant <=4% OTC external analgesic, follow exact 21 CFR 348 Drug Facts labeling and NDC listing; for cosmetics, remove all numbing/anesthetic claims.",
+    "patterns": [
+      "\\b(lidocaine|benzocaine|prilocaine|tetracaine|dibucaine)\\b",
+      "\\b(numbing\\s+(cream|gel|spray|ointment|balm)|topical\\s+anesthetic|skin\\s+numbing|pain[-\\s]?free\\s+(tattoo|waxing|microneedling))\\b"
+    ]
+  },
+  {
+    "id": "COS-OTC-EYE",
+    "slug": "unapproved-ophthalmic-eye-drops-otc-drug",
+    "severity": "critical",
+    "weight": 30,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "cosmetics",
+      "supplements",
+      "general"
+    ],
+    "titleEn": "Unapproved Ophthalmic / Eye-Drop Drug Claim (Dry Eye / Pink Eye / Cataracts / Redness)",
+    "statute": "21 CFR Part 349 (Ophthalmic OTC Monograph) & FDA Unapproved Eye Drops Enforcement",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-349",
+    "safeRewriteEn": "Only market eye drops formulated strictly under 21 CFR Part 349 in cGMP sterile facilities with valid NDC registration. Never market cosmetic serums or unapproved homeopathic drops for instillation into the eye.",
+    "patterns": [
+      "\\b(eye\\s+drops?|ophthalmic\\s+(solution|drops?))\\b",
+      "\\b(treats?|cures?|relieves?|clears?|soothes?)\\s+(\\w+\\s+){0,2}(pink\\s+eye|conjunctivitis|dry\\s+eyes?|eye\\s+infections?|styes?|cataracts?|glaucoma|red\\s+eyes?)\\b"
+    ]
+  },
+  {
+    "id": "COS-OTC-ORAL",
+    "slug": "oral-care-gingivitis-cavity-plaque-otc-drug",
+    "severity": "high",
+    "weight": 24,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "OTC Oral Care / Anticaries Drug Claim (Prevents Cavities / Gingivitis / Gum Disease / Remineralizes)",
+    "statute": "21 CFR Part 355 (Anticaries OTC Monograph) & FD&C Act §201(g)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-355",
+    "safeRewriteEn": "For cosmetic oral-care listings without OTC Drug Facts registration, limit claims to: \"freshens breath\", \"brightens surface stains for a whiter-looking smile\", and \"leaves teeth feeling clean and smooth\".",
+    "patterns": [
+      "\\b(prevents?|stops?|reverses?|heals?|treats?|cures?|fights?)\\s+(\\w+\\s+){0,2}(cavities|tooth\\s+decay|gingivitis|periodontitis|gum\\s+disease|bleeding\\s+gums|receding\\s+gums|canker\\s+sores)\\b",
+      "\\b(remineralizes?|rebuilds?|repairs?)\\s+(tooth\\s+)?enamel\\b",
+      "\\banti[-\\s]?(cavity|gingivitis|plaque)\\b"
+    ]
+  },
+  {
+    "id": "COS-OTC-ANTIPERSP",
+    "slug": "deodorant-antiperspirant-stops-sweat-otc-drug",
+    "severity": "high",
+    "weight": 22,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "cosmetics"
+    ],
+    "titleEn": "OTC Antiperspirant / Sweat-Blocking Drug Claim on Cosmetic Deodorants",
+    "statute": "21 CFR Part 350 & 21 CFR 310.545 (OTC Antiperspirant vs. Cosmetic Deodorant)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+    "safeRewriteEn": "For aluminum-free cosmetic deodorants, replace sweat-blocking claims with: \"helps neutralize odor all day\", \"absorbs surface wetness for a dry feel\", and \"keeps underarms feeling fresh\".",
+    "patterns": [
+      "\\b(stops?|blocks?|prevents?|reduces?|eliminates?|controls?)\\s+(\\w+\\s+){0,2}(sweat|sweating|perspiration|underarm\\s+sweat|excessive\\s+sweating|hyperhidrosis)\\b",
+      "\\bantiperspirant\\b",
+      "\\bhyperhidrosis\\b"
+    ]
+  },
+  {
+    "id": "COS-LABEL-WARN",
+    "slug": "cosmetic-mandatory-warning-statements-aha-aerosol",
+    "severity": "medium",
+    "weight": 16,
+    "category": "Cosmetic Labeling & Colorants",
+    "verticals": [
+      "cosmetics"
+    ],
+    "titleEn": "Mandatory Cosmetic Warning Statement Trigger (AHA Exfoliants / Aerosols / Tanning Oils)",
+    "statute": "21 CFR Part 740 (Cosmetic Product Warning Statements) & FDA AHA Sunburn Alert Guidance",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-G/part-740",
+    "safeRewriteEn": "Include the required 21 CFR 740 verbatim warning on outer packaging (e.g., FDA Sunburn Alert for AHA peels, or 21 CFR 740.19 \"does not contain a sunscreen\" warning on tanning oils) and avoid medical \"chemical peel destroys damaged layers\" wording.",
+    "patterns": [
+      "\\b(tca\\s+peel|trichloroacetic\\s+acid|phenol\\s+peel|jessner\\s+peel|30%\\s+glycolic|50%\\s+glycolic|70%\\s+glycolic)\\b",
+      "\\b(tanning\\s+oil|suntan\\s+oil|tan\\s+accelerator)\\b",
+      "\\bchemical\\s+peel\\s+(kit|solution|acid)\\b"
+    ]
+  },
+  {
+    "id": "ING-COLOR-001",
+    "slug": "unapproved-cosmetic-color-additives-kohl-henna-neon",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Cosmetic Labeling & Colorants",
+    "verticals": [
+      "cosmetics"
+    ],
+    "titleEn": "Unapproved or Restricted Color Additive Trap (Kohl / Kajal / Black Henna / Neon Eye Pigments)",
+    "statute": "21 CFR Part 73 & FD&C Act §721 (FDA Color Additive Approval & Batch Certification)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-73",
+    "safeRewriteEn": "Verify every pigment (FD&C / D&C / CI number) against FDA’s approved Color Additives list for the exact application area (eye-area vs. lip vs. general external) and remove kohl, kajal, black henna, and unapproved neon eye glitters.",
+    "patterns": [
+      "\\b(kohl|kajal|surma|al[-\\s]?kahl)\\b",
+      "\\b(black\\s+henna|ppd\\s+henna|henna\\s+(eyebrow|brow|lash|eyelash|skin|tattoo))\\b",
+      "\\b(neon\\s+eyeshadow|fluorescent\\s+eye\\s+pigment|glow[-\\s]in[-\\s]the[-\\s]dark\\s+eyeshadow)\\b"
+    ]
+  },
+  {
+    "id": "COS-BIO-STEM",
+    "slug": "exosomes-stem-cells-growth-factors-pdrn-biologic-claim",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Medical Device / Biologics",
+    "verticals": [
+      "cosmetics",
+      "devices"
+    ],
+    "titleEn": "Unapproved Biologic / Regenerative Claim (Exosomes / Human Stem Cells / Growth Factors / PDRN)",
+    "statute": "PHS Act §351 & FD&C Act §201(g) (FDA Regenerative Medicine & Biologics Enforcement)",
+    "officialRefUrl": "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/important-patient-and-consumer-information-about-regenerative-medicine-therapies",
+    "safeRewriteEn": "Remove all human stem-cell, exosome regenerative, injectable/mesotherapy, and DNA/tissue repair claims. Keep topical cosmetics strictly within hydration and temporary appearance-smoothing language.",
+    "patterns": [
+      "\\b(exosomes?|human\\s+stem\\s+cells?|umbilical\\s+stem\\s+cells?|amniotic\\s+fluid|placental\\s+stem)\\b",
+      "\\b(activates?|regenerates?|repairs?)\\s+(\\w+\\s+){0,2}(stem\\s+cells?|human\\s+dna|cellular\\s+dna|dermal\\s+tissue)\\b",
+      "\\b(mesotherapy\\s+ampoule|injectable\\s+serum|diy\\s+hyaluronic\\s+filler|hyaluron\\s+pen)\\b"
+    ]
+  },
+  {
+    "id": "COS-ESS-OIL",
+    "slug": "essential-oil-aromatherapy-disease-treatment-claims",
+    "severity": "high",
+    "weight": 24,
+    "category": "Drug Claim",
+    "verticals": [
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "Essential Oil / Aromatherapy Therapeutic Disease Claim (Sinus / Asthma / Migraine / Seizures)",
+    "statute": "FD&C Act §201(g)(1)(B) — Intended Use & Aromatherapy Drug Boundary",
+    "officialRefUrl": "https://www.fda.gov/cosmetics/cosmetics-laws-regulations/it-cosmetic-drug-or-both-or-it-soap",
+    "safeRewriteEn": "Market essential oils strictly for scent and ambiance: \"crisp, invigorating eucalyptus aroma for diffusers\", \"relaxing lavender scent for evening wind-down routines\".",
+    "patterns": [
+      "\\b(essential\\s+oil|aromatherapy)\\s+(\\w+\\s+){0,4}(cures?|treats?|relieves?|stops?|heals?)\\s+(\\w+\\s+){0,2}(sinus|asthma|bronchitis|migraines?|headaches?|seizures?|infections?|allergies|congestion)\\b",
+      "\\b(clears?\\s+sinus\\s+infections?|purifies?\\s+airborne\\s+viruses?|therapeutic\\s+grade\\s+essential\\s+oil)\\b"
+    ]
+  },
+  {
+    "id": "SUP-OTC-COLD",
+    "slug": "cold-cough-allergy-asthma-bronchodilator-otc-drug",
+    "severity": "critical",
+    "weight": 26,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "OTC Cold, Cough, Allergy & Asthma Drug Claim (Decongestant / Antihistamine / Bronchodilator)",
+    "statute": "21 CFR Part 341 (Cold, Cough, Allergy, Bronchodilator & Antiasthmatic OTC Products)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-341",
+    "safeRewriteEn": "Use compliant respiratory wellness framing: \"supports clear seasonal breathing comfort*\", \"supports healthy upper-respiratory mucosal wellness*\" (+ mandatory DSHEA disclaimer).",
+    "patterns": [
+      "\\b(cough\\s+suppressant|natural\\s+antihistamine|decongestant|expectorant|bronchodilator)\\b",
+      "\\b(relieve|relieves|treat|treats|cure|cures|stop|stops|prevent|prevents|for)\\s+(\\w+\\s+){0,2}(asthma|bronchitis|sinusitis|hay\\s+fever|seasonal\\s+allergies|allergy\\s+symptoms|copd|wheezing|sinus\\s+congestion)\\b",
+      "\\b(allergy|asthma|cough|sinus)\\s+(cure|treatment|medicine|remedy)\\b"
+    ]
+  },
+  {
+    "id": "SUP-OTC-ANTACID",
+    "slug": "antacid-diarrhea-constipation-laxative-otc-drug",
+    "severity": "high",
+    "weight": 22,
+    "category": "OTC Monograph Drug",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "OTC Antacid / Laxative / Antidiarrheal / Hemorrhoid Drug Claim",
+    "statute": "21 CFR Part 331 (Antacid OTC Monograph) & 21 CFR 101.93(g)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-331",
+    "safeRewriteEn": "Reframe to mild everyday regularity: \"supports healthy digestive balance and occasional regularity*\", \"soothes occasional mild stomach discomfort*\" (+ mandatory DSHEA disclaimer).",
+    "patterns": [
+      "\\b(antacid|neutralizes?\\s+stomach\\s+acid|stops?\\s+diarrhea|cures?\\s+diarrhea|treats?\\s+constipation|cures?\\s+constipation)\\b",
+      "\\b(shrinks?|cures?|treats?|heals?|eliminates?)\\s+(\\w+\\s+){0,2}(hemorrhoids?|stomach\\s+ulcers?|gastritis|diverticulitis)\\b"
+    ]
+  },
+  {
+    "id": "SUP-ING-CBD",
+    "slug": "cbd-cannabidiol-delta8-thc-amazon-fda-ban",
+    "severity": "critical",
+    "weight": 35,
+    "category": "Prohibited / Tainted Ingredient",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "pets",
+      "general"
+    ],
+    "titleEn": "CBD / Cannabidiol / Delta-8 THC Prohibited Ingredient (FDA & Amazon Zero-Tolerance Ban)",
+    "statute": "FD&C Act §201(ff)(3)(B) & Amazon Prohibited Hemp/CBD Policy",
+    "officialRefUrl": "https://www.fda.gov/news-events/public-health-focus/fda-regulation-cannabis-and-cannabis-derived-products-including-cannabidiol-cbd",
+    "safeRewriteEn": "Remove ALL mentions of CBD, cannabidiol, Delta-8, Delta-9, THC, and \"full-spectrum hemp extract\" from titles, bullets, packaging, and backend keywords. (Only plain cold-pressed hemp seed oil without cannabinoids is permitted on Amazon.)",
+    "patterns": [
+      "\\b(cbd|cannabidiol|delta[-\\s]?8|delta[-\\s]?9|delta[-\\s]?10|thc[-\\s]?a|hhc|full[-\\s]?spectrum\\s+hemp\\s+extract|broad[-\\s]?spectrum\\s+hemp\\s+extract|phytocannabinoids?)\\b"
+    ]
+  },
+  {
+    "id": "SUP-ING-NDI",
+    "slug": "colloidal-silver-bpc157-sarms-phenibut-drug-precluded",
+    "severity": "critical",
+    "weight": 34,
+    "category": "Prohibited / Tainted Ingredient",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "High-Enforcement Unapproved Compound (Colloidal Silver / BPC-157 / SARMs / Phenibut / Racetams)",
+    "statute": "21 CFR 310.548 (Colloidal Silver) & 21 CFR 310.545 / FD&C Act §201(ff)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-D/part-310/subpart-E/section-310.545",
+    "safeRewriteEn": "Immediately remove prohibited research peptides, SARMs, phenibut, racetams, or colloidal silver health claims from your catalog before inventory is stranded or seized.",
+    "patterns": [
+      "\\b(colloidal\\s+silver|nano\\s+silver\\s+(drops?|spray|supplement)|bpc[-\\s]?157|tb[-\\s]?500|mk[-\\s]?677|ibutamoren|ostarine|mk[-\\s]?2866|ligandrol|lgd[-\\s]?4033|rad[-\\s]?140|testolone|sarms|phenibut|vinpocetine|piracetam|aniracetam|oxiracetam|noopept|adrafinil|tianeptine|picamilon|dmba)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-INTIMATE",
+    "slug": "womens-intimate-bv-fertility-pregnancy-infant-claims",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "Intimate Health, Fertility, Pregnancy & Infant Disease Claim (BV / Infertility / Colic / Ear Infection)",
+    "statute": "21 CFR 101.93(g)(2) — Urogenital, Reproductive & Pediatric Disease Claims",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+    "safeRewriteEn": "Use gentle wellness wording only: \"supports healthy vaginal pH balance*\", \"supports everyday reproductive wellness*\", or \"helps soothe occasional fussy tummies*\" (never treat BV, infections, infertility, or pediatric diseases).",
+    "patterns": [
+      "\\b(treats?|cures?|clears?|stops?|eliminates?|prevents?|for)\\s+(\\w+\\s+){0,2}(bacterial\\s+vaginosis|bv\\s+infections?|vaginal\\s+infections?|infertility|miscarriage|infant\\s+colic|baby\\s+colic|ear\\s+infections?|otitis|thrush|mastitis)\\b",
+      "\\b(cures?\\s+bv|bv\\s+(treatment|cure|remedy)|fertility\\s+cure|prevents?\\s+miscarriage)\\b"
+    ]
+  },
+  {
+    "id": "SUP-DIS-EYE-NEURO",
+    "slug": "tinnitus-macular-degeneration-thyroid-withdrawal-disease-claims",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "general"
+    ],
+    "titleEn": "Vision, Hearing, Thyroid & Addiction Disease Claim (Tinnitus / Macular Degeneration / Hashimoto’s / Withdrawal)",
+    "statute": "21 CFR 101.93(g) — Explicit Disease & Addiction Treatment Claims",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-F/section-101.93",
+    "safeRewriteEn": "Switch to general nutritional support: \"supports healthy eye nutrition with lutein & zeaxanthin*\", \"supports normal thyroid nutrient intake*\", \"supports healthy inner-ear microcirculation*\".",
+    "patterns": [
+      "\\b(tinnitus\\s+(relief|cure|treatment|drops?|remedy)|stops?\\s+(ear\\s+)?ringing|cures?\\s+tinnitus)\\b",
+      "\\b(treats?|cures?|reverses?|prevents?|relieves?|stops?)\\s+(\\w+\\s+){0,2}(macular\\s+degeneration|hashimoto['’]?s|hypothyroidism|hyperthyroidism|thyroid\\s+disease|lupus|multiple\\s+sclerosis|opioid\\s+withdrawal|alcohol\\s+withdrawal|addiction)\\b"
+    ]
+  },
+  {
+    "id": "SUP-CGMP-001",
+    "slug": "prescription-strength-rx-replacement-claim",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Disease Claim",
+    "verticals": [
+      "supplements",
+      "cosmetics",
+      "general"
+    ],
+    "titleEn": "Illegal \"Prescription Strength\" / \"Replaces Your Medication\" Drug Implication",
+    "statute": "21 CFR 101.93(g)(2)(ix) & 21 CFR Part 111 (Implied Drug Equivalence)",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-111",
+    "safeRewriteEn": "Replace drug-comparison phrasing with factual potency disclosures: \"concentrated botanical extract\", \"standardized to 95% curcuminoids\", or \"high-potency daily formula*\".",
+    "patterns": [
+      "\\b(prescription[-\\s]?strength|rx[-\\s]?strength|rx[-\\s]?grade|pharmaceutical[-\\s]?grade\\s+treatment)\\b",
+      "\\b(replaces?|substitute\\s+for|natural\\s+alternative\\s+to|ditch\\s+your|stop\\s+taking\\s+your)\\s+(\\w+\\s+){0,2}(prescription|medication|meds|statins?|metformin|adderall|xanax|prozac|antibiotics|insulin|steroids?)\\b"
+    ]
+  },
+  {
+    "id": "PET-DRUG-001",
+    "slug": "pet-supplement-unapproved-animal-drug-claim",
+    "severity": "critical",
+    "weight": 28,
+    "category": "Animal / Pet Drug Claim",
+    "verticals": [
+      "pets",
+      "general"
+    ],
+    "titleEn": "Unapproved Animal / Pet Drug Claim (Dog Arthritis / Seizures / Hot Spots / Kennel Cough / Fleas)",
+    "statute": "21 CFR Part 510 (New Animal Drugs) & FDA CVM Enforcement Policy",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-E/part-510",
+    "safeRewriteEn": "Use conservative pet-nutrition/grooming language: \"supports healthy hip & joint mobility in active dogs\", \"helps maintain calm behavior during travel or fireworks\", \"gently cleanses skin and coat\".",
+    "patterns": [
+      "\\b(treats?|cures?|heals?|stops?|prevents?|relieves?|for)\\s+(\\w+\\s+){0,3}(hip\\s+dysplasia|kennel\\s+cough|mange|hot\\s+spots?|canine\\s+arthritis|dog\\s+arthritis|pet\\s+arthritis|dog\\s+anxiety|separation\\s+anxiety|pet\\s+seizures?|dog\\s+seizures?|heartworm|ear\\s+mites?|dog\\s+ear\\s+infections?)\\b",
+      "\\b(kills?|repels?|eliminates?)\\s+(\\w+\\s+){0,2}(fleas?|ticks?|heartworms?|ringworms?|ear\\s+mites?)\\b",
+      "\\b(xylitol|birch\\s+sugar)\\b"
+    ]
+  },
+  {
+    "id": "DEV-QSR-002",
+    "slug": "uncleared-blood-glucose-watch-plasma-pen-hifu-microneedling",
+    "severity": "critical",
+    "weight": 30,
+    "category": "Medical Device / Biologics",
+    "verticals": [
+      "devices"
+    ],
+    "titleEn": "Uncleared High-Risk Device Claim (Non-Invasive Blood Glucose Watch / Plasma Pen / HIFU / Deep Microneedling)",
+    "statute": "21 CFR Part 820 (QSR/QMSR) & FDA Safety Communications on Unapproved Aesthetic/Monitoring Devices",
+    "officialRefUrl": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-820",
+    "safeRewriteEn": "Remove ALL blood-glucose / blood-pressure diagnostic claims from non-cleared wearables. For cosmetic rollers without 510(k), stay strictly <=0.25mm exfoliation-appearance only and remove plasma-pen, mole-removal, and HIFU/ultrasound lifting claims.",
+    "patterns": [
+      "\\b(non[-\\s]?invasive\\s+(blood\\s+)?glucose|measures?\\s+blood\\s+sugar|blood\\s+glucose\\s+(smartwatch|watch|ring)|painless\\s+glucose\\s+monitor)\\b",
+      "\\b(plasma\\s+(fibroblast\\s+)?pen|mole\\s+removal\\s+pen|skin\\s+tag\\s+removal\\s+pen|home\\s+hifu|hifu\\s+(machine|device|lifting)|microneedling\\s+pen|derma\\s+pen\\s+(1\\.0|1\\.5|2\\.0|2\\.5)\\s*mm)\\b"
+    ]
+  },
+  {
+    "id": "FTC-SUB-002",
+    "slug": "ftc-zero-side-effects-100-safe-number-one-doctor-claim",
+    "severity": "medium",
+    "weight": 16,
+    "category": "FTC Substantiation",
+    "verticals": [
+      "cosmetics",
+      "supplements",
+      "devices",
+      "pets",
+      "general"
+    ],
+    "titleEn": "Unsubstantiated Absolute Safety / \"#1 Doctor Recommended\" Claim (FTC Act §12)",
+    "statute": "FTC Act §§5 & 12 (15 U.S.C. §§45, 52) & FTC Endorsement Guides",
+    "officialRefUrl": "https://www.law.cornell.edu/uscode/text/15/52",
+    "safeRewriteEn": "Replace absolute claims with verifiable wording: \"gentle formula suitable for daily routines\", \"dermatologist-tested\" (only if you hold the RIPT lab certificate), and include standard sensitivity patch-test guidance.",
+    "patterns": [
+      "\\b(zero|no)\\s+side\\s+effects\\b",
+      "\\b100%\\s+safe\\s+(for\\s+everyone|with\\s+no\\s+side\\s+effects|guaranteed)\\b",
+      "\\b#?1\\s+(doctor|dermatologist|vet|veterinarian|physician)[-\\s]+(recommended|approved|trusted)\\b",
+      "\\bcompletely\\s+risk[-\\s]?free\\s+(treatment|cure|formula)\\b"
+    ]
+  }
+]

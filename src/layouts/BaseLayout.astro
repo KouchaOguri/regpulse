@@ -19,7 +19,7 @@ const isCurrent = (path: string) => {
   const target = withBase(path).replace(/\/$/, '') || '/';
   return currentPath === target;
 };
-const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://kouchaoguri.github.io';
+const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://regpulsehq.com';
 const canonicalUrl = `${siteOrigin}${withBase(canonicalPath)}`;
 const ogImageUrl = `${siteOrigin}${withBase('/og-card.png')}`;
 
@@ -59,7 +59,7 @@ const navItems = [
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
     <!-- Cookie-free Cloudflare Web Analytics (L2 Real External Telemetry) -->
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "a0b2b797f6db44009df4321c04a4f61d"}'></script>
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "66f61383b9d9419dab4c168311040e94"}'></script>
   </head>
   <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased overflow-x-clip">
     <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>

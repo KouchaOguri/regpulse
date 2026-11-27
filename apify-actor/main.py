@@ -1,124 +1,275 @@
 #!/usr/bin/env python3
 """
-RegPulse Sidecar Apify Actor (MCP-Ready Pay-Per-Event Distribution Engine).
+RegPulse Sidecar Apify Actor (MCP-Ready 40-Rule + Live Warning Letters + openFDA Recalls).
 Zero-human distribution wedge: captures built-in Apify Store & AI-Agent MCP demand for
-FDA drug-claim screening and openFDA recall lookup, funneling high-intent teams back to RegPulse.
+FDA drug-claim screening, live FDA.gov Warning Letters, and openFDA recall lookup.
 """
 
 import asyncio
 import json
 import re
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
+from pathlib import Path
 
 try:
     from apify import Actor
 except ImportError:
     Actor = None
 
-RULES = [
-    ("FDA-TERM-001", "critical", 30, "Unauthorized FDA Approved / Certified Claim", "FD&C Act §301(l)", r"(?<!\bnot\s)\bfda[-\s]+(approved|certified)\b|\bfda\s+certificate\b"),
-    ("COS-OTC-SPF", "critical", 30, "OTC Sunscreen Drug Trigger (SPF / Sunburn)", "21 CFR Part 352", r"\bspf\s*\d+\+?\b|\b(sun\s+protection|prevents?\s+sunburn)\b"),
-    ("COS-OTC-NUMB", "critical", 30, "OTC Lidocaine / Numbing Cream Violation", "21 CFR Part 348", r"\b(lidocaine|benzocaine|tetracaine|numbing\s+cream)\b"),
-    ("COS-OTC-EYE", "critical", 30, "Unapproved Ophthalmic Eye Drops Claim", "21 CFR Part 349", r"\b(eye\s+drops?|pink\s+eye|conjunctivitis|cataracts?)\b"),
-    ("COS-DRUG-001", "critical", 28, "Skin Disease Claim (Acne/Eczema/Psoriasis/Rosacea)", "21 CFR 333 Subpart D", r"\b(treats?|cures?|heals?|clears?|eliminates?|reduces?)\s+(\w+\s+){0,2}(acne|eczema|psoriasis|rosacea)\b"),
-    ("COS-DRUG-005", "critical", 26, "Illegal OTC Hydroquinone / Melasma Claim", "21 U.S.C. §355h", r"\bhydroquinone\b|\b(treats?|cures?)\s+melasma\b"),
-    ("COS-BIO-STEM", "critical", 28, "Unapproved Biologic (Exosomes / Human Stem Cells)", "PHS Act §351", r"\b(exosomes?|human\s+stem\s+cells?|hyaluron\s+pen)\b"),
-    ("SUP-DIS-001", "critical", 30, "Cardiometabolic Disease Claim (Diabetes/Blood Pressure/Cholesterol)", "21 CFR 101.93(g)", r"\b(lowers?|reduces?|treats?|cures?|prevents?)\s+(\w+\s+){0,2}(blood\s+sugar|blood\s+pressure|cholesterol|diabetes|heart\s+attack)\b"),
-    ("SUP-DIS-002", "critical", 35, "Zero-Tolerance Cancer / Tumor Claim", "FD&C Act §505(a)", r"\b(fights?|prevents?|cures?|treats?)\s+(\w+\s+){0,3}(cancer|tumors?|melanoma)\b|\banti[-\s]?cancer\b"),
-    ("SUP-DIS-006", "critical", 28, "Ozempic / GLP-1 Dupe / Obesity Claim", "21 CFR 101.93(g)", r"\b(nature['’]?s\s+ozempic|ozempic\s+alternative|glp[-\s]?1\s+alternative|treats?\s+obesity)\b"),
-    ("SUP-ING-CBD", "critical", 35, "Prohibited CBD / Delta-8 Cannabinoid", "FD&C Act §201(ff)", r"\b(cbd|cannabidiol|delta[-\s]?8|full[-\s]?spectrum\s+hemp\s+extract)\b"),
-    ("SUP-ING-NDI", "critical", 34, "Prohibited Research Compound (BPC-157 / SARMs / Colloidal Silver)", "21 CFR 310.545", r"\b(colloidal\s+silver|bpc[-\s]?157|tb[-\s]?500|ostarine|sarms|phenibut|tianeptine)\b"),
-    ("ING-TAINT-001", "critical", 35, "Hidden Pharma Adulterant / High-Risk Stimulant", "FD&C Act §505(a)", r"\b(sildenafil|tadalafil|sibutramine|yohimbine|dmaa|dmha|kratom|phenolphthalein)\b"),
-    ("EPA-PEST-001", "critical", 26, "Amazon / EPA FIFRA Pesticide Bot Trap", "7 U.S.C. §136", r"\b(antibacterial|antimicrobial|antifungal|kills?\s+(99\.?9%?\s+)?(of\s+)?(germs|bacteria|viruses))\b"),
-    ("PET-DRUG-001", "critical", 28, "Unapproved Animal/Pet Drug or Flea/Tick Claim", "21 CFR Part 510", r"\b(canine\s+arthritis|hip\s+dysplasia|kennel\s+cough|kills?\s+(fleas?|ticks?))\b"),
-    ("DEV-QSR-002", "critical", 30, "Uncleared Device (Non-Invasive Blood Glucose Watch / Plasma Pen / HIFU)", "21 CFR Part 820", r"\b(non[-\s]?invasive\s+(blood\s+)?glucose|plasma\s+pen|home\s+hifu|medical[-\s]?grade)\b"),
-    ("FTC-SUB-001", "high", 18, "Unsubstantiated Clinical Proof / Guaranteed Cure", "15 U.S.C. §52", r"\b(clinically\s+proven|100%\s+guaranteed\s+(results|cure)|zero\s+side\s+effects)\b"),
-]
+RULES_PATH = Path(__file__).resolve().parent / "rules.json"
+RULES = json.loads(RULES_PATH.read_text(encoding="utf-8"))
+
+WARNING_LETTERS_FEED_URL = "https://regpulsehq.com/feeds/warning-letters.json"
+
+DSHEA_DISCLAIMER_RE = re.compile(
+    r"these\s+statements\s+have\s+not\s+been\s+evaluated\s+by\s+the\s+(?:u\.?s\.?\s+)?food\s+and\s+drug\s+administration[^.\n]*\.?\s*(?:this\s+product\s+is\s+not\s+intended\s+to\s+diagnose[^.\n]*\.?)?",
+    re.IGNORECASE,
+)
+NOT_INTENDED_RE = re.compile(
+    r"not\s+intended\s+to\s+diagnose,?\s*treat,?\s*cure,?\s*(?:or\s+)?prevent\s+any\s+disease\.?",
+    re.IGNORECASE,
+)
 
 
-def audit_single_listing(item: dict) -> dict:
-    blob = " ".join([
-        str(item.get("title", "")),
-        str(item.get("bullets", "")),
-        str(item.get("ingredients", "")),
-    ])
+def mask_dshea_disclaimer(text: str) -> tuple[str, bool]:
+    has_dshea = bool(DSHEA_DISCLAIMER_RE.search(text) or NOT_INTENDED_RE.search(text))
+    masked = DSHEA_DISCLAIMER_RE.sub(lambda m: " " * len(m.group(0)), text)
+    masked = NOT_INTENDED_RE.sub(lambda m: " " * len(m.group(0)), masked)
+    return masked, has_dshea
+
+
+def audit_single_listing(item: dict, default_vertical: str = "general") -> dict:
+    vertical = str(item.get("vertical") or default_vertical or "general").strip().lower()
+    if vertical not in ("cosmetics", "supplements", "devices", "pets", "general"):
+        vertical = "general"
+
+    blob = "\n\n".join(
+        p for p in [
+            str(item.get("title", "")).strip(),
+            str(item.get("bullets", "")).strip(),
+            str(item.get("ingredients", "")).strip(),
+        ]
+        if p
+    )
+    masked_blob, has_dshea_disclaimer = mask_dshea_disclaimer(blob)
+
     findings = []
     score = 0
-    for rule_id, sev, weight, title, statute, pat in RULES:
-        matches = list({m.group(0) for m in re.finditer(pat, blob, re.IGNORECASE)})
-        if matches:
-            score += weight
+    for rule in RULES:
+        rule_verts = rule.get("verticals", ["general"])
+        if vertical != "general" and vertical not in rule_verts and "general" not in rule_verts:
+            continue
+
+        matched = []
+        seen = set()
+        for pat in rule.get("patterns", []):
+            for m in re.finditer(pat, masked_blob, re.IGNORECASE):
+                phrase = m.group(0).strip()
+                norm = phrase.lower()
+                if phrase and norm not in seen:
+                    seen.add(norm)
+                    matched.append(phrase)
+        if matched:
+            score += int(rule.get("weight", 20))
             findings.append({
-                "ruleId": rule_id,
-                "severity": sev,
-                "title": title,
-                "statute": statute,
-                "matchedPhrases": matches[:5],
+                "ruleId": rule["id"],
+                "severity": rule["severity"],
+                "category": rule.get("category", ""),
+                "title": rule["titleEn"],
+                "statute": rule["statute"],
+                "officialRefUrl": rule.get("officialRefUrl", ""),
+                "safeRewriteGuidance": rule.get("safeRewriteEn", ""),
+                "matchedPhrases": matched[:6],
             })
+
     score = min(100, score)
     grade = "CRITICAL" if score >= 65 else "HIGH" if score >= 35 else "ELEVATED" if score >= 15 else "LOW"
     return {
         "recordType": "listing_audit",
         "sku": item.get("sku", "UNKNOWN"),
+        "vertical": vertical,
+        "hasDsheaDisclaimer": has_dshea_disclaimer,
+        "rulesEvaluated": len(RULES),
         "riskScore": score,
         "riskGrade": grade,
         "findingsCount": len(findings),
         "findings": findings,
-        "full40RuleWebScanner": "https://regpulsehq.com/bulk/",
+        "full200SkuBulkScanner": "https://regpulsehq.com/bulk/",
         "auditedAtUtc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
 
 
-def fetch_openfda_recalls(query: str, limit: int) -> list[dict]:
-    q = urllib.parse.quote(query.strip()) if query.strip() else ""
-    url = f"https://api.fda.gov/food/enforcement.json?sort=report_date:desc&limit={min(max(limit, 1), 100)}"
-    if q:
-        url += f"&search=product_description:{q}+OR+reason_for_recall:{q}"
-    req = urllib.request.Request(url, headers={"User-Agent": "RegPulse-Apify-Actor/1.0"})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+def _vertical_matches_wl(vertical: str, wl_vertical: str) -> bool:
+    if vertical == "general":
+        return True
+    if vertical == "cosmetics":
+        return wl_vertical in ("Cosmetics & Skincare", "OTC & Pharma / Drugs")
+    if vertical == "supplements":
+        return wl_vertical in ("Dietary Supplements & Foods", "OTC & Pharma / Drugs")
+    if vertical == "devices":
+        return wl_vertical == "Medical & Beauty Devices"
+    if vertical == "pets":
+        return wl_vertical == "Animal & Pet Products"
+    return True
+
+
+def fetch_warning_letters(query: str, vertical: str = "general", limit: int = 20) -> list[dict]:
+    limit = min(max(int(limit or 20), 1), 100)
+    req = urllib.request.Request(
+        WARNING_LETTERS_FEED_URL,
+        headers={"User-Agent": "RegPulse-Apify-Actor/2.0 (+https://regpulsehq.com)", "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except Exception as exc:
+        return [{
+            "recordType": "warning_letter_notice",
+            "error": f"Failed to fetch live Warning Letters feed: {exc}",
+            "webArchiveUrl": "https://regpulsehq.com/warning-letters/",
+        }]
+
+    records = payload.get("records", [])
+    q = (query or "").strip().lower()
     out = []
-    for r in data.get("results", []):
+    for wl in records:
+        if not _vertical_matches_wl(vertical, str(wl.get("vertical", ""))):
+            continue
+        if q:
+            hay = " ".join([
+                str(wl.get("companyName", "")),
+                str(wl.get("subject", "")),
+                str(wl.get("issuingOffice", "")),
+                " ".join(wl.get("riskTags") or []),
+            ]).lower()
+            if q not in hay:
+                continue
         out.append({
-            "recordType": "openfda_recall",
-            "recallNumber": r.get("recall_number", ""),
-            "classification": r.get("classification", ""),
-            "recallingFirm": r.get("recalling_firm", ""),
-            "reportDate": r.get("report_date", ""),
-            "productDescription": (r.get("product_description") or "")[:300],
-            "reasonForRecall": (r.get("reason_for_recall") or "")[:400],
+            "recordType": "fda_warning_letter",
+            "id": wl.get("id", ""),
+            "cmsId": wl.get("cmsId", ""),
+            "postedDate": wl.get("postedDate", ""),
+            "letterIssueDate": wl.get("letterIssueDate", ""),
+            "companyName": wl.get("companyName", ""),
+            "issuingOffice": wl.get("issuingOffice", ""),
+            "vertical": wl.get("vertical", ""),
+            "subject": wl.get("subject", ""),
+            "riskTags": wl.get("riskTags", []),
+            "officialFdaUrl": wl.get("letterUrl", ""),
+            "regpulseProfileUrl": f"https://regpulsehq.com/warning-letters/{wl.get('id', '')}/",
             "liveMonitoringUrl": "https://regpulsehq.com/pricing/",
         })
+        if len(out) >= limit:
+            break
     return out
+
+
+def fetch_openfda_recalls(query: str, vertical: str = "general", limit: int = 20) -> list[dict]:
+    limit = min(max(int(limit or 20), 1), 100)
+    vertical = (vertical or "general").strip().lower()
+    if vertical == "devices":
+        endpoints = ["device"]
+    elif vertical == "cosmetics":
+        endpoints = ["drug", "food"]
+    elif vertical == "supplements":
+        endpoints = ["food", "drug"]
+    else:
+        endpoints = ["food", "drug", "device"]
+
+    q = (query or "").strip()
+    per_ep = max(1, min(100, (limit + len(endpoints) - 1) // len(endpoints)))
+    out = []
+    seen_recalls = set()
+
+    for ep in endpoints:
+        url = f"https://api.fda.gov/{ep}/enforcement.json?sort=report_date:desc&limit={per_ep}"
+        if q:
+            encoded = urllib.parse.quote(f'"{q}"' if " " in q else q)
+            url += f"&search=product_description:{encoded}+OR+reason_for_recall:{encoded}+OR+recalling_firm:{encoded}"
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "RegPulse-Apify-Actor/2.0 (+https://regpulsehq.com)", "Accept": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                # openFDA returns HTTP 404 when 0 records match the search term
+                continue
+            continue
+        except Exception:
+            continue
+
+        for r in data.get("results", []):
+            rnum = r.get("recall_number", "")
+            dedup = f"{ep}:{rnum}"
+            if dedup in seen_recalls:
+                continue
+            seen_recalls.add(dedup)
+            out.append({
+                "recordType": "openfda_recall",
+                "sourceCategory": ep,
+                "recallNumber": rnum,
+                "classification": r.get("classification", ""),
+                "status": r.get("status", ""),
+                "recallingFirm": r.get("recalling_firm", ""),
+                "reportDate": r.get("report_date", ""),
+                "productDescription": (r.get("product_description") or "")[:300],
+                "reasonForRecall": (r.get("reason_for_recall") or "")[:400],
+                "liveMonitoringUrl": "https://regpulsehq.com/pricing/",
+            })
+            if len(out) >= limit:
+                return out
+
+    return out[:limit]
 
 
 async def main() -> None:
     if Actor is None:
-        # Standalone local smoke test mode
         sample = {
             "sku": "LOCAL-TEST-001",
+            "vertical": "cosmetics",
             "title": "FDA Approved Anti-Acne Retinol & Exosome Serum",
             "bullets": "Clinically proven to heal eczema and kill 99.9% bacteria.",
             "ingredients": "Water, Hydroquinone 2%",
         }
-        print(json.dumps(audit_single_listing(sample), indent=2))
+        audit_res = audit_single_listing(sample)
+        empty_recall_res = fetch_openfda_recalls("zzzznonexistentkeyword999", "general", 5)
+        print(json.dumps({
+            "rulesLoaded": len(RULES),
+            "sampleAudit": audit_res,
+            "emptyQuery404SafeCount": len(empty_recall_res),
+        }, indent=2))
         return
 
     async with Actor:
         inp = await Actor.get_input() or {}
-        mode = inp.get("mode", "both")
+        mode = str(inp.get("mode") or "all").strip().lower()
+        vertical = str(inp.get("vertical") or "general").strip().lower()
         listings = inp.get("listings") or []
-        recall_query = inp.get("recallQuery", "supplement")
+        recall_query = str(inp.get("recallQuery") or "")
         max_recalls = int(inp.get("maxRecalls", 20))
+        wl_query = str(inp.get("warningLetterQuery") or recall_query or "")
+        max_wl = int(inp.get("maxWarningLetters", 20))
 
-        if mode in ("audit_listings", "both"):
+        run_audit = mode in ("audit_listings", "both", "all")
+        run_wl = mode in ("warning_letters", "both", "all")
+        run_recalls = mode in ("recalls", "both", "all")
+
+        if run_audit:
             for item in listings[:200]:
-                await Actor.push_data(audit_single_listing(item))
+                await Actor.push_data(audit_single_listing(item, default_vertical=vertical))
 
-        if mode in ("recalls", "both"):
-            for rec in fetch_openfda_recalls(recall_query, max_recalls):
+        if run_wl:
+            for wl in fetch_warning_letters(wl_query, vertical=vertical, limit=max_wl):
+                await Actor.push_data(wl)
+
+        if run_recalls:
+            for rec in fetch_openfda_recalls(recall_query, vertical=vertical, limit=max_recalls):
                 await Actor.push_data(rec)
 
 

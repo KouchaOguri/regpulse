@@ -179,6 +179,24 @@ const env = {
   OWNER_ALERT_WEBHOOK: 'https://hooks.slack.com/services/T00/B00/OWNER',
 };
 
+// 0. Health check GET & HEAD + Malformed JSON safety
+const healthHeadResp = await handleRequest(
+  new Request('https://api.regpulsehq.com/api/health', { method: 'HEAD' }),
+  env,
+  mockFetch
+);
+assert.equal(healthHeadResp.status, 200, 'HEAD /api/health must return HTTP 200');
+
+const malformedLeadResp = await handleRequest(
+  new Request('https://api.regpulsehq.com/api/leads', {
+    method: 'POST',
+    body: '{bad-json',
+  }),
+  env,
+  mockFetch
+);
+assert.equal(malformedLeadResp.status, 400, 'Malformed JSON on /api/leads must return HTTP 400');
+
 // 1. Unsigned Creem webhook MUST be rejected (HTTP 401)
 const badResp = await handleRequest(
   new Request('https://api.regpulsehq.com/api/webhooks/creem', {
@@ -333,7 +351,8 @@ const d2Json = await dispatch2.json();
 assert.equal(d2Json.alertsSent, 0, 'Idempotency check failed: duplicate alerts fired!');
 assert.ok(d2Json.duplicatesSkipped >= 1, 'Expected duplicatesSkipped >= 1 on repeat sync');
 
-// 9. Self-owned /api/leads endpoint (replaces Web3Forms)
+// 9. Self-owned /api/leads endpoint (replaces Web3Forms) + internal Resend alert (skipping .invalid)
+outboundCalls.length = 0;
 const leadResp = await handleRequest(
   new Request('https://api.regpulsehq.com/api/leads', {
     method: 'POST',
@@ -350,6 +369,29 @@ const leadResp = await handleRequest(
 );
 assert.equal(leadResp.status, 200);
 assert.equal(db.tables.leads.length, 1);
+assert.ok(
+  outboundCalls.some((c) => c.url === 'https://api.resend.com/emails' && c.body?.to?.includes('alerts@regpulsehq.com')),
+  'Valid lead must trigger internal Resend alert to alerts@regpulsehq.com'
+);
+
+outboundCalls.length = 0;
+const smokeLeadResp = await handleRequest(
+  new Request('https://api.regpulsehq.com/api/leads', {
+    method: 'POST',
+    body: JSON.stringify({
+      email: 'smoke@regpulsehq.invalid',
+      plan: 'SmokeTest',
+      lang: 'en',
+    }),
+  }),
+  env,
+  mockFetch
+);
+assert.equal(smokeLeadResp.status, 200);
+assert.ok(
+  !outboundCalls.some((c) => c.url === 'https://api.resend.com/emails'),
+  '.invalid smoke test email must NOT trigger internal Resend email'
+);
 
 // 10. Subscription cancellation revokes license cleanly
 const cancelBody = JSON.stringify({

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kouchaoguri.github.io/regpulse/sitemap-index.xml
+Sitemap: https://regpulsehq.com/sitemap-index.xml
