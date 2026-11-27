@@ -1,26 +1,38 @@
 {
-  "schemaVersion": "2.0",
+  "schemaVersion": "2.2",
   "project": "RegPulse",
-  "updatedAtUtc": "2026-11-26T22:40:00Z",
+  "updatedAtUtc": "2026-11-27T03:32:00Z",
   "milestone": {
-    "current": "Phase 2 - v2.1.0 Shipped (1-2-3 Zero-Popup UX Guides + Main-Domain Cold Email Permanently Banned + Ready for Cloudflare Step 1 Checkout)",
-    "status": "step1_approved_awaiting_cloudflare_checkout"
+    "current": "Phase 2 - v2.2.0 Production Live (Real L2 Telemetry Fixed, Worker Secrets Wired, GSC 459 Pages Discovered, Apify Store Actor Published)",
+    "status": "live_l2_market_validation_paused_for_review"
+  },
+  "ceoMandates": {
+    "toolingAndExploration": "Unlimited autonomy to explore local machine tools, open-source packages, and local agent collaboration for highest commercial efficiency.",
+    "acceptanceBar": "Commercial paid-competitor standard (picky U.S. operators willing to pay), never self-satisfied 'code compiles' validation.",
+    "strategicAuthority": "Full authority to reshape product, launch synergistic side-tracks, or pivot/cut losses if real market data falsifies current thesis.",
+    "l2KillOrPivotGateDate": "2026-12-11"
   },
   "repository": {
     "localPath": "d:/hachimi/regpulse",
     "remoteUrl": "https://github.com/KouchaOguri/regpulse",
     "branch": "main",
-    "previousVerifiedSha": "8d64ab3",
-    "releaseVersion": "v2.1.0"
+    "previousVerifiedSha": "15a42ec",
+    "releaseVersion": "v2.2.0"
   },
   "deployment": {
     "liveUrl": "https://regpulsehq.com/",
+    "apiHealthUrl": "https://api.regpulsehq.com/api/health",
+    "warningLettersFeedUrl": "https://regpulsehq.com/feeds/warning-letters.json",
+    "apifyActorConsoleUrl": "https://console.apify.com/actors/fhqx3SEJJSE2JtApP",
+    "apifyStoreUrl": "https://apify.com/hachimi/regpulse",
     "fallbackPagesUrl": "https://kouchaoguri.github.io/regpulse/",
     "isolatedCnUrl": "https://regpulsehq.com/cn/",
     "customDomainCandidate": "regpulsehq.com",
     "customDomainPurchased": true,
     "cloudflareAccountId": "dbf07b9f07ecd1073fb57e75aca05c72",
     "cloudflareZoneId": "a9c03f23feb98e4473f5eb2e0ec08e50",
+    "cloudflareRumSiteTag": "a0b2b797f6db44009df4321c04a4f61d",
+    "cloudflareRumSiteToken": "66f61383b9d9419dab4c168311040e94",
     "domainOrderId": "4f5d6736-ed5e-43de-b72b-874fff306d68",
     "autoSyncSchedule": "Every 12 hours via GitHub Actions (02:15 & 14:15 UTC — syncs openFDA Recalls + live FDA.gov Warning Letters + Alert Dispatch + IndexNow)"
   },
@@ -41,43 +53,54 @@
     "deferredUntilL2Verified": [
       "Creem.io Global USD KYC (Alipay payout)",
       "Mianbaoduo CN RMB KYC",
-      "Apify Store Payout (Payoneer)"
+      "Apify Creator Monetization Payout (14-day effective window / Payoneer)"
     ]
   },
-  "selfResolvedZeroRiskItems": {
-    "openFdaApiKey": "Attempted via browser; hit CAPTCHA/bot check — stopped per policy. Eliminated dependency: keyless openFDA allows 1,000 req/day vs our 22 req/day usage (2.2%). Permanently removed from investor TODO.",
-    "web3Forms": "Attempted via browser; hit HTTP 403 Cloudflare Turnstile — stopped per policy. Permanently replaced by self-owned Cloudflare Worker POST /api/leads in fulfillment-worker/."
+  "toolStatus": {
+    "cloudflareMcp": "active (yeuk666@gmail.com, Workers/D1/DNS/Analytics GraphQL verified)",
+    "githubCli": "active (KouchaOguri)",
+    "chromeDailyMcp": "active (Cloudflare, GitHub, Apify, Resend, Google Search Console logged in)",
+    "canvaMcp": "active (Hachi Leviathan)",
+    "gmailCli": "active on both hachileviathan@gmail.com (default) and yeuk666@gmail.com when Push-Location $env:USERPROFILE is executed first",
+    "codexCli": "C:\\Users\\16493\\.codex\\plugins\\.plugin-appserver\\codex.exe (v0.167.0-alpha.4.1, quota resets 2026-12-01)"
+  },
+  "distribution": {
+    "indexNow": "active (459 EN URLs submitted HTTP 200 in CI run 45932660864)",
+    "googleSearchConsole": "verified domain property regpulsehq.com via DNS TXT; sitemap-0.xml (459 pages discovered, status Success) & sitemap-index.xml (status Success) submitted 2026-11-27",
+    "apifyStore": "Published in Apify Console at https://apify.com/hachimi/regpulse (Build 0.0.4 Succeeded, 40 rules + live Warning Letters + 404-safe openFDA recalls; public Store CDN propagation pending/checking)",
+    "ossDirectories": "Inspected awesome-mcp-servers (punkpeye/appcypher); skipped PRs because standalone installable MCP server package + Glama listing required (avoiding low-quality/spam PRs)"
   },
   "evidenceLevels": {
     "L0_buildAndVerification": {
       "syncManifestVerified": true,
       "warningLettersIndexed": 198,
       "recallsIndexed": 210,
-      "foodLeaksInCosmetics": 0,
       "clearances510kIndexed": 40,
       "statutoryRulesCount": 40,
       "verticalsSupported": 5,
       "staticPagesBuilt": 463,
       "englishPagesBuilt": 459,
       "cnIsolatedPagesBuilt": 4,
-      "citationsLockedHttp200": "33/33",
+      "citationsLockedHttp200": "31/31",
       "liveOpenFdaRoundTripSpotCheck": "8/8 HTTP 200 match",
-      "goldenScannerTests": "8/8 passed (40 rules + Pet CVM + Warning Letters cross-ref)",
-      "automatedFulfillmentE2ETests": "10/10 passed (Creem HMAC + idempotency + Mianbaoduo + License verify + Watchlist save + 2 live FDA alerts dispatched + 0 duplicate replays + /api/leads + cancel revoke)",
-      "dualMarketIsolationGate": "passed (459/459 EN HTML pages have 0 UI CJK & 0 RMB/WeCom/Feishu/Mianbaoduo leaks; 0 /cn/ URLs in sitemap-0.xml)",
-      "apifyActorSmokeTest": "passed"
+      "goldenScannerTests": "8/8 passed",
+      "automatedFulfillmentE2ETests": "passed (including HEAD /api/health, malformed JSON 400, internal Resend lead alert guard)",
+      "dualMarketIsolationGate": "passed (459/459 EN HTML pages have 0 UI CJK & 0 RMB/WeCom/Feishu/Mianbaoduo leaks; 0 /cn/ or /feeds/ URLs in sitemap-0.xml)",
+      "apifyActorCloudRun": "Succeeded (Run #2 on Build 0.0.3: 10 dataset items across listing_audit, fda_warning_letter, openfda_recall; Build 0.0.4 Succeeded with output_schema + dataset_schema)"
     },
-    "L1_liveRenderAndIndependentQA": {
-      "redTeamRound1Score": "5.5/10 (NO-GO)",
-      "redTeamRound2Score": "8.2/10 (CONDITIONAL GO on v1.1)",
-      "redTeamRound3Score": "9.1/10 (GO — BUY regpulsehq.com NOW; 11/11 EN & 4/4 CN HTTP 200, 12/12 mobile 0px overflow, 0 EN CJK/RMB leaks, 0 /cn/ in sitemap, 10/10 fulfillment E2E; all Round 3 Worker SSRF/cancel-scope/pet-recall/CTA fixes patched in v2.0.1)",
+    "L1_liveRenderAndBackendWiring": {
+      "workerSecretsWired": ["INTERNAL_CRON_SECRET", "RESEND_API_KEY"],
+      "resendDomainStatus": "Verified (regpulsehq.com)",
+      "githubActionsAlertDispatch": "HTTP 200 verified in run 45932660864",
+      "liveHealthHeadAndGet": "HTTP 200",
       "codexCliCrossModelAuditDate": "2026-12-01"
     },
     "L2_externalSignals": {
-      "analyticsConnected": false,
-      "externalUniqueScans": "unmeasured",
-      "externalWatchlistRequests": 0,
-      "note": "Self-visits and QA runs strictly excluded; awaits Step 1 custom domain + Cloudflare Web Analytics."
+      "analyticsConnected": true,
+      "analyticsFixAppliedUtc": "2026-11-27T03:03:00Z",
+      "externalVisitsVerified": 0,
+      "externalLeadsCaptured": 0,
+      "note": "Fixed BaseLayout/CnLayout beacon token from site_tag to real site_token 66f61383b9d9419dab4c168311040e94. Smoke-test D1 row deleted immediately; production D1 leads count = 0."
     },
     "L3_verifiedRevenue": {
       "paidOrders": 0,
