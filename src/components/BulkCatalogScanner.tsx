@@ -339,7 +339,7 @@ export default function BulkCatalogScanner({ recalls, warningLetters = [], local
         setKeyMessage(
           lang === 'zh'
             ? '无效卡密格式。卡密形如 RP-BULK-XXXX-XXXX（购买后系统自动发送至您的邮箱）。'
-            : 'Invalid License Key. Keys follow the format RP-BULK-XXXX-XXXX and are delivered automatically after checkout.'
+            : 'Invalid License Key. Keys follow the format RP-BULK-XXXX-XXXX and are emailed once your pass or pilot request is activated.'
         );
       }
     } catch {
@@ -626,7 +626,7 @@ export default function BulkCatalogScanner({ recalls, warningLetters = [], local
                   onClick={openBuyPassModal}
                   className="font-bold text-teal-700 hover:underline cursor-pointer"
                 >
-                  {lang === 'zh' ? '获取 200-SKU 体检卡 →' : 'Get Instant Bulk Pass ($19) →'}
+                  {lang === 'zh' ? '申请 200-SKU 体检卡 →' : 'Request 200-SKU Bulk Pass ($19) →'}
                 </button>
               </div>
             )}
@@ -800,8 +800,8 @@ export default function BulkCatalogScanner({ recalls, warningLetters = [], local
             </h3>
             <p className="text-xs text-slate-300 leading-relaxed">
               {lang === 'zh'
-                ? '付款后系统全自动发放卡密（0 人工等待）。粘贴卡密即刻解开所有受限 SKU 的违禁词标红、21 CFR 法条依据与可直接复制的改写方案，避免整店变狗。'
-                : 'Instant automated License Key delivery upon checkout (zero sales calls, zero manual turnaround). Export a clean remediation spreadsheet ready for your Amazon catalog or copywriting team.'}
+                ? '自助结账网关审核期间，提交申请后 24 小时内发出专属卡密。粘贴卡密即刻解开所有受限 SKU 的违禁词标红、21 CFR 法条依据与可直接复制的改写方案，避免整店变狗。'
+                : 'Submit a pilot request to receive your License Key within 24 hours while self-serve card checkout completes merchant onboarding. Export a clean remediation spreadsheet ready for your Amazon catalog or copywriting team.'}
             </p>
           </div>
           <div className="flex flex-col gap-2 shrink-0 w-full md:w-auto">

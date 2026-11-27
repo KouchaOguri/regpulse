@@ -158,12 +158,12 @@ export default function AlertPortal({ locale = 'en' }: Props) {
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-[11px] font-extrabold text-white shrink-0 mt-0.5">1</span>
             <div>
               <span className="font-bold text-slate-900">
-                {lang === 'zh' ? '下单自动发放专属卡密' : 'Receive Instant License Key After Checkout'}
+                {lang === 'zh' ? '申请开通并获取专属卡密' : 'Request Access & Receive Your License Key'}
               </span>
               <p className="text-slate-600 mt-0.5">
                 {lang === 'zh'
-                  ? '付款后系统秒级发出 RP-PRO-XXXX-XXXX 格式卡密，无需等人工开通。'
-                  : 'Our fulfillment webhook emails your RP-PRO-XXXX-XXXX key immediately—zero onboarding calls.'}
+                  ? '自助支付通道审核期间，提交试跑或订阅申请后 24 小时内发出 RP-PRO-XXXX-XXXX 格式卡密。'
+                  : 'While self-serve checkout completes merchant onboarding, pilot and plan requests receive an RP-PRO-XXXX-XXXX key via email within 24 hours.'}
               </p>
             </div>
           </li>
@@ -234,8 +234,8 @@ Official URL: https://www.fda.gov/...`}
               </h2>
               <p className="text-xs text-slate-500">
                 {lang === 'zh'
-                  ? '输入付款后自动发出的卡密（License Key），零人工工单自助配置监控词与推送群机器人'
-                  : 'Enter the License Key emailed upon checkout to configure OEMs, ingredients, and webhook alerts with zero support tickets.'}
+                  ? '输入已开通的专属卡密（License Key），自助配置监控词与推送群机器人'
+                  : 'Enter your active License Key to configure OEMs, ingredients, and webhook alerts directly in the portal.'}
               </p>
             </div>
           </div>
