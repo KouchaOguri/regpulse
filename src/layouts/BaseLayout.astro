@@ -58,6 +58,8 @@ const navItems = [
     {jsonLd && (
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
+    <!-- Cookie-free Cloudflare Web Analytics (L2 Real External Telemetry) -->
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "a0b2b797f6db44009df4321c04a4f61d"}'></script>
   </head>
   <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased overflow-x-clip">
     <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
@@ -222,8 +224,8 @@ const navItems = [
         </div>
         <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-500">
           <span>© 2026 RegPulse Regulatory Intelligence. Verified public data via FDA.gov, openFDA API &amp; eCFR.</span>
-          <a href="mailto:hachileviathan@gmail.com?subject=%5BRegPulse%20Support%5D" class="hover:text-slate-300 underline underline-offset-2">
-            Compliance Support Desk
+          <a href="mailto:support@regpulsehq.com?subject=%5BRegPulse%20Support%5D" class="hover:text-slate-300 underline underline-offset-2">
+            Compliance Support Desk (support@regpulsehq.com)
           </a>
         </div>
       </div>

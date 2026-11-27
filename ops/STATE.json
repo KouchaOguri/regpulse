@@ -14,24 +14,30 @@
     "releaseVersion": "v2.1.0"
   },
   "deployment": {
-    "liveUrl": "https://kouchaoguri.github.io/regpulse/",
-    "isolatedCnUrl": "https://kouchaoguri.github.io/regpulse/cn/",
+    "liveUrl": "https://regpulsehq.com/",
+    "fallbackPagesUrl": "https://kouchaoguri.github.io/regpulse/",
+    "isolatedCnUrl": "https://regpulsehq.com/cn/",
     "customDomainCandidate": "regpulsehq.com",
-    "customDomainPurchased": false,
+    "customDomainPurchased": true,
+    "cloudflareAccountId": "dbf07b9f07ecd1073fb57e75aca05c72",
+    "cloudflareZoneId": "a9c03f23feb98e4473f5eb2e0ec08e50",
+    "domainOrderId": "4f5d6736-ed5e-43de-b72b-874fff306d68",
     "autoSyncSchedule": "Every 12 hours via GitHub Actions (02:15 & 14:15 UTC — syncs openFDA Recalls + live FDA.gov Warning Letters + Alert Dispatch + IndexNow)"
   },
   "budget": {
     "authorizedLimitCny": 150,
-    "cashSpentCny": 0,
-    "pendingApprovalItems": [
+    "cashSpentUsd": 11.17,
+    "cashSpentCnyApprox": 81,
+    "actualExpenditures": [
       {
-        "step": "Step 1 (Immediate Unlock for L2 External Intent Validation)",
-        "item": "Custom .com domain (regpulsehq.com via Cloudflare Registrar) + Cloudflare Web Analytics + Cloudflare Worker deployment (api.regpulsehq.com)",
-        "estimatedCny": 75,
-        "estimatedUsd": 10.44,
-        "status": "awaiting_investor_approval"
+        "dateUtc": "2026-11-27T01:37:00Z",
+        "item": "Custom .com domain registration (regpulsehq.com, 1 year, Cloudflare Registrar)",
+        "amountUsd": 11.17,
+        "orderId": "4f5d6736-ed5e-43de-b72b-874fff306d68",
+        "status": "settled_paid"
       }
     ],
+    "pendingApprovalItems": [],
     "deferredUntilL2Verified": [
       "Creem.io Global USD KYC (Alipay payout)",
       "Mianbaoduo CN RMB KYC",
