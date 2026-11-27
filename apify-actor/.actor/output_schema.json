@@ -1,0 +1,14 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "RegPulse FDA Compliance & Enforcement Output",
+  "description": "Structured dataset containing 40-rule listing compliance audits, live FDA.gov Warning Letters, and live openFDA enforcement recalls.",
+  "type": "object",
+  "properties": {
+    "complianceResults": {
+      "type": "string",
+      "title": "Compliance Audit, Warning Letters & Recalls Dataset",
+      "description": "All listing audit findings (with statutes and safe rewrites), filtered FDA Warning Letters, and openFDA recall records.",
+      "template": "{{links.apiDefaultDatasetUrl}}/items"
+    }
+  }
+}

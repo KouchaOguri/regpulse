@@ -1,0 +1,69 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "recordType": {
+        "type": "string",
+        "title": "Record Type",
+        "description": "One of listing_audit, fda_warning_letter, or openfda_recall."
+      },
+      "sku": {
+        "type": "string",
+        "title": "SKU",
+        "description": "Product SKU identifier for listing audits."
+      },
+      "riskGrade": {
+        "type": "string",
+        "title": "Risk Grade",
+        "description": "LOW, ELEVATED, HIGH, or CRITICAL."
+      },
+      "riskScore": {
+        "type": "integer",
+        "title": "Risk Score",
+        "description": "Deterministic risk score from 0 to 100."
+      },
+      "companyName": {
+        "type": "string",
+        "title": "Company / Firm",
+        "description": "Firm named in an FDA Warning Letter."
+      },
+      "recallNumber": {
+        "type": "string",
+        "title": "Recall Number",
+        "description": "Official openFDA recall identifier."
+      },
+      "subject": {
+        "type": "string",
+        "title": "Subject / Violation",
+        "description": "FDA Warning Letter subject or enforcement summary."
+      },
+      "officialFdaUrl": {
+        "type": "string",
+        "format": "uri",
+        "title": "Official FDA URL",
+        "description": "Direct link to official FDA.gov Warning Letter."
+      }
+    }
+  },
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": {
+        "fields": [
+          "recordType",
+          "sku",
+          "riskGrade",
+          "riskScore",
+          "companyName",
+          "recallNumber",
+          "subject",
+          "officialFdaUrl"
+        ]
+      },
+      "display": {
+        "component": "table"
+      }
+    }
+  }
+}
